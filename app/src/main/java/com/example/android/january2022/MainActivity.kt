@@ -4,6 +4,12 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +18,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,17 +39,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ComponentActivity() {
+
+    private val homeViewModel by viewModels<HomeViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             January2022Theme {
                 val navController = rememberNavController()
-                val database = GymDatabase.getInstance(application)
-                val repository = GymRepository(database)
 
                 NavHost(navController, "home") {
                     composable("home") {
-                        HomeScreen(repository)
+                        HomeScreen(homeViewModel)
                     }
                     composable("session") {
                         SessionScreen()
@@ -53,13 +62,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(repository: GymRepository) {
+fun HomeScreen(viewModel: HomeViewModel) {
+    val sessions: List<Session> by viewModel.sessionList.observeAsState(listOf())
     Scaffold(
-        bottomBar = { MyBottomBar() },
+        bottomBar = { MyBottomBar(viewModel) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    viewModel.insertSession(Session())
                 },
                 shape = RoundedCornerShape(50),
                 backgroundColor = MaterialTheme.colors.primary,
@@ -71,9 +81,7 @@ fun HomeScreen(repository: GymRepository) {
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        //TestItem(text = "HOME SCREEN!")
-        //val sessions = repository.getAllSessions().value
-        val sessions = listOf(Session(0), Session(1), Session(2), Session(3))
+        //val sessions = listOf(Session(0), Session(1), Session(2), Session(3))
         SessionList(sessions = sessions)
 
     }
@@ -106,8 +114,15 @@ fun Session(session: Session) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    delayMillis = 50,
+                    easing = LinearOutSlowInEasing
+                )
+            )
     ) {
-        Row(modifier = Modifier.padding(24.dp)) {
+        Row(modifier = Modifier.padding(vertical = 2.dp,horizontal = 8.dp)) {
             Column(
                 modifier = Modifier
                     .padding(12.dp)
@@ -115,10 +130,8 @@ fun Session(session: Session) {
             ) {
                 Text(text = startDate)
                 Text(text = startTime)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = session.sessionId.toString())
-                Spacer(modifier = Modifier.weight(1f))
                 if (expanded) {
+                    Text(text = session.sessionId.toString())
                     Text(text = stringResource(R.string.lorem_ipsum))
                 }
             }
@@ -144,7 +157,7 @@ fun Session(session: Session) {
 }
 
 @Composable
-fun MyBottomBar() {
+fun MyBottomBar(viewModel: HomeViewModel) {
     BottomAppBar(cutoutShape = RoundedCornerShape(50)) {
         IconButton(
             onClick = {
@@ -163,13 +176,12 @@ fun MyBottomBar() {
         }
         IconButton(
             onClick = {
-                /* doSomething() */
+                viewModel.clearSessions()
             }
         ) {
             Icon(Icons.Default.MoreVert, "")
         }
     }
-
 }
 
 
