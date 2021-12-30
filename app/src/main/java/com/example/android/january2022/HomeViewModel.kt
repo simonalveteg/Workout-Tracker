@@ -2,22 +2,25 @@ package com.example.android.january2022
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = GymRepository(application = application)
-    val sessionList : LiveData<List<Session>> = repository.getAllSessions()
+    val session = MutableLiveData<Session>() // holds info about the Session to be accessed by binding
+    val sessionList : LiveData<List<Session>> = repository.getSessions()
+    val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
+
+
 
     init {
         Log.d("HVM", "INIT with sessionList: ${sessionList.value}")
@@ -30,9 +33,26 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun insertSession(session: Session) {
+    fun onNewSession(){
+        val newSession = insertSession()
+        session.value = newSession
+        getSessionExerciseList(newSession.sessionId)
+
+    }
+
+    private fun getSessionExerciseList(sessionId: Long) {
         viewModelScope.launch {
-            repository.insertSession(session)
+            sessionExerciseList.value = withContext(Dispatchers.IO){
+                repository.getSessionExercises(sessionId)
+            }
         }
+    }
+
+    private fun insertSession() : Session {
+        val newSession = Session()
+        viewModelScope.launch {
+            repository.insertSession(newSession)
+        }
+        return newSession
     }
 }
