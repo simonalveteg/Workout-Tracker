@@ -1,6 +1,5 @@
 package com.example.android.january2022
 
-import android.content.pm.PackageInstaller
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +9,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,6 +32,7 @@ import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.theme.January2022Theme
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.KFunction1
 
 class MainActivity : ComponentActivity() {
 
@@ -78,23 +79,23 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        SessionCardList(sessions = sessions)
+        SessionCardList(sessions = sessions, viewModel::onSessionClicked, navController)
 
     }
 }
 
 @Composable
-fun SessionCardList(sessions: List<Session>) {
+fun SessionCardList(sessions: List<Session>, onSessionClicked: KFunction1<Session, Unit>, navController: NavController) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
         items(items = sessions) { session ->
-            SessionCard(session)
+            SessionCard(session, onSessionClicked, navController )
 
         }
     }
 }
 
 @Composable
-fun SessionCard(session: Session) {
+fun SessionCard(session: Session, onSessionClicked: KFunction1<Session, Unit>, navController: NavController) {
     var expanded by remember { mutableStateOf(false) }
 
     val startDate = SimpleDateFormat(
@@ -110,6 +111,10 @@ fun SessionCard(session: Session) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
+            .clickable {
+                onSessionClicked(session)
+                navController.navigate("session")
+            }
             .animateContentSize(
                 animationSpec = tween(
                     durationMillis = 300,
@@ -201,9 +206,10 @@ fun SessionAppBar() {
 
 @Composable
 fun SessionContent() {
-    Column(modifier = Modifier
-        .background(MaterialTheme.colors.background)
-        .fillMaxSize()
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .fillMaxSize()
     ) {
         var count: Int = 0
         repeat(
@@ -236,13 +242,6 @@ fun SessionInfo() {
 }
 
 
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SessionPreview() {
-    January2022Theme {
-        SessionCard(Session(1, 10, 20, "Legs"))
-    }
-}
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable

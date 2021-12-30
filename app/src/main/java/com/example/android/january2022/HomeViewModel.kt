@@ -33,11 +33,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun onSessionClicked(newSession: Session) {
+        Log.d("HVM","Session clicked!")
+        updateSession(newSession)
+    }
+
     fun onNewSession(){
-        val newSession = insertSession()
+        updateSession(insertSession())
+    }
+
+    fun updateSession(newSession: Session) {
         session.value = newSession
         getSessionExerciseList(newSession.sessionId)
-
     }
 
     private fun getSessionExerciseList(sessionId: Long) {
