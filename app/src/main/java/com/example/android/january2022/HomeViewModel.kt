@@ -36,9 +36,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun clearSessions() {
+    fun clearDatabase() {
         viewModelScope.launch {
-            repository.deleteAllSessions()
+            withContext(Dispatchers.IO){
+                repository.deleteAllData()
+            }
         }
     }
 
