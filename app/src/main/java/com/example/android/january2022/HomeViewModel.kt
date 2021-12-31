@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
+import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val session = MutableLiveData<Session>() // holds info about the Session to be accessed by binding
     val sessionList : LiveData<List<Session>> = repository.getSessions()
     val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
+    val exerciseList : LiveData<List<Exercise>> = repository.getExercises()
 
 
 
@@ -26,11 +28,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("HVM", "INIT with sessionList: ${sessionList.value}")
     }
 
+    fun onNewExercise(exerciseTitle: String) {
+        viewModelScope.launch {
+            repository.insertExercise(Exercise(0,exerciseTitle))
+        }
+    }
 
     fun clearSessions() {
         viewModelScope.launch {
             repository.deleteAllSessions()
         }
+    }
+
+    fun addSessionExerciseToSession() {
+
     }
 
     fun onSessionClicked(newSession: Session) {
@@ -42,14 +53,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         updateSession(insertSession())
     }
 
-    fun updateSession(newSession: Session) {
+    private fun updateSession(newSession: Session) {
         session.value = newSession
         getSessionExerciseList(newSession.sessionId)
     }
 
     private fun getSessionExerciseList(sessionId: Long) {
         viewModelScope.launch {
-            sessionExerciseList.value = withContext(Dispatchers.IO){
+            sessionExerciseList.value = withContext(Dispatchers.IO) {
                 repository.getSessionExercises(sessionId)
             }
         }
