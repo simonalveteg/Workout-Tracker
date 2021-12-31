@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,10 +18,11 @@ import kotlinx.coroutines.withContext
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = GymRepository(application = application)
-    val session = MutableLiveData<Session>() // holds info about the Session to be accessed by binding
+    private val sessionId = 0L
+    private val session = MutableLiveData<Session>()
     val sessionList : LiveData<List<Session>> = repository.getSessions()
-    val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
     val exerciseList : LiveData<List<Exercise>> = repository.getExercises()
+    val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
 
 
 
@@ -40,8 +42,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addSessionExerciseToSession() {
-
+    fun onExerciseClicked(exercise: Exercise) {
+        val newSessionExercise =
+            SessionExercise(
+                parentExerciseId = exercise.exerciseId,
+                parentSessionId = session.value!!.sessionId
+            )
+        viewModelScope.launch {
+            repository.insertSessionExercise(newSessionExercise)
+        }
+        getSessionExerciseList(session.value!!.sessionId)
     }
 
     fun onSessionClicked(newSession: Session) {

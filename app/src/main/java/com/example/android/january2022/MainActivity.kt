@@ -59,6 +59,9 @@ class MainActivity : ComponentActivity() {
                     composable("exercises") {
                         ExercisesScreen(homeViewModel, navController)
                     }
+                    composable("exercisePicker") {
+                        ExercisePickerScreen(homeViewModel, navController)
+                    }
                 }
             }
         }
@@ -75,7 +78,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
-            Column(
+            Box(
                 modifier = Modifier
                     .height(220.dp)
                     .padding(vertical = 16.dp, horizontal = 16.dp)
@@ -133,14 +136,21 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
 
 @Composable
 fun DrawerMenu(viewModel: HomeViewModel, navController: NavController) {
-    Column(Modifier.fillMaxSize(),
+    Column(
+        Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-        ) {
-        Box(Modifier.clickable { navController.navigate("home") }) {
+    ) {
+        Box(Modifier.clickable {
+            navController.navigate("home") {
+                popUpTo("home") { inclusive = true }
+            }
+        }) {
             DrawerMenuItem("home")
         }
-        Box(Modifier.clickable { navController.navigate("exercises") }) {
+        Box(Modifier.clickable {
+            navController.navigate("exercises")
+        }) {
             DrawerMenuItem("exercises")
         }
     }
@@ -243,7 +253,7 @@ fun SessionScreen(homeViewModel: HomeViewModel, navController: NavController) {
     BackdropScaffold(
         appBar = { },
         backLayerContent = { },
-        frontLayerContent = { SessionContent(homeViewModel) },
+        frontLayerContent = { SessionContent(homeViewModel, navController) },
         scaffoldState = backdropState,
         backLayerBackgroundColor = MaterialTheme.colors.background
     ) {
@@ -252,7 +262,7 @@ fun SessionScreen(homeViewModel: HomeViewModel, navController: NavController) {
 
 
 @Composable
-fun SessionContent(homeViewModel: HomeViewModel) {
+fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
     val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.sessionExerciseList.observeAsState(
         listOf()
     )
@@ -262,7 +272,9 @@ fun SessionContent(homeViewModel: HomeViewModel) {
             .padding(top = 16.dp)
     ) {
         Button(
-            onClick = { homeViewModel.addSessionExerciseToSession() },
+            onClick = {
+                navController.navigate("exercisePicker")
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "ADD EXERCISE")
@@ -273,7 +285,6 @@ fun SessionContent(homeViewModel: HomeViewModel) {
             }
         }
     }
-
 }
 
 @Composable
@@ -284,15 +295,56 @@ fun SessionExerciseCard(sessionExercise: SessionExerciseWithExercise) {
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
     ) {
         Row(modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
-            Text(text = "sEID: ${sessionExercise.sessionExercise.sessionExerciseId}, sID: ${sessionExercise.sessionExercise.parentSessionId}")
+            Text(text = "${sessionExercise.sessionExercise.sessionExerciseId}")
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = sessionExercise.exercise.exerciseTitle)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = sessionExercise.sessionExercise.parentSessionId.toString())
         }
     }
 }
 
 
 @Composable
-fun SessionInfo() {
+fun ExercisePickerScreen(viewModel: HomeViewModel, navController: NavController) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "CHOOSE EXERCISE",
+            color = MaterialTheme.colors.primary,
+            style = MaterialTheme.typography.h3,
+            modifier =
+            Modifier.padding(bottom = 32.dp)
+        )
+        Box(Modifier.weight(1f)) {
+            ExercisesList(viewModel, navController, true)
+        }
+    }
+}
 
+@Composable
+fun ExercisesList(viewModel: HomeViewModel, navController: NavController, inPicker: Boolean) {
+    val exercises: List<Exercise> by viewModel.exerciseList.observeAsState(listOf())
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        items(items = exercises) { exercise ->
+            Box(Modifier.clickable {
+                if (inPicker) {
+                    viewModel.onExerciseClicked(exercise)
+                    navController.navigate("session"){
+                        popUpTo("session") {inclusive = true}
+                    }
+                }
+            }) {
+                ExerciseCard(exercise)
+            }
+        }
+    }
 }
 
 @Composable
@@ -300,25 +352,24 @@ fun ExercisesScreen(viewModel: HomeViewModel, navController: NavController) {
     // remember inputValue
     var inputValue by remember { mutableStateOf("") }
 
-    val exercises: List<Exercise> by viewModel.exerciseList.observeAsState(listOf())
-
-    Surface(Modifier.fillMaxSize().padding(vertical = 16.dp)) {
+    Surface(
+        Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp)
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)) {
-                items(items = exercises) { exercise ->
-                    ExerciseCard(exercise)
-                }
+            Box(Modifier.weight(1f)) {
+                ExercisesList(viewModel, navController, false)
             }
             Row(
                 Modifier
                     .padding(vertical = 16.dp)
-                    .height(TextFieldDefaults.MinHeight)) {
+                    .height(TextFieldDefaults.MinHeight)
+            ) {
                 TextField(
                     value = inputValue,
                     onValueChange = { newText ->
@@ -345,8 +396,12 @@ fun ExercisesScreen(viewModel: HomeViewModel, navController: NavController) {
 @Composable
 fun ExerciseCard(exercise: Exercise) {
     Card(Modifier.padding(vertical = 2.dp, horizontal = 16.dp)) {
-        Row(Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 16.dp)){
-            Text(text = "${exercise.exerciseId} ${exercise.exerciseTitle}" )
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 16.dp)
+        ) {
+            Text(text = "${exercise.exerciseId} ${exercise.exerciseTitle}")
         }
     }
 }

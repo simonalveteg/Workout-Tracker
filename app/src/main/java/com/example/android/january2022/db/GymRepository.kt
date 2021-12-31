@@ -32,4 +32,7 @@ class GymRepository(
 
     suspend fun insertExercise(exercise: Exercise) =
         db.gymDatabaseDAO.insertExercise(exercise)
+
+    suspend fun insertSessionExercise(sessionExercise: SessionExercise) =
+        db.gymDatabaseDAO.insertSessionExercise(sessionExercise)
 }
