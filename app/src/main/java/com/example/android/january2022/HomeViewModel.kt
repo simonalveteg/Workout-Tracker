@@ -11,19 +11,17 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = GymRepository(application = application)
-    private val sessionId = 0L
-    private val session = MutableLiveData<Session>()
-    val sessionList : LiveData<List<Session>> = repository.getSessions()
-    val exerciseList : LiveData<List<Exercise>> = repository.getExercises()
+    val sessionId = MutableLiveData<Long>()
+    //val session = MutableLiveData<Session>()
+    val sessionList: LiveData<List<Session>> = repository.getSessions()
+    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
     val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
-
 
 
     init {
@@ -32,13 +30,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onNewExercise(exerciseTitle: String) {
         viewModelScope.launch {
-            repository.insertExercise(Exercise(0,exerciseTitle))
+            repository.insertExercise(Exercise(0, exerciseTitle))
         }
     }
 
     fun clearDatabase() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 repository.deleteAllData()
             }
         }
@@ -48,41 +46,96 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val newSessionExercise =
             SessionExercise(
                 parentExerciseId = exercise.exerciseId,
-                parentSessionId = session.value!!.sessionId
+                parentSessionId = sessionId.value!!
             )
         viewModelScope.launch {
             repository.insertSessionExercise(newSessionExercise)
         }
-        getSessionExerciseList(session.value!!.sessionId)
+        updateSessionExerciseList()
     }
 
     fun onSessionClicked(newSession: Session) {
-        Log.d("HVM","Session clicked!")
-        updateSession(newSession)
+        Log.d("HVM", "Session clicked!")
+        sessionId.value = newSession.sessionId
+        updateSessionExerciseList()
     }
 
-    fun onNewSession(){
-        updateSession(insertSession())
+    fun onNewSession() {
+        // Use runBlocking when inserting a new session to ensure that
+        // the sessionId gets it's value updated before anything else gets executed
+        runBlocking {  sessionId.value = insertSession(Session()) }
+        Log.d("HVM", "New session created with id ${sessionId.value}")
+        updateSessionExerciseList()
     }
 
-    private fun updateSession(newSession: Session) {
-        session.value = newSession
-        getSessionExerciseList(newSession.sessionId)
+    fun importExercises() {
+        val exercises = listOf<String>(
+            "Abduction",
+            "Ab Crunch",
+            "Adduction",
+            "Armhävningar",
+            "Axellyft",
+            "Axelpress",
+            "Axelrotation",
+            "Bålrotator",
+            "Bänkpress",
+            "Benlyft",
+            "Benpress",
+            "Bicep Curls",
+            "Biceps Pulldown",
+            "Bilateral Arm Curl",
+            "Bröstpress",
+            "Cykel",
+            "Deadbugs",
+            "Deadlift",
+            "Deltoid fly",
+            "Deltoid Raise",
+            "Dumbbell crunch",
+            "Dumbbell flies",
+            "Dumbell Lunges",
+            "Forearm curls",
+            "Forearm twist",
+            "Hammer Curls",
+            "Hantelpress",
+            "Squats",
+            "Kneeling one arm dumbbell row",
+            "Lat Pulldown",
+            "Leg Curl",
+            "Leg Extension",
+            "Leg Press",
+            "Leg Raise",
+            "Lounges",
+            "Low Row",
+            "Militärpress",
+            "Medicine ball twist",
+            "Narrow squats",
+            "Pec fly",
+            "Bulgarian squats",
+            "Plank",
+            "Sideplank",
+            "Pullups",
+            "Pushups",
+            "Row",
+            "Russian twist",
+            "Rygglyft",
+            "Leg curl"
+        )
+        exercises.forEach {
+            onNewExercise(it)
+        }
     }
 
-    private fun getSessionExerciseList(sessionId: Long) {
+    private fun updateSessionExerciseList() {
         viewModelScope.launch {
             sessionExerciseList.value = withContext(Dispatchers.IO) {
-                repository.getSessionExercises(sessionId)
+                repository.getSessionExercises(sessionId.value!!)
             }
         }
     }
 
-    private fun insertSession() : Session {
-        val newSession = Session()
-        viewModelScope.launch {
+    private suspend fun insertSession(newSession: Session): Long {
+        return withContext(Dispatchers.IO) {
             repository.insertSession(newSession)
         }
-        return newSession
     }
 }

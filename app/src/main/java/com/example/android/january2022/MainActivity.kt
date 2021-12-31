@@ -2,6 +2,7 @@ package com.example.android.january2022
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -61,6 +62,11 @@ class MainActivity : ComponentActivity() {
                         ExercisePickerScreen(homeViewModel, navController)
                     }
                 }
+                // when the session object in viewModel gets update, navigate to SessionScreen
+                homeViewModel.sessionId.observe(this){
+                    Log.d("MA","Session observed changed value to $it")
+                    navController.navigate("session")
+                }
             }
         }
     }
@@ -98,7 +104,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
-                            /* doSomething() */
+                            viewModel.importExercises()
                         }
                     ) {
                         Icon(Icons.Default.Search, "")
@@ -116,7 +122,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 FloatingActionButton(
                     onClick = {
                         viewModel.onNewSession()
-                        navController.navigate("session")
+                        //navController.navigate("session")
                     },
                     shape = RoundedCornerShape(50),
                     backgroundColor = MaterialTheme.colors.primary
@@ -197,7 +203,7 @@ fun SessionCard(
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable {
                 onSessionClicked(session)
-                navController.navigate("session")
+                //navController.navigate("session")
             }
             .animateContentSize(
                 animationSpec = tween(
