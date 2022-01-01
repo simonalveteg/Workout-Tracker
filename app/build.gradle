@@ -73,6 +73,11 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
 
+    // Accompanist Insets
+    implementation 'com.google.accompanist:accompanist-insets:0.17.0'
+    // System UI Controller
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+
     //room
     def room_version = "2.4.0"
     implementation("androidx.room:room-runtime:$room_version")

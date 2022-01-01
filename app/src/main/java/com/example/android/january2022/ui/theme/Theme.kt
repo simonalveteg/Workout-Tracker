@@ -6,6 +6,11 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import android.R.color
+
+
+
 
 private val DarkColorPalette = darkColors(
     background = DarkBackground,
@@ -43,6 +48,9 @@ fun January2022Theme(
     } else {
         LightColorPalette
     }
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = !darkTheme)
 
     MaterialTheme(
         colors = colors,
