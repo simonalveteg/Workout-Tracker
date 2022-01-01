@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 // when the session object in viewModel gets update, navigate to SessionScreen
-                homeViewModel.sessionId.observe(this){
-                    Log.d("MA","Session observed changed value to $it")
+                homeViewModel.sessionId.observe(this) {
+                    Log.d("MA", "Session observed changed value to $it")
                     navController.navigate("session")
                 }
             }
@@ -210,43 +210,57 @@ fun SessionCard(
                 )
             )
     ) {
-        Row(modifier = Modifier.padding(vertical = 2.dp, horizontal = 8.dp)) {
-            Column(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .weight(1f)
-            ) {
-                Text(text = startDate)
-                Text(text = startTime)
-                if (expanded) {
-                    Column(Modifier.padding(top = 12.dp)) {
-                        Text(text = session.sessionId.toString())
-                        sessionContent.forEach { sessionExercise ->
-                            if(sessionExercise.sessionExercise.parentSessionId == session.sessionId){
-                                Text(sessionExercise.exercise.exerciseTitle)
-                            }
+        Column(
+            Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
+        ) {
+            Row {
+                Column {
+                    Text(text = startDate)
+                    Text(text = startTime)
+                }
+                Spacer(Modifier.weight(1f))
+                IconButton(
+                    onClick = {
+                    expanded = !expanded
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription =
+                        if (expanded) {
+                            stringResource(R.string.show_less)
+                        } else {
+                            stringResource(
+                                R.string.show_more
+                            )
                         }
+                    )
+                }
+            }
+            if (expanded) {
+                Box(Modifier.padding(top = 12.dp, bottom = 8.dp, start = 0.dp, end = 0.dp)) {
+                    Divider(color = MaterialTheme.colors.onSurface, thickness = 1.dp)
+                }
+                sessionContent.forEach { sessionExercise ->
+                    if (sessionExercise.sessionExercise.parentSessionId == session.sessionId) {
+                        SessionExerciseWithExerciseCondensed(sessionExercise)
                     }
                 }
             }
-
-            IconButton(onClick = {
-                expanded = !expanded
-            }) {
-                Icon(
-                    imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                    contentDescription =
-                    if (expanded) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(
-                            R.string.show_more
-                        )
-                    }
-                )
-
-            }
         }
+    }
+}
+
+@Composable
+fun SessionExerciseWithExerciseCondensed(sessionExercise: SessionExerciseWithExercise) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)
+    ) {
+        Text(sessionExercise.exercise.exerciseTitle)
+        Spacer(Modifier.weight(1f))
+        Text("13x25, 14x45")
     }
 }
 
@@ -341,8 +355,8 @@ fun ExercisesList(viewModel: HomeViewModel, navController: NavController, inPick
             Box(Modifier.clickable {
                 if (inPicker) {
                     viewModel.onExerciseClicked(exercise)
-                    navController.navigate("session"){
-                        popUpTo("session") {inclusive = true}
+                    navController.navigate("session") {
+                        popUpTo("session") { inclusive = true }
                     }
                 }
             }) {
