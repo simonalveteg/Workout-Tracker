@@ -6,11 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.january2022.db.GymRepository
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.*
 
 
@@ -19,7 +17,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GymRepository(application = application)
     val sessionId = MutableLiveData<Long>()
     //val session = MutableLiveData<Session>()
-    val sessionList: LiveData<List<Session>> = repository.getSessions()
+    val sessionList: LiveData<List<SessionWithContents>> = repository.getSessionContents()
     val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
     val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
 
@@ -54,9 +52,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         updateSessionExerciseList()
     }
 
-    fun onSessionClicked(newSession: Session) {
+    fun onSessionClicked(newSessionId: Long) {
         Log.d("HVM", "Session clicked!")
-        sessionId.value = newSession.sessionId
+        sessionId.value = newSessionId
         updateSessionExerciseList()
     }
 

@@ -1,9 +1,6 @@
 package com.example.android.january2022.db.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
     tableName = "sessionExercises",
@@ -26,4 +23,18 @@ data class SessionExerciseWithExercise(
     val sessionExercise: SessionExercise,
     @Embedded
     val exercise: Exercise
+)
+
+data class SessionContent(
+    val sessionId: Long,
+    val exerciseTitle: String
+)
+
+data class SessionWithContents(
+    @Embedded
+    val session: Session,
+
+    @Relation(parentColumn = "sessionId", entityColumn = "parentSessionId", entity = SessionExercise::class)
+    val sessionExercises: List<SessionExercise>
+
 )

@@ -2,11 +2,9 @@ package com.example.android.january2022.db
 
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.SessionExercise
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.db.entities.*
 
 
 @Dao
@@ -33,6 +31,10 @@ interface GymDatabaseDAO {
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId WHERE parentSessionId = :key")
     fun getSessionExercisesWithExercise(key: Long) : List<SessionExerciseWithExercise>
+
+    @Transaction
+    @Query("SELECT * FROM sessions ORDER BY sessionId DESC")
+    fun getSessionsWithContents() : LiveData<List<SessionWithContents>>
 
 }
 

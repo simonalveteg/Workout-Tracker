@@ -24,13 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.theme.January2022Theme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -75,7 +74,7 @@ class MainActivity : ComponentActivity() {
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
-    val sessions: List<Session> by viewModel.sessionList.observeAsState(listOf())
+    val sessions by viewModel.sessionList.observeAsState(listOf())
     val composableScope = rememberCoroutineScope()
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -133,7 +132,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
             isFloatingActionButtonDocked = true,
             floatingActionButtonPosition = FabPosition.Center
         ) {
-            SessionCardList(sessions = sessions, viewModel::onSessionClicked, navController)
+            SessionCardList(sessions = sessions, viewModel)
         }
     }
 }
@@ -169,41 +168,38 @@ fun DrawerMenuItem(text: String) {
 
 @Composable
 fun SessionCardList(
-    sessions: List<Session>,
-    onSessionClicked: KFunction1<Session, Unit>,
-    navController: NavController
+    sessions: List<SessionWithContents>,
+    viewModel: HomeViewModel
 ) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
         items(items = sessions) { session ->
-            SessionCard(session, onSessionClicked, navController)
+            SessionCard(session, viewModel)
         }
     }
 }
 
 @Composable
 fun SessionCard(
-    session: Session,
-    onSessionClicked: KFunction1<Session, Unit>,
-    navController: NavController
+    sessionWithContents: SessionWithContents,
+    viewModel: HomeViewModel
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val startDate = SimpleDateFormat(
         "dd-MM-yy",
         Locale.ENGLISH
-    ).format(session.startTimeMilli)
+    ).format(sessionWithContents.session.startTimeMilli)
     val startTime = SimpleDateFormat(
         "HH:mm",
         Locale.ENGLISH
-    ).format(session.startTimeMilli)
+    ).format(sessionWithContents.session.startTimeMilli)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable {
-                onSessionClicked(session)
-                //navController.navigate("session")
+                viewModel.onSessionClicked(sessionWithContents.session.sessionId)
             }
             .animateContentSize(
                 animationSpec = tween(
@@ -223,8 +219,10 @@ fun SessionCard(
                 Text(text = startTime)
                 if (expanded) {
                     Column(Modifier.padding(top = 12.dp)) {
-                        Text(text = session.sessionId.toString())
-                        Text(text = stringResource(R.string.lorem_ipsum))
+                        Text(text = sessionWithContents.session.sessionId.toString())
+                        sessionWithContents.sessionExercises.forEach { sessionExercise ->
+                            Text(sessionExercise.sessionExerciseId.toString())
+                        }
                     }
                 }
             }

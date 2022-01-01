@@ -24,6 +24,9 @@ class GymRepository(
     fun getSessionExercises(sessionId: Long) =
         db.gymDatabaseDAO.getSessionExercisesWithExercise(sessionId)
 
+    fun getSessionContents() =
+        db.gymDatabaseDAO.getSessionsWithContents()
+
     suspend fun deleteAllData() =
         db.clearAllTables()
 
