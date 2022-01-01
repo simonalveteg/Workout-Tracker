@@ -25,11 +25,6 @@ data class SessionExerciseWithExercise(
     val exercise: Exercise
 )
 
-data class SessionContent(
-    val sessionId: Long,
-    val exerciseTitle: String
-)
-
 data class SessionWithContents(
     @Embedded
     val session: Session,
