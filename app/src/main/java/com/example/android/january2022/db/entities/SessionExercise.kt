@@ -24,12 +24,3 @@ data class SessionExerciseWithExercise(
     @Embedded
     val exercise: Exercise
 )
-
-data class SessionWithContents(
-    @Embedded
-    val session: Session,
-
-    @Relation(parentColumn = "sessionId", entityColumn = "parentSessionId", entity = SessionExercise::class)
-    val sessionExercises: List<SessionExercise>
-
-)

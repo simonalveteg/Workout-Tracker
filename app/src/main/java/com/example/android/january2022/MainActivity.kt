@@ -168,7 +168,7 @@ fun DrawerMenuItem(text: String) {
 
 @Composable
 fun SessionCardList(
-    sessions: List<SessionWithContents>,
+    sessions: List<Session>,
     viewModel: HomeViewModel
 ) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
@@ -180,26 +180,27 @@ fun SessionCardList(
 
 @Composable
 fun SessionCard(
-    sessionWithContents: SessionWithContents,
+    session: Session,
     viewModel: HomeViewModel
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
 
     val startDate = SimpleDateFormat(
         "dd-MM-yy",
         Locale.ENGLISH
-    ).format(sessionWithContents.session.startTimeMilli)
+    ).format(session.startTimeMilli)
     val startTime = SimpleDateFormat(
         "HH:mm",
         Locale.ENGLISH
-    ).format(sessionWithContents.session.startTimeMilli)
+    ).format(session.startTimeMilli)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable {
-                viewModel.onSessionClicked(sessionWithContents.session.sessionId)
+                viewModel.onSessionClicked(session.sessionId)
             }
             .animateContentSize(
                 animationSpec = tween(
@@ -219,9 +220,11 @@ fun SessionCard(
                 Text(text = startTime)
                 if (expanded) {
                     Column(Modifier.padding(top = 12.dp)) {
-                        Text(text = sessionWithContents.session.sessionId.toString())
-                        sessionWithContents.sessionExercises.forEach { sessionExercise ->
-                            Text(sessionExercise.sessionExerciseId.toString())
+                        Text(text = session.sessionId.toString())
+                        sessionContent.forEach { sessionExercise ->
+                            if(sessionExercise.sessionExercise.parentSessionId == session.sessionId){
+                                Text(sessionExercise.exercise.exerciseTitle)
+                            }
                         }
                     }
                 }
@@ -265,7 +268,7 @@ fun SessionScreen(homeViewModel: HomeViewModel, navController: NavController) {
 
 @Composable
 fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
-    val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.sessionExerciseList.observeAsState(
+    val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.currentSessionExerciseList.observeAsState(
         listOf()
     )
     Column(

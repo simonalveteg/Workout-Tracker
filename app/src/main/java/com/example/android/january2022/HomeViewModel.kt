@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.*
@@ -16,10 +15,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = GymRepository(application = application)
     val sessionId = MutableLiveData<Long>()
+
     //val session = MutableLiveData<Session>()
-    val sessionList: LiveData<List<SessionWithContents>> = repository.getSessionContents()
+    val sessionList: LiveData<List<Session>> = repository.getSessions()
     val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
-    val sessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
+    val sessionExerciseList : LiveData<List<SessionExerciseWithExercise>> = repository.getSessionExercises()
+    val currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
 
 
     init {
@@ -49,21 +50,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.insertSessionExercise(newSessionExercise)
         }
-        updateSessionExerciseList()
+        updateCurrentSessionExerciseList()
     }
 
     fun onSessionClicked(newSessionId: Long) {
         Log.d("HVM", "Session clicked!")
         sessionId.value = newSessionId
-        updateSessionExerciseList()
+        updateCurrentSessionExerciseList()
     }
 
     fun onNewSession() {
         // Use runBlocking when inserting a new session to ensure that
         // the sessionId gets it's value updated before anything else gets executed
-        runBlocking {  sessionId.value = insertSession(Session()) }
+        runBlocking { sessionId.value = insertSession(Session()) }
         Log.d("HVM", "New session created with id ${sessionId.value}")
-        updateSessionExerciseList()
+        updateCurrentSessionExerciseList()
     }
 
     fun importExercises() {
@@ -123,10 +124,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun updateSessionExerciseList() {
+    private fun updateCurrentSessionExerciseList() {
         viewModelScope.launch {
-            sessionExerciseList.value = withContext(Dispatchers.IO) {
-                repository.getSessionExercises(sessionId.value!!)
+            currentSessionExerciseList.value = withContext(Dispatchers.IO) {
+                repository.getSessionExercisesForSession(sessionId.value!!)
             }
         }
     }

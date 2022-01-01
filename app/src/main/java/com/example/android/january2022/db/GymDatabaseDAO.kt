@@ -28,13 +28,20 @@ interface GymDatabaseDAO {
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC")
     fun getAllExercises(): LiveData<List<Exercise>>
 
+
+    /**
+     * Returns a list of ALL SessionExerciseWithExercise objects
+     */
+    @Transaction
+    @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId")
+    fun getSessionExercisesWithExercise() : LiveData<List<SessionExerciseWithExercise>>
+
+    /**
+     * Returns a list of SessionExerciseWithExercise for the given Session
+     */
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId WHERE parentSessionId = :key")
-    fun getSessionExercisesWithExercise(key: Long) : List<SessionExerciseWithExercise>
-
-    @Transaction
-    @Query("SELECT * FROM sessions ORDER BY sessionId DESC")
-    fun getSessionsWithContents() : LiveData<List<SessionWithContents>>
+    fun getSessionExercisesWithExerciseForSession(key: Long) : List<SessionExerciseWithExercise>
 
 }
 
