@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.*
+import java.util.*
+import kotlin.random.Random
 
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,7 +21,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     //val session = MutableLiveData<Session>()
     val sessionList: LiveData<List<Session>> = repository.getSessions()
     val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
-    val sessionExerciseList : LiveData<List<SessionExerciseWithExercise>> = repository.getSessionExercises()
+    val sessionExerciseList: LiveData<List<SessionExerciseWithExercise>> =
+        repository.getSessionExercises()
     val currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
 
 
@@ -59,16 +62,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         updateCurrentSessionExerciseList()
     }
 
-    fun onNewSession() {
+    fun onNewSession(session: Session = Session()) {
         // Use runBlocking when inserting a new session to ensure that
         // the sessionId gets it's value updated before anything else gets executed
-        runBlocking { sessionId.value = insertSession(Session()) }
+        runBlocking { sessionId.value = insertSession(session) }
         Log.d("HVM", "New session created with id ${sessionId.value}")
         updateCurrentSessionExerciseList()
     }
 
-    fun importExercises() {
-        val exercises = listOf<String>(
+    /**
+     * ONLY WORKS AFTER CLEARING APP STORAGE ON PHONE!
+     * depends on the Exercise ID being between 0 and exercises.size
+     */
+    fun populateDatabase() {
+        val exercises = listOf(
             "Abduction",
             "Ab Crunch",
             "Adduction",
@@ -122,6 +129,31 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         exercises.forEach {
             onNewExercise(it)
         }
+        // create sessions and add random SessionExercises to them
+        val cal = Calendar.getInstance().timeInMillis
+        val day = 76400000L
+        runBlocking {
+            val offset = withContext(Dispatchers.IO) {repository.getLastExercise().exerciseId}
+            listOf(
+                Session(0, cal - 25 * day),
+                Session(0, cal - 16 * day),
+                Session(0, cal - 14 * day),
+                Session(0, cal - 12 * day),
+                Session(0, cal - 8 * day),
+                Session(0, cal)
+            ).forEach {
+                onNewSession(it)
+                repeat(Random.nextInt(2, 8)) {
+                    // create a new exercise object with a random ID within the range
+                    // in OnExerciseClicked a new SessionExercise object is created which uses
+                    // this id (not the object itself!)
+                    val exercise = Exercise(offset + Random.nextLong(1L, exercises.size - 1L))
+                    Log.d("HVM", "Exercise $exercise")
+                    onExerciseClicked(exercise)
+                }
+            }
+        }
+
     }
 
     private fun updateCurrentSessionExerciseList() {
