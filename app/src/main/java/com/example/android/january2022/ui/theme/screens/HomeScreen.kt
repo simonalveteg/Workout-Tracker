@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.theme.screens
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.android.january2022.HomeViewModel
 import com.example.android.january2022.R
+import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import kotlinx.coroutines.launch
@@ -89,7 +91,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
 @Composable
 fun GymFAB(buttonAction: () -> Unit) {
     FloatingActionButton(
-        onClick = buttonAction ,
+        onClick = buttonAction,
         shape = RoundedCornerShape(50),
         backgroundColor = MaterialTheme.colors.primary
     ) {
@@ -145,6 +147,7 @@ fun SessionCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
+    val sets by viewModel.setsList.observeAsState(listOf())
 
     val startDate = SimpleDateFormat(
         "dd-MM-yy",
@@ -203,7 +206,7 @@ fun SessionCard(
                 }
                 sessionContent.forEach { sessionExercise ->
                     if (sessionExercise.sessionExercise.parentSessionId == session.sessionId) {
-                        SessionExerciseWithExerciseCondensed(sessionExercise)
+                        SessionExerciseWithExerciseCondensed(sessionExercise, sets)
                     }
                 }
             }
@@ -212,7 +215,10 @@ fun SessionCard(
 }
 
 @Composable
-fun SessionExerciseWithExerciseCondensed(sessionExercise: SessionExerciseWithExercise) {
+fun SessionExerciseWithExerciseCondensed(
+    sessionExercise: SessionExerciseWithExercise,
+    sets: List<GymSet>
+) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -220,6 +226,25 @@ fun SessionExerciseWithExerciseCondensed(sessionExercise: SessionExerciseWithExe
     ) {
         Text(sessionExercise.exercise.exerciseTitle)
         Spacer(Modifier.weight(1f))
-        Text("13x25, 14x45")
+        val string = StringBuilder()
+        sets.forEach { set ->
+            val reps = set.reps
+            val weight = set.weight
+
+
+            val isInt = set.weight - set.weight.toInt() <= 0
+            Log.d("HS","${set.weight} isInt = $isInt")
+
+            if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
+                if (reps > -1 && weight > -1) {
+                    string.append(reps)
+                    string.append("x")
+                    string.append(if (isInt) weight.toInt() else weight)
+                    string.append(", ")
+                }
+            }
+        }
+        val concat = string.toString().removeSuffix(", ")
+        Text(concat)
     }
 }
