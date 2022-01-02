@@ -18,12 +18,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GymRepository(application = application)
     val sessionId = MutableLiveData<Long>()
 
-    //val session = MutableLiveData<Session>()
     val sessionList: LiveData<List<Session>> = repository.getSessions()
     val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
     val sessionExerciseList: LiveData<List<SessionExerciseWithExercise>> =
         repository.getSessionExercises()
+    val currentSession = MutableLiveData<Session>()
     val currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
+
+    val navigateToExercisePicker = MutableLiveData<Int>()
 
 
     init {
@@ -60,6 +62,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("HVM", "Session clicked!")
         sessionId.value = newSessionId
         updateCurrentSessionExerciseList()
+        updateCurrentSession(newSessionId)
     }
 
     fun onNewSession(session: Session = Session()) {
@@ -68,12 +71,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         runBlocking { sessionId.value = insertSession(session) }
         Log.d("HVM", "New session created with id ${sessionId.value}")
         updateCurrentSessionExerciseList()
+        updateCurrentSession()
     }
 
-    /**
-     * ONLY WORKS AFTER CLEARING APP STORAGE ON PHONE!
-     * depends on the Exercise ID being between 0 and exercises.size
-     */
+    fun onNavigateToExercisePicker(value: Int = 1) {
+        navigateToExercisePicker.value = value
+        navigateToExercisePicker.value = 0
+    }
+
     fun populateDatabase() {
         val exercises = listOf(
             "Abduction",
@@ -154,6 +159,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
+    }
+
+    private fun updateCurrentSession(newSessionId: Long = sessionId.value!!) {
+        viewModelScope.launch {
+            currentSession.value = withContext(Dispatchers.IO) {
+                repository.getSession(newSessionId)
+            }
+
+        }
     }
 
     private fun updateCurrentSessionExerciseList() {

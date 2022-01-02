@@ -28,6 +28,9 @@ interface GymDatabaseDAO {
     @Query("DELETE FROM sessions")
     suspend fun clearSessions()
 
+    @Query("SELECT * FROM sessions WHERE sessionId = :key")
+    fun getSession(key: Long) : Session
+
     @Query("SELECT * FROM sessions ORDER BY sessionId DESC")
     fun getAllSessions(): LiveData<List<Session>>
 

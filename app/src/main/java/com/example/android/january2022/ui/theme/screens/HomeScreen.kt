@@ -76,22 +76,24 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        viewModel.onNewSession()
-                        //navController.navigate("session")
-                    },
-                    shape = RoundedCornerShape(50),
-                    backgroundColor = MaterialTheme.colors.primary
-                ) {
-                    Icon(Icons.Filled.Add, "")
-                }
+                GymFAB(viewModel::onNewSession)
             },
             isFloatingActionButtonDocked = true,
             floatingActionButtonPosition = FabPosition.Center
         ) {
             SessionCardList(sessions = sessions, viewModel)
         }
+    }
+}
+
+@Composable
+fun GymFAB(buttonAction: () -> Unit) {
+    FloatingActionButton(
+        onClick = buttonAction ,
+        shape = RoundedCornerShape(50),
+        backgroundColor = MaterialTheme.colors.primary
+    ) {
+        Icon(Icons.Filled.Add, "")
     }
 }
 

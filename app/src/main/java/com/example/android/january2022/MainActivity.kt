@@ -48,6 +48,12 @@ class MainActivity : ComponentActivity() {
                     Log.d("MA", "Session observed changed value to $it")
                     navController.navigate("session")
                 }
+                // navigate to exercisePicker
+                homeViewModel.navigateToExercisePicker.observe(this) {
+                    if (it == 1) {
+                        navController.navigate("exercisePicker")
+                    }
+                }
             }
         }
     }

@@ -22,17 +22,31 @@ fun ExercisePickerScreen(viewModel: HomeViewModel, navController: NavController)
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "CHOOSE EXERCISE",
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.h3,
-            modifier =
-            Modifier.padding(bottom = 32.dp)
-        )
+        TitleText("CHOOSE EXERCISE",32)
         Box(Modifier.weight(1f)) {
             ExercisesList(viewModel, navController, true)
         }
     }
+}
+
+@Composable
+fun TitleText(text: String, bottomPadding: Int = 0) {
+    Text(
+        text = text,
+        color = MaterialTheme.colors.primary,
+        style = MaterialTheme.typography.h3,
+        modifier = Modifier.padding(bottom = bottomPadding.dp)
+    )
+}
+
+@Composable
+fun SubTitleText(text: String, bottomPadding: Int = 0, indent: Int = 0) {
+    Text(
+        text = text,
+        color = MaterialTheme.colors.primaryVariant,
+        style = MaterialTheme.typography.h6,
+        modifier = Modifier.padding(bottom = bottomPadding.dp, start = indent.dp)
+    )
 }
 
 @Composable
