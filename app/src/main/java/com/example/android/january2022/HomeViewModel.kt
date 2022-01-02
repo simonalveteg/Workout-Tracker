@@ -24,6 +24,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         repository.getSessionExercises()
     val currentSession = MutableLiveData<Session>()
     val currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
+    val setsList: LiveData<List<GymSet>> = repository.getSets()
 
     val navigateToExercisePicker = MutableLiveData<Int>()
 
@@ -77,6 +78,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun onNavigateToExercisePicker(value: Int = 1) {
         navigateToExercisePicker.value = value
         navigateToExercisePicker.value = 0
+    }
+
+    fun onAddSet(sessionExerciseId: Long) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.insertSet(GymSet(parentSessionExerciseId = sessionExerciseId))
+            }
+        }
+    }
+
+    fun onMoodClicked(set: GymSet, value: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val updatedSet = set.copy(mood = value)
+                repository.updateSet(updatedSet)
+            }
+        }
     }
 
     fun populateDatabase() {

@@ -11,9 +11,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "sets")
 data class GymSet(
     @PrimaryKey(autoGenerate = true)
-    val setId: Long,
+    val setId: Long = 0L,
     val parentSessionExerciseId: Long,
-    val reps: Int,
-    val weight: Int
+    val reps: Int = 0,
+    val weight: Int = 0,
+    val mood: Int = 0
     //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )
