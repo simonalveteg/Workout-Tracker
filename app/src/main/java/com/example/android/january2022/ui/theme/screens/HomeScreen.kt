@@ -59,7 +59,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
-                            viewModel.importExercises()
+                            viewModel.populateDatabase()
                         }
                     ) {
                         Icon(Icons.Default.Search, "")

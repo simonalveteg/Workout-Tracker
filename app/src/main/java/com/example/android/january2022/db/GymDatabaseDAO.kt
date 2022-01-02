@@ -22,6 +22,9 @@ interface GymDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSet(item: GymSet)
 
+    @Query("SELECT * FROM exercises ORDER BY exerciseId DESC LIMIT 1")
+    fun getLastExercise() : Exercise
+
     @Query("DELETE FROM sessions")
     suspend fun clearSessions()
 
