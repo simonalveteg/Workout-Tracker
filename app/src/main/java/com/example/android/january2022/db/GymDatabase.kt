@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 
@@ -18,9 +19,10 @@ import com.example.android.january2022.db.entities.SessionExercise
 @Database(entities = [
     Session::class,
     Exercise::class,
-    SessionExercise::class
+    SessionExercise::class,
+    GymSet::class
 ],
-    version = 1, exportSchema = false)
+    version = 2, exportSchema = false)
 abstract class GymDatabase : RoomDatabase() {
 
     /**

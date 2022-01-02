@@ -19,6 +19,9 @@ interface GymDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSessionExercise(item: SessionExercise)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertSet(item: GymSet)
+
     @Query("DELETE FROM sessions")
     suspend fun clearSessions()
 
@@ -27,6 +30,9 @@ interface GymDatabaseDAO {
 
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC")
     fun getAllExercises(): LiveData<List<Exercise>>
+
+    @Query("SELECT * FROM sets")
+    fun getAllSets(): LiveData<List<GymSet>>
 
 
     /**
