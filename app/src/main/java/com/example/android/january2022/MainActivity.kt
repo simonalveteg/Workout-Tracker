@@ -46,12 +46,16 @@ class MainActivity : ComponentActivity() {
                 // when the session object in viewModel gets update, navigate to SessionScreen
                 homeViewModel.sessionId.observe(this) {
                     Log.d("MA", "Session observed changed value to $it")
-                    navController.navigate("session")
+                    navController.navigate("session"){
+                        popUpTo("home")
+                    }
                 }
                 // navigate to exercisePicker
                 homeViewModel.navigateToExercisePicker.observe(this) {
                     if (it == 1) {
-                        navController.navigate("exercisePicker")
+                        navController.navigate("exercisePicker"){
+                            popUpTo("session")
+                        }
                     }
                 }
             }
