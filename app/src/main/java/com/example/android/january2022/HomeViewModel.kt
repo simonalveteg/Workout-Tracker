@@ -119,6 +119,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Clear storage before running if you want every SessionExercise to have GymSets
+     */
     fun populateDatabase() {
         val exercises = listOf(
             "Abduction",
@@ -178,7 +181,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val cal = Calendar.getInstance().timeInMillis
         val day = 76400000L
         runBlocking {
-            val offset = withContext(Dispatchers.IO) {repository.getLastExercise().exerciseId}
+            val offset = withContext(Dispatchers.IO) { repository.getLastExercise().exerciseId }
+            // keep track of how many SessionExercise objects have been added
+            var sessionExerciseCount = 0
             listOf(
                 Session(0, cal - 25 * day),
                 Session(0, cal - 16 * day),
@@ -188,14 +193,26 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 Session(0, cal)
             ).forEach {
                 onNewSession(it)
-                repeat(Random.nextInt(2, 8)) {
+                val numEx = Random.nextInt(2, 8)
+                repeat(numEx) { index ->
                     // create a new exercise object with a random ID within the range
                     // in OnExerciseClicked a new SessionExercise object is created which uses
                     // this id (not the object itself!)
                     val exercise = Exercise(offset + Random.nextLong(1L, exercises.size - 1L))
-                    Log.d("HVM", "Exercise $exercise")
                     onExerciseClicked(exercise)
+                    repeat(Random.nextInt(2, 4)) {
+                        repository.insertSet(
+                            // insert a set to the latest sessionExercise with random parameters
+                            GymSet(
+                                parentSessionExerciseId = sessionExerciseCount + index + 0L,
+                                reps = Random.nextInt(4, 16),
+                                weight = Random.nextInt(8, 80) + 0F,
+                                mood = Random.nextInt(1,3)
+                            )
+                        )
+                    }
                 }
+                sessionExerciseCount += numEx // update count
             }
         }
 

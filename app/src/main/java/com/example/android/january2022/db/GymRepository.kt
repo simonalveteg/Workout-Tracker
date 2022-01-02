@@ -19,6 +19,12 @@ class GymRepository(
     fun getLastExercise() =
         db.gymDatabaseDAO.getLastExercise()
 
+    fun getLastSessionExercise() =
+        db.gymDatabaseDAO.getLastSessionExercise()
+
+    fun getLastSet() =
+        db.gymDatabaseDAO.getLastSet()
+
     fun getSession(id: Long) =
         db.gymDatabaseDAO.getSession(id)
 

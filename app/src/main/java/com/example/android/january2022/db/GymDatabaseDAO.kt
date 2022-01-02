@@ -25,8 +25,14 @@ interface GymDatabaseDAO {
     @Update
     suspend fun updateSet(item: GymSet)
 
+    @Query("SELECT * FROM sets ORDER BY setId DESC LIMIT 1")
+    fun getLastSet() : GymSet
+
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC LIMIT 1")
     fun getLastExercise() : Exercise
+
+    @Query("SELECT * FROM sessionExercises ORDER BY sessionExerciseId DESC LIMIT 1")
+    fun getLastSessionExercise() : SessionExercise
 
     @Query("DELETE FROM sessions")
     suspend fun clearSessions()
