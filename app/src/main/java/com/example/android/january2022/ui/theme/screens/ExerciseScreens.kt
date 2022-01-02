@@ -1,4 +1,4 @@
-package com.example.android.january2022
+package com.example.android.january2022.ui.theme.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.android.january2022.HomeViewModel
 import com.example.android.january2022.db.entities.Exercise
 
 
