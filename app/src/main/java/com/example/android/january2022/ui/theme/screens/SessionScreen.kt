@@ -61,6 +61,7 @@ fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
                 items(items = sessionExercises) { sessionExercise ->
                     SessionExerciseCard(sessionExercise, homeViewModel)
                 }
+                item{ Spacer(Modifier.height(100.dp)) }
             }
         }
     }
