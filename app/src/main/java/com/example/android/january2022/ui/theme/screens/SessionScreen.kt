@@ -38,7 +38,7 @@ fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
     val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.currentSessionExerciseList.observeAsState(
         listOf()
     )
-    var selectedSessionExercise by remember{mutableStateOf( -1L)}
+    var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session by homeViewModel.currentSession.observeAsState(Session())
     Scaffold(
         floatingActionButton = { GymFAB(homeViewModel::onNavigateToExercisePicker) }
@@ -69,7 +69,7 @@ fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
                         selectedSessionExercise = it
                     }
                 }
-                item{ Spacer(Modifier.height(100.dp)) }
+                item { Spacer(Modifier.height(100.dp)) }
             }
         }
     }
@@ -110,70 +110,74 @@ fun SessionExerciseCard(
 ) {
 
     val sets: List<GymSet> by viewModel.setsList.observeAsState(listOf())
-    var selectedSet by remember{mutableStateOf( "")}
+    var selectedSet by remember { mutableStateOf(-1L) }
 
-    Column {
-        Card(
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-                .animateContentSize(
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        delayMillis = 50,
-                        easing = LinearOutSlowInEasing
-                    )
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    delayMillis = 50,
+                    easing = LinearOutSlowInEasing
                 )
-                .selectable(
-                    selected = selected == sessionExercise.sessionExercise.sessionExerciseId,
-                    onClick = {
-                        setSelectedSessionExercise(sessionExercise.sessionExercise.sessionExerciseId)
-                    }
-                )
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .padding(start = 16.dp, bottom = 8.dp, top = 8.dp)
-                ) {
-                    Text(
-                        text = sessionExercise.exercise.exerciseTitle,
-                        style = MaterialTheme.typography.h6,
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically),
-                    )
-                    IconButton(
-                        onClick = { viewModel.onAddSet(sessionExercise.sessionExercise.sessionExerciseId) },
-
-                        ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add Exercise"
-                        )
-                    }
+            )
+            .selectable(
+                selected = selected == sessionExercise.sessionExercise.sessionExerciseId,
+                onClick = {
+                    setSelectedSessionExercise(sessionExercise.sessionExercise.sessionExerciseId)
                 }
-                sets.forEach { set ->
-                    if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
-                        SetCard(
-                            set,
-                            viewModel::onMoodClicked,
-                            viewModel::onRepsUpdated,
-                            viewModel::onWeightUpdated
-                        )
+            )
+    ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
+            ) {
+                Text(
+                    text = sessionExercise.exercise.exerciseTitle,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
+                )
+                IconButton(
+                    onClick = { viewModel.onAddSet(sessionExercise.sessionExercise.sessionExerciseId) },
+
+                    ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add Exercise"
+                    )
+                }
+            }
+            sets.forEach { set ->
+                if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
+                    SetCard(
+                        set,
+                        viewModel::onMoodClicked,
+                        viewModel::onRepsUpdated,
+                        viewModel::onWeightUpdated,
+                        selectedSet
+                    ) {
+                        selectedSet = it
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable
 fun SetCard(
     set: GymSet,
-    onMoodClicked: (set: GymSet, a: Int) -> Unit,
-    onRepsUpdated: (set: GymSet, a: Int) -> Unit,
-    onWeightUpdated: (set: GymSet, a: Float) -> Unit
+    onMoodClicked: (GymSet, Int) -> Unit,
+    onRepsUpdated: (GymSet, Int) -> Unit,
+    onWeightUpdated: (GymSet, Float) -> Unit,
+    selectedSet: Long,
+    setSelectedSet: (Long) -> Unit
 ) {
     val reps: Int = set.reps
     val weight: Float = set.weight
@@ -182,7 +186,12 @@ fun SetCard(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(start = 8.dp)
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .selectable(
+                selected = selectedSet == set.setId,
+                onClick = { setSelectedSet(set.setId) }
+            )
     ) {
 
         if (mood == -1 || mood == 1) {
@@ -198,7 +207,7 @@ fun SetCard(
         } else {
             Spacer(Modifier.width(0.dp))
         }
-        if(mood == -1 || mood == 2) IconToggleButton(
+        if (mood == -1 || mood == 2) IconToggleButton(
             checked = mood == 2, onCheckedChange = { onMoodClicked(set, 2) }
         ) {
             Icon(
@@ -207,7 +216,7 @@ fun SetCard(
                 tint = if (mood == 2) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
             )
         }
-        if(mood == -1 || mood == 3) IconToggleButton(
+        if (mood == -1 || mood == 3) IconToggleButton(
             checked = mood == 3, onCheckedChange = { onMoodClicked(set, 3) }
         ) {
             Icon(
