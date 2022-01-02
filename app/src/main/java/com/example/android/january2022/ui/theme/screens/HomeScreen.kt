@@ -48,7 +48,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 DrawerMenu(viewModel, navController)
             }
         },
-        scrimColor = Color(0xBF121212)
+        scrimColor = Color(0x99121212)
     ) {
         Scaffold(
             bottomBar = {
