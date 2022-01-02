@@ -91,7 +91,29 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun onMoodClicked(set: GymSet, value: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val updatedSet = set.copy(mood = value)
+                var newMood = value
+                if (set.mood == value) {
+                    newMood = -1
+                }
+                val updatedSet = set.copy(mood = newMood)
+                repository.updateSet(updatedSet)
+            }
+        }
+    }
+
+    fun onRepsUpdated(set: GymSet, value: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val updatedSet = set.copy(reps = value)
+                repository.updateSet(updatedSet)
+            }
+        }
+    }
+
+    fun onWeightUpdated(set: GymSet, value: Float) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val updatedSet = set.copy(weight = value)
                 repository.updateSet(updatedSet)
             }
         }

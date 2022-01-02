@@ -1,8 +1,13 @@
 package com.example.android.january2022.ui.theme.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,6 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.android.january2022.HomeViewModel
@@ -95,6 +102,13 @@ fun SessionExerciseCard(sessionExercise: SessionExerciseWithExercise, viewModel:
             Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+                .animateContentSize(
+                    animationSpec = tween(
+                        durationMillis = 300,
+                        delayMillis = 50,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
         ) {
             Column {
                 Row(
@@ -104,6 +118,7 @@ fun SessionExerciseCard(sessionExercise: SessionExerciseWithExercise, viewModel:
                 ) {
                     Text(
                         text = sessionExercise.exercise.exerciseTitle,
+                        style = MaterialTheme.typography.h6,
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically),
@@ -120,7 +135,12 @@ fun SessionExerciseCard(sessionExercise: SessionExerciseWithExercise, viewModel:
                 }
                 sets.forEach { set ->
                     if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
-                        SetCard(set, viewModel::onMoodClicked)
+                        SetCard(
+                            set,
+                            viewModel::onMoodClicked,
+                            viewModel::onRepsUpdated,
+                            viewModel::onWeightUpdated
+                        )
                     }
                 }
             }
@@ -129,27 +149,47 @@ fun SessionExerciseCard(sessionExercise: SessionExerciseWithExercise, viewModel:
 }
 
 @Composable
-fun SetCard(set: GymSet, onMoodClicked: (set: GymSet, a: Int) -> Unit) {
+fun SetCard(
+    set: GymSet,
+    onMoodClicked: (set: GymSet, a: Int) -> Unit,
+    onRepsUpdated: (set: GymSet, a: Int) -> Unit,
+    onWeightUpdated: (set: GymSet, a: Float) -> Unit
+) {
     val reps: Int = set.reps
+    val weight: Float = set.weight
     val mood: Int = set.mood
 
 
-    Row {
-        IconToggleButton(checked = mood == 1, onCheckedChange = { onMoodClicked(set, 1) }) {
-            Icon(
-                imageVector = Icons.Default.SentimentVeryDissatisfied,
-                contentDescription = "Bad",
-                tint = if (mood == 1) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
-            )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 8.dp)
+    ) {
+
+        if (mood == -1 || mood == 1) {
+            IconToggleButton(
+                checked = mood == 1, onCheckedChange = { onMoodClicked(set, 1) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.SentimentVeryDissatisfied,
+                    contentDescription = "Bad",
+                    tint = if (mood == 1) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
+                )
+            }
+        } else {
+            Spacer(Modifier.width(0.dp))
         }
-        IconToggleButton(checked = mood == 2, onCheckedChange = { onMoodClicked(set, 2) }) {
+        if(mood == -1 || mood == 2) IconToggleButton(
+            checked = mood == 2, onCheckedChange = { onMoodClicked(set, 2) }
+        ) {
             Icon(
                 imageVector = Icons.Default.SentimentNeutral,
                 contentDescription = "Neutral",
                 tint = if (mood == 2) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
             )
         }
-        IconToggleButton(checked = mood == 3, onCheckedChange = { onMoodClicked(set, 3) }) {
+        if(mood == -1 || mood == 3) IconToggleButton(
+            checked = mood == 3, onCheckedChange = { onMoodClicked(set, 3) }
+        ) {
             Icon(
                 imageVector = Icons.Default.SentimentVerySatisfied,
                 contentDescription = "Good",
@@ -158,7 +198,48 @@ fun SetCard(set: GymSet, onMoodClicked: (set: GymSet, a: Int) -> Unit) {
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        TextField(value = reps.toString(), onValueChange = {})
+        TextField(
+            value = if (reps > -1) reps.toString() else "",
+            onValueChange = {
+                try {
+                    val newValue = it.trim().toInt()
+                    onRepsUpdated(set, newValue)
+                } catch (e: Exception) {
+                    onRepsUpdated(set, -1)
+                }
+            },
+            placeholder = { Text("reps") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.width(100.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            trailingIcon = { Icon(Icons.Default.UnfoldMore, "weight") },
+            maxLines = 1
+
+        )
+        TextField(
+            value = if (weight > -1) weight.toString() else "",
+            onValueChange = {
+                try {
+                    val newValue = it.trim().toFloat()
+                    onWeightUpdated(set, newValue)
+                } catch (e: Exception) {
+                    //onWeightUpdated(set, -1F)
+                }
+            },
+            placeholder = { Text("weight") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.width(120.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            trailingIcon = { Icon(Icons.Filled.FitnessCenter, "weight") },
+        )
     }
 }
 

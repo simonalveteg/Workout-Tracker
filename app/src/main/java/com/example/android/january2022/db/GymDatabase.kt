@@ -22,7 +22,7 @@ import com.example.android.january2022.db.entities.SessionExercise
     SessionExercise::class,
     GymSet::class
 ],
-    version = 3, exportSchema = false)
+    version = 4, exportSchema = false)
 abstract class GymDatabase : RoomDatabase() {
 
     /**

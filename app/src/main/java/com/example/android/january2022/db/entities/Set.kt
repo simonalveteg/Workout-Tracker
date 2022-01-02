@@ -13,8 +13,8 @@ data class GymSet(
     @PrimaryKey(autoGenerate = true)
     val setId: Long = 0L,
     val parentSessionExerciseId: Long,
-    val reps: Int = 0,
-    val weight: Int = 0,
-    val mood: Int = 0
+    val reps: Int = -1,
+    val weight: Float = -1f,
+    val mood: Int = -1
     //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )
