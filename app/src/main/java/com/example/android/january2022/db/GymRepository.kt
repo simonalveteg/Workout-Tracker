@@ -19,12 +19,6 @@ class GymRepository(
     fun getLastExercise() =
         db.gymDatabaseDAO.getLastExercise()
 
-    fun getLastSessionExercise() =
-        db.gymDatabaseDAO.getLastSessionExercise()
-
-    fun getLastSet() =
-        db.gymDatabaseDAO.getLastSet()
-
     fun getSession(id: Long) =
         db.gymDatabaseDAO.getSession(id)
 
@@ -43,12 +37,11 @@ class GymRepository(
     fun getSessionExercisesForSession(sessionId: Long) =
         db.gymDatabaseDAO.getSessionExercisesWithExerciseForSession(sessionId)
 
-    suspend fun updateSet(set: GymSet) =
-        db.gymDatabaseDAO.updateSet(set)
-
-
     fun deleteAllData() =
         db.clearAllTables()
+
+    suspend fun updateSet(set: GymSet) =
+        db.gymDatabaseDAO.updateSet(set)
 
     suspend fun insertSet(item: GymSet) =
         db.gymDatabaseDAO.insertSet(item)
@@ -61,4 +54,8 @@ class GymRepository(
 
     suspend fun insertSessionExercise(sessionExercise: SessionExercise) =
         db.gymDatabaseDAO.insertSessionExercise(sessionExercise)
+
+    suspend fun removeSet(set: GymSet) =
+        db.gymDatabaseDAO.removeSet(set)
+
 }

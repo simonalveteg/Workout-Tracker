@@ -119,6 +119,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun removeSelectedSet(set: GymSet) {
+        viewModelScope.launch {
+            repository.removeSet(set)
+        }
+    }
+
     /**
      * Clear storage before running if you want every SessionExercise to have GymSets
      */

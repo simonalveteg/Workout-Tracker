@@ -22,6 +22,9 @@ interface GymDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSet(item: GymSet)
 
+    @Delete
+    suspend fun removeSet(item: GymSet)
+
     @Update
     suspend fun updateSet(item: GymSet)
 
