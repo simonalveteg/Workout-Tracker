@@ -1,12 +1,16 @@
 package com.example.android.january2022.ui.theme.screens
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,12 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.android.january2022.HomeViewModel
 import com.example.android.january2022.db.entities.*
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @ExperimentalFoundationApi
@@ -120,6 +127,9 @@ fun SessionExerciseCard(
     val sets: List<GymSet> by viewModel.setsList.observeAsState(listOf())
     var selectedSet by remember { mutableStateOf(-1L) }
 
+    val coroutineScope = rememberCoroutineScope()
+    val offsetX  =  remember { Animatable(0f) }
+
     Card(
         Modifier
             .fillMaxWidth()
@@ -131,10 +141,25 @@ fun SessionExerciseCard(
                     easing = LinearOutSlowInEasing
                 )
             )
-            .selectable(
-                selected = selected == sessionExercise.sessionExercise.sessionExerciseId,
-                onClick = {
-                    setSelectedSessionExercise(sessionExercise.sessionExercise.sessionExerciseId)
+            .offset { IntOffset(offsetX.value.roundToInt(),0) }
+            .draggable(
+                state = rememberDraggableState { delta ->
+                    coroutineScope.launch {
+                        offsetX.snapTo(offsetX.value + delta)
+                    }
+                },
+                orientation = Orientation.Horizontal,
+                onDragStopped = {
+                    coroutineScope.launch {
+                        offsetX.animateTo(
+                            targetValue = 0f,
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                delayMillis = 25,
+                                easing = LinearOutSlowInEasing
+                            )
+                        )
+                    }
                 }
             )
     ) {
