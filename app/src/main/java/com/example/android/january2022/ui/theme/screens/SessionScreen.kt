@@ -1,7 +1,5 @@
 package com.example.android.january2022.ui.theme.screens
 
-import android.graphics.drawable.Icon
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -25,7 +23,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
@@ -42,14 +39,14 @@ import kotlin.math.roundToInt
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun SessionScreen(homeViewModel: HomeViewModel, navController: NavController) {
-    SessionContent(homeViewModel, navController)
+fun SessionScreen(homeViewModel: HomeViewModel) {
+    SessionContent(homeViewModel)
 }
 
 
 @ExperimentalFoundationApi
 @Composable
-fun SessionContent(homeViewModel: HomeViewModel, navController: NavController) {
+fun SessionContent(homeViewModel: HomeViewModel) {
     val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.currentSessionExerciseList.observeAsState(
         listOf()
     )

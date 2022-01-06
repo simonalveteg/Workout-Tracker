@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(homeViewModel, navController)
                     }
                     composable("session") {
-                        SessionScreen(homeViewModel, navController)
+                        SessionScreen(homeViewModel)
                     }
                     composable("exercises") {
                         ExercisesScreen(homeViewModel, navController)
