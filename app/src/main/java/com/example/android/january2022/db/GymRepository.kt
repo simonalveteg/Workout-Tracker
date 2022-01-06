@@ -40,6 +40,12 @@ class GymRepository(
     fun deleteAllData() =
         db.clearAllTables()
 
+    fun getSetsForSessionExercise(id: Long) =
+        db.gymDatabaseDAO.getSetsForSessionExercise(id)
+
+    fun getSetsForSession(id: Long) =
+        db.gymDatabaseDAO.getSetsForSession(id)
+
     suspend fun updateSet(set: GymSet) =
         db.gymDatabaseDAO.updateSet(set)
 

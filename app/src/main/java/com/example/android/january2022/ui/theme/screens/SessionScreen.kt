@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.theme.screens
 
 import android.graphics.drawable.Icon
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -124,9 +125,10 @@ fun SessionExerciseCard(
     setSelectedSessionExercise: (Long) -> Unit
 ) {
 
-    val sets: List<GymSet> by viewModel.setsList.observeAsState(listOf())
-    var selectedSet by remember { mutableStateOf(-1L) }
+    val sets: List<GymSet> by viewModel.getSetsForSessionExercise(
+        sessionExercise.sessionExercise.sessionExerciseId).observeAsState(listOf())
 
+    val selected = sessionExercise.sessionExercise.sessionExerciseId == selected
 
     Card(
         Modifier
@@ -139,7 +141,13 @@ fun SessionExerciseCard(
                     easing = LinearOutSlowInEasing
                 )
             )
-
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        setSelectedSessionExercise(sessionExercise.sessionExercise.sessionExerciseId)
+                    }
+                )
+            }
     ) {
         Column {
             Row(
@@ -164,18 +172,15 @@ fun SessionExerciseCard(
                 }
             }
             sets.forEach { set ->
-                if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
-                    SetCard(
-                        set,
-                        viewModel::onMoodClicked,
-                        viewModel::onRepsUpdated,
-                        viewModel::onWeightUpdated,
-                        selectedSet,
-                        { selectedSet = it },
-                        viewModel::removeSelectedSet
-                    )
-                }
+                SetCard(
+                    set,
+                    viewModel::onMoodClicked,
+                    viewModel::onRepsUpdated,
+                    viewModel::onWeightUpdated,
+                    viewModel::removeSelectedSet
+                )
             }
+
         }
     }
 
@@ -188,37 +193,37 @@ fun SetCard(
     onMoodClicked: (GymSet, Int) -> Unit,
     onRepsUpdated: (GymSet, Int) -> Unit,
     onWeightUpdated: (GymSet, Float) -> Unit,
-    selectedSet: Long,
-    setSelectedSet: (Long) -> Unit,
     removeSelectedSet: (GymSet) -> Unit
 ) {
     val reps: Int = set.reps
     val weight: Float = set.weight
     val mood: Int = set.mood
-    val selected: Boolean = selectedSet == set.setId
+    var dismissed by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
     val surfaceColor: Color by animateColorAsState(
-        targetValue = if (offsetX.value > 100f) MaterialTheme.colors.error else Color.Transparent,
+        targetValue =
+        if (offsetX.value > 100f && offsetX.value < 1100f) {
+            MaterialTheme.colors.error
+        } else Color.Transparent,
         animationSpec = tween(
-            durationMillis = 100,
+            durationMillis = if (offsetX.value > 1000f || offsetX.value < 100f) 700 else 200,
             delayMillis = 25,
             easing = LinearOutSlowInEasing
         )
     )
 
+
+    if(dismissed) {
+        removeSelectedSet(set)
+        dismissed = false
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(horizontal = 8.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        setSelectedSet(set.setId)
-                    }
-                )
-            }
             .draggable(
                 state = rememberDraggableState { delta ->
                     coroutineScope.launch {
@@ -227,15 +232,21 @@ fun SetCard(
                 },
                 orientation = Orientation.Horizontal,
                 onDragStopped = {
+                    var toValue = 0f
+                    if (offsetX.value > 500f){
+                        toValue = 1500f
+                        dismissed = true
+                    }
                     coroutineScope.launch {
                         offsetX.animateTo(
-                            targetValue = 0f,
+                            targetValue = toValue,
                             animationSpec = tween(
                                 durationMillis = 300,
                                 delayMillis = 25,
                                 easing = LinearOutSlowInEasing
                             )
                         )
+                        //offsetX.snapTo(0f)
                     }
                 }
             )

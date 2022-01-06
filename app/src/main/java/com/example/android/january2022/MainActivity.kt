@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                 // navigate to exercisePicker
                 homeViewModel.navigateToExercisePicker.observe(this) {
                     if (it == 1) {
-                        navController.navigate("exercisePicker"){
+                        navController.navigate("exercisePicker") {
                             popUpTo("session")
                         }
                     }

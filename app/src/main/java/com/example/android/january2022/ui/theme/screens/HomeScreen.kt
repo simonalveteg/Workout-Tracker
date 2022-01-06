@@ -149,7 +149,9 @@ fun SessionCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
-    val sets by viewModel.setsList.observeAsState(listOf())
+
+    val sets: List<GymSet> by viewModel.getSetsForSession(
+        session.sessionId).observeAsState(listOf())
 
     val startDate = SimpleDateFormat(
         "dd-MM-yy",
