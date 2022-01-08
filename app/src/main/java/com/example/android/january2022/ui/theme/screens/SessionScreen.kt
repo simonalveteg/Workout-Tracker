@@ -50,7 +50,7 @@ fun SessionContent(homeViewModel: HomeViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session by homeViewModel.currentSession.observeAsState(Session())
-
+    val sets by homeViewModel.setsList.observeAsState(listOf())
 
     Scaffold(
         floatingActionButton = { GymFAB(homeViewModel::onNavigateToExercisePicker) },
@@ -77,6 +77,7 @@ fun SessionContent(homeViewModel: HomeViewModel) {
                         sessionExercise = sessionExercise,
                         viewModel = homeViewModel,
                         selected = selectedSessionExercise,
+                        allSets = sets,
                     ) {
                         selectedSessionExercise = it
                     }
@@ -162,11 +163,15 @@ fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
     viewModel: HomeViewModel,
     selected: Long,
+    allSets: List<GymSet>,
     setSelectedSessionExercise: (Long) -> Unit
 ) {
-    val sets: List<GymSet> by viewModel.getSetsForSessionExercise(
-        sessionExercise.sessionExercise.sessionExerciseId
-    ).observeAsState(listOf())
+    val sets = mutableListOf<GymSet>()
+    allSets.forEach { set->
+        if(set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
+            sets.add(set)
+        }
+    }
 
     val removedSet by viewModel.removedSet.observeAsState()
 
