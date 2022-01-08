@@ -34,7 +34,7 @@ interface GymDatabaseDAO {
     @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :key ORDER BY setId DESC")
     fun getSetsForSessionExercise(key: Long) : LiveData<List<GymSet>>
 
-    @Query("SELECT * FROM sets JOIN sessionExercises ON sessionExerciseId=parentSessionExerciseId WHERE parentSessionId = :key ORDER BY setId DESC")
+    @Query("SELECT * FROM sets JOIN sessionExercises ON sessionExerciseId=parentSessionExerciseId WHERE parentSessionId = :key ORDER BY setId ASC")
     fun getSetsForSession(key: Long) : LiveData<List<GymSet>>
 
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC LIMIT 1")

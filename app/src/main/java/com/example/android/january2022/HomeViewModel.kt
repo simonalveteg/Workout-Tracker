@@ -28,8 +28,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val navigateToExercisePicker = MutableLiveData<Int>()
 
-    private val lastRemovedSet : GymSet? = null
-
+    private var lastRemovedSet : GymSet? = null
 
     init {
         Log.d("HVM", "INIT with sessionList: ${sessionList.value}")
@@ -132,6 +131,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.removeSet(set)
         }
+        lastRemovedSet = set
     }
 
     fun restoreRemovedSet() {

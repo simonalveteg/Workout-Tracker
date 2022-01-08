@@ -14,6 +14,7 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -50,10 +51,14 @@ fun SessionContent(homeViewModel: HomeViewModel) {
     val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.currentSessionExerciseList.observeAsState(
         listOf()
     )
+    val scaffoldState = rememberScaffoldState()
     var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session by homeViewModel.currentSession.observeAsState(Session())
+
+
     Scaffold(
-        floatingActionButton = { GymFAB(homeViewModel::onNavigateToExercisePicker) }
+        floatingActionButton = { GymFAB(homeViewModel::onNavigateToExercisePicker) },
+        scaffoldState = scaffoldState
     ) {
         Column(
             modifier = Modifier
@@ -74,9 +79,10 @@ fun SessionContent(homeViewModel: HomeViewModel) {
             ) {
                 items(items = sessionExercises) { sessionExercise ->
                     SessionExerciseCard(
-                        sessionExercise,
-                        homeViewModel,
-                        selectedSessionExercise
+                        sessionExercise = sessionExercise,
+                        viewModel = homeViewModel,
+                        selected = selectedSessionExercise,
+                        scaffoldState = scaffoldState
                     ) {
                         selectedSessionExercise = it
                     }
@@ -119,13 +125,13 @@ fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
     viewModel: HomeViewModel,
     selected: Long,
+    scaffoldState: ScaffoldState,
     setSelectedSessionExercise: (Long) -> Unit
 ) {
-
     val sets: List<GymSet> by viewModel.getSetsForSessionExercise(
         sessionExercise.sessionExercise.sessionExerciseId).observeAsState(listOf())
 
-    val selected = sessionExercise.sessionExercise.sessionExerciseId == selected
+    val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
 
     Card(
         Modifier
@@ -169,13 +175,17 @@ fun SessionExerciseCard(
                 }
             }
             sets.forEach { set ->
-                SetCard(
-                    set,
-                    viewModel::onMoodClicked,
-                    viewModel::onRepsUpdated,
-                    viewModel::onWeightUpdated,
-                    viewModel::removeSelectedSet
-                )
+                key(set.setId) {
+                    SetCard(
+                        set,
+                        viewModel::onMoodClicked,
+                        viewModel::onRepsUpdated,
+                        viewModel::onWeightUpdated,
+                        viewModel::removeSelectedSet,
+                        viewModel::restoreRemovedSet,
+                        scaffoldState,
+                    )
+                }
             }
 
         }
@@ -190,7 +200,9 @@ fun SetCard(
     onMoodClicked: (GymSet, Int) -> Unit,
     onRepsUpdated: (GymSet, Int) -> Unit,
     onWeightUpdated: (GymSet, Float) -> Unit,
-    removeSelectedSet: (GymSet) -> Unit
+    removeSelectedSet: (GymSet) -> Unit,
+    restoreRemovedSet: () -> Unit,
+    scaffoldState: ScaffoldState
 ) {
     val reps: Int = set.reps
     val weight: Float = set.weight
@@ -206,16 +218,10 @@ fun SetCard(
         } else Color.Transparent,
         animationSpec = tween(
             durationMillis = if (offsetX.value > 1000f || offsetX.value < 100f) 500 else 200,
-            delayMillis = 25,
+            delayMillis = 5,
             easing = LinearOutSlowInEasing
         )
     )
-
-
-    if(dismissed) {
-        removeSelectedSet(set)
-        dismissed = false
-    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -231,7 +237,7 @@ fun SetCard(
                 orientation = Orientation.Horizontal,
                 onDragStopped = {
                     var toValue = 0f
-                    if (offsetX.value > 500f){
+                    if (offsetX.value > 300f) {
                         toValue = 1500f
                         dismissed = true
                     }
@@ -244,7 +250,17 @@ fun SetCard(
                                 easing = LinearOutSlowInEasing
                             )
                         )
-                        offsetX.snapTo(0f)
+                        if (dismissed) {
+                            removeSelectedSet(set)
+                            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Set removed successfully.",
+                                actionLabel = "Undo",
+                                duration = SnackbarDuration.Long
+                            )
+                            if(snackbarResult == SnackbarResult.ActionPerformed){
+                                restoreRemovedSet()
+                            }
+                        }
                     }
                 }
             )
