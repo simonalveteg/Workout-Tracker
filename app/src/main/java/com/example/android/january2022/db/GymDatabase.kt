@@ -16,13 +16,15 @@ import com.example.android.january2022.db.entities.SessionExercise
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = [
-    Session::class,
-    Exercise::class,
-    SessionExercise::class,
-    GymSet::class
-],
-    version = 4, exportSchema = false)
+@Database(
+    entities = [
+        Session::class,
+        Exercise::class,
+        SessionExercise::class,
+        GymSet::class
+    ],
+    version = 4, exportSchema = false
+)
 abstract class GymDatabase : RoomDatabase() {
 
     /**

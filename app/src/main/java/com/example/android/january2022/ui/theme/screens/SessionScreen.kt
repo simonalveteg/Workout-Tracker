@@ -205,7 +205,7 @@ fun SetCard(
             MaterialTheme.colors.error
         } else Color.Transparent,
         animationSpec = tween(
-            durationMillis = if (offsetX.value > 1000f || offsetX.value < 100f) 700 else 200,
+            durationMillis = if (offsetX.value > 1000f || offsetX.value < 100f) 500 else 200,
             delayMillis = 25,
             easing = LinearOutSlowInEasing
         )
@@ -221,6 +221,7 @@ fun SetCard(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(horizontal = 8.dp)
+            .animateContentSize()
             .draggable(
                 state = rememberDraggableState { delta ->
                     coroutineScope.launch {
@@ -243,7 +244,7 @@ fun SetCard(
                                 easing = LinearOutSlowInEasing
                             )
                         )
-                        //offsetX.snapTo(0f)
+                        offsetX.snapTo(0f)
                     }
                 }
             )
