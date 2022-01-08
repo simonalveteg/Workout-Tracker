@@ -28,7 +28,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val navigateToExercisePicker = MutableLiveData<Int>()
 
-    private var lastRemovedSet : GymSet? = null
+    private val _removedSet = MutableLiveData<GymSet>()
+    val removedSet: LiveData<GymSet>
+        get() = _removedSet
 
     init {
         Log.d("HVM", "INIT with sessionList: ${sessionList.value}")
@@ -128,16 +130,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun removeSelectedSet(set: GymSet) {
+        val updatedSet = set.copy(deleted = true)
         viewModelScope.launch {
-            repository.removeSet(set)
+            repository.updateSet(updatedSet)
         }
-        lastRemovedSet = set
+        _removedSet.value = updatedSet
     }
 
     fun restoreRemovedSet() {
         viewModelScope.launch {
-            lastRemovedSet?.let {
-                repository.insertSet(it)
+            _removedSet.value?.let {
+                val updatedSet = it.copy(deleted = false)
+                repository.updateSet(updatedSet)
             }
         }
     }
@@ -216,7 +220,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 Session(0, cal)
             ).forEach {
                 onNewSession(it)
-                val numEx = Random.nextInt(2, 8)
+                val numEx = Random.nextInt(4, 12)
                 repeat(numEx) { index ->
                     // create a new exercise object with a random ID within the range
                     // in OnExerciseClicked a new SessionExercise object is created which uses

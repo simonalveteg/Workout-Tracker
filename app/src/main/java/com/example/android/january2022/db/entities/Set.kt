@@ -15,6 +15,7 @@ data class GymSet(
     val parentSessionExerciseId: Long,
     val reps: Int = -1,
     val weight: Float = -1f,
-    val mood: Int = -1
+    val mood: Int = -1,
+    val deleted: Boolean = false
     //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )

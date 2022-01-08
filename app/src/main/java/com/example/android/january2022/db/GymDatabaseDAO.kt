@@ -49,7 +49,7 @@ interface GymDatabaseDAO {
     @Query("SELECT * FROM sessions WHERE sessionId = :key")
     fun getSession(key: Long) : Session
 
-    @Query("SELECT * FROM sessions ORDER BY sessionId DESC")
+    @Query("SELECT * FROM sessions ORDER BY start_time_milli DESC")
     fun getAllSessions(): LiveData<List<Session>>
 
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC")

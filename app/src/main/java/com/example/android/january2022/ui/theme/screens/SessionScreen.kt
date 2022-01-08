@@ -1,10 +1,8 @@
 package com.example.android.january2022.ui.theme.screens
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -14,7 +12,6 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -28,7 +25,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.android.january2022.HomeViewModel
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.launch
@@ -51,14 +47,13 @@ fun SessionContent(homeViewModel: HomeViewModel) {
     val sessionExercises: List<SessionExerciseWithExercise> by homeViewModel.currentSessionExerciseList.observeAsState(
         listOf()
     )
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session by homeViewModel.currentSession.observeAsState(Session())
 
 
     Scaffold(
         floatingActionButton = { GymFAB(homeViewModel::onNavigateToExercisePicker) },
-        scaffoldState = scaffoldState
     ) {
         Column(
             modifier = Modifier
@@ -82,7 +77,6 @@ fun SessionContent(homeViewModel: HomeViewModel) {
                         sessionExercise = sessionExercise,
                         viewModel = homeViewModel,
                         selected = selectedSessionExercise,
-                        scaffoldState = scaffoldState
                     ) {
                         selectedSessionExercise = it
                     }
@@ -91,6 +85,48 @@ fun SessionContent(homeViewModel: HomeViewModel) {
             }
         }
     }
+    Box(modifier = Modifier.fillMaxSize()) {
+        ErrorSnackbar(
+            snackbarHostState = snackbarHostState,
+            onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() },
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ErrorSnackbar(
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit = { }
+) {
+    SnackbarHost(
+        hostState = snackbarHostState,
+        snackbar = { data ->
+            Snackbar(
+                modifier = Modifier.padding(16.dp),
+                content = {
+                    Text(
+                        text = data.message,
+                        style = MaterialTheme.typography.body2
+                    )
+                },
+                action = {
+                    data.actionLabel?.let {
+                        TextButton(onClick = onDismiss) {
+                            Text(
+                                text = "Undo",
+                            )
+                        }
+                    }
+                }
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(Alignment.Bottom)
+    )
 }
 
 @Composable
@@ -119,17 +155,20 @@ fun SessionInfoThings(session: Session) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
     viewModel: HomeViewModel,
     selected: Long,
-    scaffoldState: ScaffoldState,
     setSelectedSessionExercise: (Long) -> Unit
 ) {
     val sets: List<GymSet> by viewModel.getSetsForSessionExercise(
-        sessionExercise.sessionExercise.sessionExerciseId).observeAsState(listOf())
+        sessionExercise.sessionExercise.sessionExerciseId
+    ).observeAsState(listOf())
+
+    val removedSet by viewModel.removedSet.observeAsState()
 
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
 
@@ -139,8 +178,8 @@ fun SessionExerciseCard(
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 300,
-                    delayMillis = 50,
+                    durationMillis = 100,
+                    delayMillis = 0,
                     easing = LinearOutSlowInEasing
                 )
             )
@@ -175,16 +214,37 @@ fun SessionExerciseCard(
                 }
             }
             sets.forEach { set ->
+
                 key(set.setId) {
-                    SetCard(
-                        set,
-                        viewModel::onMoodClicked,
-                        viewModel::onRepsUpdated,
-                        viewModel::onWeightUpdated,
-                        viewModel::removeSelectedSet,
-                        viewModel::restoreRemovedSet,
-                        scaffoldState,
-                    )
+                    Log.d("SS","setId: ${set.setId}, removedSetId: $removedSet")
+                    AnimatedVisibility(
+                        visible = !set.deleted,
+                        exit = shrinkVertically(
+                            animationSpec = tween(
+                                durationMillis = 400,
+                                delayMillis = 25,
+                                easing = LinearOutSlowInEasing
+                            )
+                        ),
+                        enter = expandVertically(
+                            animationSpec = tween(
+                                durationMillis = 400,
+                                delayMillis = 25,
+                                easing = LinearOutSlowInEasing
+                            )
+                        )
+                    ) {
+                        SetCard(
+                            set,
+                            viewModel::onMoodClicked,
+                            viewModel::onRepsUpdated,
+                            viewModel::onWeightUpdated,
+                            viewModel::removeSelectedSet,
+                            viewModel::restoreRemovedSet,
+                        )
+                    }
+
+
                 }
             }
 
@@ -202,7 +262,6 @@ fun SetCard(
     onWeightUpdated: (GymSet, Float) -> Unit,
     removeSelectedSet: (GymSet) -> Unit,
     restoreRemovedSet: () -> Unit,
-    scaffoldState: ScaffoldState
 ) {
     val reps: Int = set.reps
     val weight: Float = set.weight
@@ -252,14 +311,6 @@ fun SetCard(
                         )
                         if (dismissed) {
                             removeSelectedSet(set)
-                            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Set removed successfully.",
-                                actionLabel = "Undo",
-                                duration = SnackbarDuration.Long
-                            )
-                            if(snackbarResult == SnackbarResult.ActionPerformed){
-                                restoreRemovedSet()
-                            }
                         }
                     }
                 }
