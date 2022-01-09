@@ -1,6 +1,5 @@
 package com.example.android.january2022.db
 
-import android.app.Application
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExercise
@@ -8,60 +7,52 @@ import com.example.android.january2022.db.entities.Session
 
 
 class GymRepository(
-    application: Application
-) {    private var db: GymDatabase
-
-    init {
-        val database = GymDatabase.getInstance(application)
-        db = database
-    }
+    private val dao: GymDAO
+) {
 
     fun getLastExercise() =
-        db.gymDatabaseDAO.getLastExercise()
+        dao.getLastExercise()
 
     fun getSession(id: Long) =
-        db.gymDatabaseDAO.getSession(id)
+        dao.getSession(id)
 
     fun getSessions() =
-        db.gymDatabaseDAO.getAllSessions()
+        dao.getAllSessions()
 
     fun getExercises() =
-        db.gymDatabaseDAO.getAllExercises()
+        dao.getAllExercises()
 
     fun getSets() =
-        db.gymDatabaseDAO.getAllSets()
+        dao.getAllSets()
 
     fun getSessionExercises() =
-        db.gymDatabaseDAO.getSessionExercisesWithExercise()
+        dao.getSessionExercisesWithExercise()
 
     fun getSessionExercisesForSession(sessionId: Long) =
-        db.gymDatabaseDAO.getSessionExercisesWithExerciseForSession(sessionId)
-
-    fun deleteAllData() =
-        db.clearAllTables()
+        dao.getSessionExercisesWithExerciseForSession(sessionId)
 
     fun getSetsForSessionExercise(id: Long) =
-        db.gymDatabaseDAO.getSetsForSessionExercise(id)
+        dao.getSetsForSessionExercise(id)
 
     fun getSetsForSession(id: Long) =
-        db.gymDatabaseDAO.getSetsForSession(id)
+        dao.getSetsForSession(id)
 
     suspend fun updateSet(set: GymSet) =
-        db.gymDatabaseDAO.updateSet(set)
+        dao.updateSet(set)
 
     suspend fun insertSet(item: GymSet) =
-        db.gymDatabaseDAO.insertSet(item)
+        dao.insertSet(item)
 
     suspend fun insertSession(item: Session) : Long =
-        db.gymDatabaseDAO.insertSession(item)
+        dao.insertSession(item)
 
     suspend fun insertExercise(exercise: Exercise) =
-        db.gymDatabaseDAO.insertExercise(exercise)
+        dao.insertExercise(exercise)
 
     suspend fun insertSessionExercise(sessionExercise: SessionExercise) =
-        db.gymDatabaseDAO.insertSessionExercise(sessionExercise)
+        dao.insertSessionExercise(sessionExercise)
 
     suspend fun removeSet(set: GymSet) =
-        db.gymDatabaseDAO.removeSet(set)
+        dao.removeSet(set)
 
 }

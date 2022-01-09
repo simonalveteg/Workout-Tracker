@@ -8,7 +8,7 @@ import com.example.android.january2022.db.entities.*
 
 
 @Dao
-interface GymDatabaseDAO {
+interface GymDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSession(session: Session) : Long
