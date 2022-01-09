@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = Routes.SESSION_SCREEN,
+                        route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
                         arguments = listOf(
                             navArgument(name = "sessionId") {
                                 type = NavType.LongType

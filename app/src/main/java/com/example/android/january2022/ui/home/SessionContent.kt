@@ -32,7 +32,6 @@ fun SessionContent(
 
 
             val isInt = set.weight - set.weight.toInt() <= 0
-            Log.d("HS", "${set.weight} isInt = $isInt")
 
             if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
                 if (reps > -1 && weight > -1) {

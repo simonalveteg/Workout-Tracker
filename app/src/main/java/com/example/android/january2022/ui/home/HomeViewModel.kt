@@ -41,7 +41,9 @@ class HomeViewModel @Inject constructor(
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_SCREEN))
             }
             is HomeEvent.OnSessionClick -> {
-                sendUiEvent(event = UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${event.session.sessionId}"))
+                val sessionId = event.session.sessionId
+                Log.d("HVM","OnSessionClick: $sessionId")
+                sendUiEvent(event = UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${sessionId}"))
             }
             is HomeEvent.OnAddSessionClick -> {
                 val newSession = Session()

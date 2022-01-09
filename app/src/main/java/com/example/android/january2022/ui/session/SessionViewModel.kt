@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,9 +13,11 @@ import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,10 +35,17 @@ class SessionViewModel @Inject constructor(
     init {
         // did we get here from an existing session?
         val sessionId = savedStateHandle.get<Long>("sessionId")!!
+        Log.d("SVM", "Session Id is $sessionId")
         if(sessionId != -1L) {
             viewModelScope.launch {
-                currentSession = repository.getSession(sessionId)
+                currentSession = withContext(Dispatchers.IO) {
+                    repository.getSession(sessionId)
+                }
+                currentSessionExerciseList.value = withContext(Dispatchers.IO) {
+                    repository.getSessionExercisesForSession(sessionId)
+                }
             }
+
         }
     }
 
