@@ -63,7 +63,7 @@ fun SessionScreen(
                         actionLabel = event.action
                     )
                     if(result == SnackbarResult.ActionPerformed) {
-                        // what to do when performing action on snackbar
+                        viewModel.onEvent(SessionEvent.RestoreRemovedSet)
                     }
                 }
             }

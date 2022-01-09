@@ -73,16 +73,26 @@ class SessionViewModel @Inject constructor(
                     repository.updateSet(event.set.copy(reps = event.newReps))
                 }
             }
-            is SessionEvent.RemoveSelectedSet -> {
-                viewModelScope.launch {
-                    repository.updateSet(event.set.copy(deleted = true))
-                }
-            }
             is SessionEvent.OnAddSet -> {
                 viewModelScope.launch {
                     repository.insertSet(
                         GymSet(parentSessionExerciseId = event.sessionExercise.sessionExercise.sessionExerciseId)
                     )
+                }
+            }
+            is SessionEvent.RemoveSelectedSet -> {
+                viewModelScope.launch {
+                    repository.updateSet(event.set.copy(deleted = true))
+                }
+                _removedSet.value = event.set
+                sendUiEvent(UiEvent.ShowSnackbar(
+                    message = "Set removed from session",
+                    action = "Undo"
+                ))
+            }
+            is SessionEvent.RestoreRemovedSet -> {
+                viewModelScope.launch {
+                    repository.updateSet(removedSet.value!!.copy(deleted = false))
                 }
             }
             is SessionEvent.OnAddSessionExerciseClicked -> {

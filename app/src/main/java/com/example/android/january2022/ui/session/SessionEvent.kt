@@ -15,4 +15,5 @@ sealed class SessionEvent : Event {
     object OnAddSessionExerciseClicked: SessionEvent()
     data class SetSelectedSessionExercise(val sessionExercise: SessionExerciseWithExercise): SessionEvent()
     data class OnAddSet(val sessionExercise: SessionExerciseWithExercise): SessionEvent()
+    object RestoreRemovedSet: SessionEvent()
 }
