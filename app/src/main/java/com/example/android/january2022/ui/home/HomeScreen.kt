@@ -154,6 +154,9 @@ fun SessionCardList(
         items(items = sessions) { session ->
             SessionCard(session, sessionContent.value, sets.value, viewModel::onEvent)
         }
+        item {
+            Spacer(modifier = Modifier.height(124.dp))
+        }
     }
 }
 
