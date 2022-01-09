@@ -2,26 +2,27 @@ package com.example.android.january2022
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.android.january2022.ui.theme.January2022Theme
-import com.example.android.january2022.ui.theme.screens.ExercisePickerScreen
-import com.example.android.january2022.ui.theme.screens.ExercisesScreen
-import com.example.android.january2022.ui.theme.screens.HomeScreen
-import com.example.android.january2022.ui.theme.screens.SessionScreen
+import com.example.android.january2022.ui.exercises.ExercisePickerScreen
+import com.example.android.january2022.ui.exercises.ExercisesScreen
+import com.example.android.january2022.ui.home.HomeScreen
+import com.example.android.january2022.ui.session.SessionScreen
+import com.example.android.january2022.utils.Routes
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val homeViewModel by viewModels<HomeViewModel>()
 
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
@@ -31,33 +32,45 @@ class MainActivity : ComponentActivity() {
             January2022Theme {
                 val navController = rememberNavController()
 
-                NavHost(navController, "home") {
-                    composable("home") {
-                        HomeScreen(homeViewModel, navController)
+                NavHost(
+                    navController = navController,
+                    startDestination = Routes.HOME_SCREEN
+                ) {
+                    composable(route = Routes.HOME_SCREEN) {
+                        HomeScreen(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
                     }
-                    composable("session") {
-                        SessionScreen(homeViewModel)
+                    composable(
+                        route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
+                        arguments = listOf(
+                            navArgument(name = "sessionId") {
+                                type = NavType.LongType
+                                defaultValue = -1
+                            }
+                        )
+                    ) {
+                        SessionScreen(onNavigate = {
+                            navController.navigate(it.route)
+                        })
                     }
-                    composable("exercises") {
-                        ExercisesScreen(homeViewModel, navController)
+                    composable(Routes.EXERCISE_SCREEN) {
+                        ExercisesScreen()
                     }
-                    composable("exercisePicker") {
-                        ExercisePickerScreen(homeViewModel, navController)
-                    }
-                }
-                // when the session object in viewModel gets update, navigate to SessionScreen
-                homeViewModel.sessionId.observe(this) {
-                    Log.d("MA", "Session observed changed value to $it")
-                    navController.navigate("session"){
-                        popUpTo("home")
-                    }
-                }
-                // navigate to exercisePicker
-                homeViewModel.navigateToExercisePicker.observe(this) {
-                    if (it == 1) {
-                        navController.navigate("exercisePicker") {
-                            popUpTo("session")
-                        }
+                    composable(
+                        route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
+                        arguments = listOf(
+                            navArgument(name = "sessionId") {
+                                type = NavType.LongType
+                                defaultValue = -1
+                            }
+                        )
+                    ) {
+                        ExercisePickerScreen(onPopBackStack = {
+                            navController.popBackStack()
+                        })
                     }
                 }
             }

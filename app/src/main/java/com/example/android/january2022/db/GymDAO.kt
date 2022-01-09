@@ -8,7 +8,7 @@ import com.example.android.january2022.db.entities.*
 
 
 @Dao
-interface GymDatabaseDAO {
+interface GymDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSession(session: Session) : Long
@@ -71,7 +71,7 @@ interface GymDatabaseDAO {
      */
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId WHERE parentSessionId = :key")
-    fun getSessionExercisesWithExerciseForSession(key: Long) : List<SessionExerciseWithExercise>
+    fun getSessionExercisesWithExerciseForSession(key: Long) : LiveData<List<SessionExerciseWithExercise>>
 
 }
 
