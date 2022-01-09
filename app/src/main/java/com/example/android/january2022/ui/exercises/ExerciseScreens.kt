@@ -14,7 +14,7 @@ import com.example.android.january2022.db.entities.Exercise
 
 @Composable
 fun ExercisesScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: ExerciseViewModel = hiltViewModel()
 ) {
     // remember inputValue
     var inputValue by remember { mutableStateOf("") }

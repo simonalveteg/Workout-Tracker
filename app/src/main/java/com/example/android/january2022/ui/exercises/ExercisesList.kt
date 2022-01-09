@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.exercises
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +17,7 @@ import com.example.android.january2022.utils.Event
 
 
 @Composable
-fun ExercisesList(viewModel: HomeViewModel, onEvent: (Event) -> Unit, inPicker: Boolean) {
+fun ExercisesList(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit, inPicker: Boolean) {
     val exercises: List<Exercise> by viewModel.exerciseList.observeAsState(listOf())
     LazyColumn(
         modifier = Modifier
@@ -25,6 +26,7 @@ fun ExercisesList(viewModel: HomeViewModel, onEvent: (Event) -> Unit, inPicker: 
         items(items = exercises) { exercise ->
             Box(Modifier.clickable {
                 if (inPicker) {
+                    Log.d("EL","Exercise clicked: ${exercise.exerciseId}")
                     onEvent(ExerciseEvent.ExerciseSelected(exercise))
                 }
             }) {

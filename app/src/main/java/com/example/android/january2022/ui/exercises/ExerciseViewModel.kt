@@ -1,8 +1,10 @@
 package com.example.android.january2022.ui.exercises
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,9 +18,11 @@ import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +34,8 @@ class ExerciseViewModel @Inject constructor(
     var currentSession by mutableStateOf<Session?>(null)
         private set
 
+    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
+
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -38,7 +44,9 @@ class ExerciseViewModel @Inject constructor(
         val sessionId = savedStateHandle.get<Long>("sessionId")!!
         if(sessionId != -1L) {
             viewModelScope.launch {
-                currentSession = repository.getSession(sessionId)
+                currentSession = withContext(Dispatchers.IO) {
+                    repository.getSession(sessionId)
+                }
             }
         }
     }
@@ -53,6 +61,7 @@ class ExerciseViewModel @Inject constructor(
             }
             is ExerciseEvent.ExerciseSelected -> {
                 viewModelScope.launch {
+                    Log.d("EVM","Exercise selected, sID: ${currentSession?.sessionId}")
                     val newSessionExercise = SessionExercise(
                         parentSessionId = currentSession?.sessionId?: -1L,
                         parentExerciseId = event.exercise.exerciseId

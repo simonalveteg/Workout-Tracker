@@ -32,6 +32,10 @@ class SessionViewModel @Inject constructor(
     var currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
     val setsList: LiveData<List<GymSet>> = repository.getSets()
 
+    private val _removedSet = MutableLiveData<GymSet>()
+    val removedSet: LiveData<GymSet>
+        get() = _removedSet
+
     init {
         // did we get here from an existing session?
         val sessionId = savedStateHandle.get<Long>("sessionId")!!
@@ -82,14 +86,10 @@ class SessionViewModel @Inject constructor(
                 }
             }
             is SessionEvent.OnAddSessionExerciseClicked -> {
-                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN))
+                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN+"?sessionId=${currentSession?.sessionId}"))
             }
         }
     }
-
-    private val _removedSet = MutableLiveData<GymSet>()
-    val removedSet: LiveData<GymSet>
-        get() = _removedSet
 
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {

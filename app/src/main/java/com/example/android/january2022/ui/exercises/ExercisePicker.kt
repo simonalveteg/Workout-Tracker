@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun ExercisePickerScreen(
     onPopBackStack: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: ExerciseViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(key1 = true) {

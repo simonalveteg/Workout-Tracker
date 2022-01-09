@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
                         repository.insertSession(newSession)
                     }
                 }
-                sendUiEvent(UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${newSession.sessionId}"))
+                sendUiEvent(UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${sessionId.value}"))
             }
         }
     }

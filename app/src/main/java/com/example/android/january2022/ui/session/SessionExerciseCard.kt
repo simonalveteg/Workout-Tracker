@@ -91,7 +91,6 @@ fun SessionExerciseCard(
             sets.forEach { set ->
 
                 key(set.setId) {
-                    Log.d("SS", "setId: ${set.setId}, removedSetId: $removedSet")
                     AnimatedVisibility(
                         visible = !set.deleted,
                         exit = shrinkVertically(

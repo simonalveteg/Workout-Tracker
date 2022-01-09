@@ -59,7 +59,15 @@ class MainActivity : ComponentActivity() {
                     composable(Routes.EXERCISE_SCREEN) {
                         ExercisesScreen()
                     }
-                    composable(Routes.EXERCISE_PICKER_SCREEN) {
+                    composable(
+                        route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
+                        arguments = listOf(
+                            navArgument(name = "sessionId") {
+                                type = NavType.LongType
+                                defaultValue = -1
+                            }
+                        )
+                    ) {
                         ExercisePickerScreen(onPopBackStack = {
                             navController.popBackStack()
                         })
