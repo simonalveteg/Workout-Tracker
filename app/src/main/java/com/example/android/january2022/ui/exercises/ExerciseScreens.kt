@@ -60,15 +60,4 @@ fun ExercisesScreen(
     }
 }
 
-@Composable
-fun ExerciseCard(exercise: Exercise) {
-    Card(Modifier.padding(vertical = 2.dp, horizontal = 16.dp)) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp)
-        ) {
-            Text(text = "${exercise.exerciseId} ${exercise.exerciseTitle}")
-        }
-    }
-}
+
