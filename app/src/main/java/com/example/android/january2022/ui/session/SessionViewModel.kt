@@ -98,6 +98,11 @@ class SessionViewModel @Inject constructor(
             is SessionEvent.OnAddSessionExerciseClicked -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN+"?sessionId=${currentSession?.sessionId}"))
             }
+            is SessionEvent.OnSessionExerciseInfoClicked -> {
+                sendUiEvent(UiEvent.ShowSnackbar(
+                    message = "Exercise Info clicked!"
+                ))
+            }
         }
     }
 

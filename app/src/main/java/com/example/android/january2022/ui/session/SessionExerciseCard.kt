@@ -6,13 +6,11 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -20,6 +18,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
@@ -69,11 +68,20 @@ fun SessionExerciseCard(
         Column {
             Row(
                 modifier = Modifier
-                    .padding(start = 16.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
+                    .padding(start = 2.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
             ) {
+                IconButton(
+                    onClick = { onEvent(SessionEvent.OnSessionExerciseInfoClicked(sessionExercise))}
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "Show Exercise Info"
+                    )
+                }
                 Text(
                     text = sessionExercise.exercise.exerciseTitle,
                     style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
