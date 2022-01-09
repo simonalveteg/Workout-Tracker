@@ -29,7 +29,6 @@ class SessionViewModel @Inject constructor(
     var currentSession by mutableStateOf<Session?>(null)
         private set
 
-    var currentSessionExerciseList = MutableLiveData<List<SessionExerciseWithExercise>>()
     val setsList: LiveData<List<GymSet>> = repository.getSets()
 
     private val _removedSet = MutableLiveData<GymSet>()
@@ -45,12 +44,13 @@ class SessionViewModel @Inject constructor(
                 currentSession = withContext(Dispatchers.IO) {
                     repository.getSession(sessionId)
                 }
-                currentSessionExerciseList.value = withContext(Dispatchers.IO) {
-                    repository.getSessionExercisesForSession(sessionId)
-                }
             }
 
         }
+    }
+
+    fun getSessionExercisesForSession() : LiveData<List<SessionExerciseWithExercise>> {
+        return repository.getSessionExercisesForSession(currentSession?.sessionId ?: -1)
     }
 
     private val _uiEvent =  Channel<UiEvent>()

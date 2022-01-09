@@ -71,7 +71,7 @@ interface GymDAO {
      */
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId WHERE parentSessionId = :key")
-    fun getSessionExercisesWithExerciseForSession(key: Long) : List<SessionExerciseWithExercise>
+    fun getSessionExercisesWithExerciseForSession(key: Long) : LiveData<List<SessionExerciseWithExercise>>
 
 }
 

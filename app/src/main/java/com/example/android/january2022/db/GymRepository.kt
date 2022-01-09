@@ -1,9 +1,7 @@
 package com.example.android.january2022.db
 
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.db.entities.SessionExercise
-import com.example.android.january2022.db.entities.Session
+import androidx.lifecycle.LiveData
+import com.example.android.january2022.db.entities.*
 
 
 class GymRepository(
@@ -28,7 +26,7 @@ class GymRepository(
     fun getSessionExercises() =
         dao.getSessionExercisesWithExercise()
 
-    fun getSessionExercisesForSession(sessionId: Long) =
+    fun getSessionExercisesForSession(sessionId: Long) : LiveData<List<SessionExerciseWithExercise>> =
         dao.getSessionExercisesWithExerciseForSession(sessionId)
 
     fun getSetsForSessionExercise(id: Long) =

@@ -45,13 +45,13 @@ fun SessionScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: SessionViewModel = hiltViewModel()
 ) {
-    val sessionExercises: List<SessionExerciseWithExercise> by viewModel.currentSessionExerciseList.observeAsState(
-        listOf()
-    )
     val scaffoldState = rememberScaffoldState()
     var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session = viewModel.currentSession
     val sets by viewModel.setsList.observeAsState(listOf())
+    val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession().observeAsState(
+        listOf()
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
