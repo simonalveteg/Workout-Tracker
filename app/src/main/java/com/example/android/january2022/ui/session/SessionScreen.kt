@@ -1,19 +1,10 @@
 package com.example.android.january2022.ui.session
 
-import android.util.Log
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -21,10 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.*
@@ -32,10 +19,8 @@ import com.example.android.january2022.ui.exercises.SubTitleText
 import com.example.android.january2022.ui.exercises.TitleText
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 
 @ExperimentalFoundationApi
@@ -48,7 +33,7 @@ fun SessionScreen(
     val scaffoldState = rememberScaffoldState()
     var selectedSessionExercise by remember { mutableStateOf(-1L) }
     val session = viewModel.currentSession
-    val sets by viewModel.setsList.observeAsState(listOf())
+    val allSets by viewModel.setsList.observeAsState(listOf())
     val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession().observeAsState(
         listOf()
     )
@@ -102,11 +87,18 @@ fun SessionScreen(
                     .weight(3f)
             ) {
                 items(items = sessionExercises) { sessionExercise ->
+
+                    val sets = mutableListOf<GymSet>()
+                    allSets.forEach { set ->
+                        if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
+                            sets.add(set)
+                        }
+                    }
                     SessionExerciseCard(
                         sessionExercise = sessionExercise,
                         viewModel = viewModel,
                         selected = selectedSessionExercise,
-                        allSets = sets,
+                        sets = sets,
                         onEvent = viewModel::onEvent
                     )
                 }

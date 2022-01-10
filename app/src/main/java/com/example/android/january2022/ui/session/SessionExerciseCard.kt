@@ -32,17 +32,10 @@ fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
     viewModel: SessionViewModel,
     selected: Long,
-    allSets: List<GymSet>,
+    sets: List<GymSet>,
     onEvent: (Event) -> Unit,
 ) {
-    val sets = mutableListOf<GymSet>()
-    allSets.forEach { set ->
-        if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
-            sets.add(set)
-        }
-    }
 
-    val removedSet by viewModel.removedSet.observeAsState()
 
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
 
@@ -52,7 +45,7 @@ fun SessionExerciseCard(
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 100,
+                    durationMillis = 300,
                     delayMillis = 0,
                     easing = LinearOutSlowInEasing
                 )

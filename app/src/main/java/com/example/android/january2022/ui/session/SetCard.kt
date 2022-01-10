@@ -86,7 +86,6 @@ fun SetCard(
             .offset { IntOffset(offsetX.value.roundToInt(), 0) }
             .background(color = surfaceColor)
     ) {
-
         MoodIcons(set, mood, onEvent)
         Spacer(modifier = Modifier.weight(1f))
         SetWeightRepsInputFields(
