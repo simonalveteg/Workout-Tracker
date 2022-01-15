@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.january2022">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".GymApp"
         android:allowBackup="true"
@@ -22,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
