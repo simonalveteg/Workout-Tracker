@@ -64,7 +64,13 @@ fun SessionExerciseCard(
                     .padding(start = 2.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
             ) {
                 IconButton(
-                    onClick = { onEvent(SessionEvent.OnSessionExerciseInfoClicked(sessionExercise))}
+                    onClick = {
+                        onEvent(
+                            SessionEvent.OnSessionExerciseInfoClicked(
+                                sessionExercise.exercise.exerciseId
+                            )
+                        )
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Info,

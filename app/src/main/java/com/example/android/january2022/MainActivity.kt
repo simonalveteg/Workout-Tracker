@@ -13,9 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android.january2022.ui.exercises.detail.ExerciseDetailScreen
 import com.example.android.january2022.ui.theme.January2022Theme
-import com.example.android.january2022.ui.exercises.ExercisePickerScreen
 import com.example.android.january2022.ui.exercises.ExercisesScreen
+import com.example.android.january2022.ui.exercises.picker.ExercisePickerScreen
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.utils.Routes
@@ -71,6 +72,17 @@ class MainActivity : ComponentActivity() {
                         ExercisePickerScreen(onPopBackStack = {
                             navController.popBackStack()
                         })
+                    }
+                    composable(
+                        route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",
+                        arguments = listOf(
+                            navArgument(name = "exerciseId") {
+                                type = NavType.LongType
+                                defaultValue = -1
+                            }
+                        )
+                    ) {
+                        ExerciseDetailScreen()
                     }
                 }
             }

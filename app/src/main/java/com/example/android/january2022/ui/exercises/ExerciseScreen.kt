@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.android.january2022.db.Equipment
+import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.ui.home.HomeViewModel
 import com.example.android.january2022.db.entities.Exercise
 
@@ -46,7 +48,13 @@ fun ExercisesScreen(
                 )
                 Button(
                     onClick = {
-                        viewModel.onEvent(ExerciseEvent.NewExerciseClicked(inputValue))
+                        viewModel.onEvent(
+                            ExerciseEvent.NewExerciseClicked(
+                                title = inputValue,
+                                muscleGroup = MuscleGroup.NULL,
+                                equipment = Equipment.NULL
+                            )
+                        )
                         inputValue = ""
                     },
                     Modifier

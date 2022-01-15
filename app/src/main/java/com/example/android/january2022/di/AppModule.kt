@@ -2,6 +2,8 @@ package com.example.android.january2022.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
 import dagger.Module
@@ -24,6 +26,7 @@ object AppModule {
             "gym_db"
         ).build()
     }
+
     @Provides
     @Singleton
     fun provideGymRepository(db: GymDatabase): GymRepository {

@@ -5,4 +5,5 @@ object Routes {
     const val SESSION_SCREEN = "session"
     const val EXERCISE_SCREEN = "exercises"
     const val EXERCISE_PICKER_SCREEN = "exercisePicker"
+    const val EXERCISE_DETAIL_SCREEN = "exerciseDetail"
 }

@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
                 runBlocking {
                     sessionId.value = withContext(Dispatchers.IO) {
                         repository.insertSession(newSession)
-                    }
+                    }!!
                 }
                 sendUiEvent(UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${sessionId.value}"))
             }

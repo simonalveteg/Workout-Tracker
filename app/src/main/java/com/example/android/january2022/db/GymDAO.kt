@@ -40,6 +40,9 @@ interface GymDAO {
     @Query("SELECT * FROM exercises ORDER BY exerciseId DESC LIMIT 1")
     fun getLastExercise() : Exercise
 
+    @Query("SELECT * FROM exercises WHERE exerciseId = :key")
+    fun getExercise(key: Long) : Exercise
+
     @Query("SELECT * FROM sessionExercises ORDER BY sessionExerciseId DESC LIMIT 1")
     fun getLastSessionExercise() : SessionExercise
 

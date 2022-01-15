@@ -34,11 +34,10 @@ class ExerciseViewModel @Inject constructor(
     var currentSession by mutableStateOf<Session?>(null)
         private set
 
-    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
-
-
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
 
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId")?: -1L
@@ -56,7 +55,13 @@ class ExerciseViewModel @Inject constructor(
         when(event) {
             is ExerciseEvent.NewExerciseClicked -> {
                 viewModelScope.launch {
-                    repository.insertExercise(Exercise(exerciseTitle = event.title))
+                    repository.insertExercise(
+                        Exercise(
+                            exerciseTitle = event.title,
+                            muscleGroup = event.muscleGroup,
+                            equipment = event.equipment
+                        )
+                    )
                 }
             }
             is ExerciseEvent.ExerciseSelected -> {
@@ -69,6 +74,12 @@ class ExerciseViewModel @Inject constructor(
                     repository.insertSessionExercise(newSessionExercise)
                 }
                 sendUiEvent(UiEvent.PopBackStack)
+            }
+            is ExerciseEvent.ExerciseInfoClicked -> {
+                val exerciseId = event.exercise.exerciseId
+
+
+                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId=${exerciseId}"))
             }
         }
     }

@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.*
-import com.example.android.january2022.ui.exercises.SubTitleText
-import com.example.android.january2022.ui.exercises.TitleText
+import com.example.android.january2022.ui.exercises.picker.SubTitleText
+import com.example.android.january2022.ui.exercises.picker.TitleText
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat
