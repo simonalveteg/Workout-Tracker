@@ -46,7 +46,7 @@ fun ExercisesScreen(
                 )
                 Button(
                     onClick = {
-                        // TODO: Add Exercise with title = inputValue
+                        viewModel.onEvent(ExerciseEvent.NewExerciseClicked(inputValue))
                         inputValue = ""
                     },
                     Modifier

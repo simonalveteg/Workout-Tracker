@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
-    val repository: GymRepository,
+    private val repository: GymRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -41,7 +41,7 @@ class ExerciseViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val sessionId = savedStateHandle.get<Long>("sessionId")!!
+        val sessionId = savedStateHandle.get<Long>("sessionId")?: -1L
         if(sessionId != -1L) {
             viewModelScope.launch {
                 currentSession = withContext(Dispatchers.IO) {

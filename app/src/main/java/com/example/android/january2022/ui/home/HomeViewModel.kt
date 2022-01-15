@@ -17,7 +17,8 @@ import kotlin.random.Random
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: GymRepository
+    private val repository: GymRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val sessionId = MutableLiveData<Long>()
