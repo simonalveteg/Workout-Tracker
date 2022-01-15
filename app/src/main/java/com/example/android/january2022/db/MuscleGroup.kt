@@ -14,6 +14,6 @@ object MuscleGroup {
     const val CALVES = "Calves"
     const val ABDOMINALS = "Abdominals"
     const val LOWER_BACK = "Lower Back"
-    const val MID_BACK = "Mid Back"
+    const val TRAPS_MID_BACK = "Traps (mid-back)"
     const val NULL = "not specified"
 }

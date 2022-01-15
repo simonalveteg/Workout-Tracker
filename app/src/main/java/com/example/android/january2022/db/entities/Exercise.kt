@@ -18,8 +18,4 @@ data class Exercise(
     var muscleGroup: String,
     @ColumnInfo(defaultValue = Equipment.NULL)
     var equipment: String
-){
-    override fun toString(): String {
-        return "[$exerciseId] $exerciseTitle"
-    }
-}
+)

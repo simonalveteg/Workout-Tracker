@@ -21,11 +21,11 @@ import androidx.room.migration.Migration
     ],
     autoMigrations = [
         AutoMigration(
-            from = 6,
-            to = 7
+            from = 8,
+            to = 9
         )
     ],
-    version = 7, exportSchema = true
+    version = 9, exportSchema = true
 )
 abstract class GymDatabase : RoomDatabase() {
 
