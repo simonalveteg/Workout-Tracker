@@ -2,7 +2,7 @@
 
 
 Progress 16/01-22:
-https://user-images.githubusercontent.com/41792248/149659072-b29048bb-335c-4915-90aa-68966acf6087.mp4
+![Progress-viedeo](https://user-images.githubusercontent.com/41792248/149659072-b29048bb-335c-4915-90aa-68966acf6087.mp4)
 
 
 Progress 09/01-22:
