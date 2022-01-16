@@ -37,7 +37,8 @@ class ExerciseViewModel @Inject constructor(
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
+    var exerciseList: LiveData<List<Exercise>> = repository.getExercisesByQuery()
+        private set
 
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId")?: -1L
@@ -71,9 +72,10 @@ class ExerciseViewModel @Inject constructor(
             }
             is ExerciseEvent.ExerciseInfoClicked -> {
                 val exerciseId = event.exercise.exerciseId
-
-
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId=${exerciseId}"))
+            }
+            is ExerciseEvent.FilterExerciseList -> {
+                exerciseList = repository.getExercisesByQuery(event.searchString)
             }
         }
     }

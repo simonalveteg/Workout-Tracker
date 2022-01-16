@@ -33,7 +33,7 @@ fun ExercisesList(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit, inPick
                     onEvent(ExerciseEvent.ExerciseSelected(exercise))
                 }
             }) {
-                ExerciseCard(exercise)
+                ExerciseCard(exercise, viewModel::onEvent)
             }
         }
     }

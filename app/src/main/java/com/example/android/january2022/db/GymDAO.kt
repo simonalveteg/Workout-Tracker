@@ -76,5 +76,11 @@ interface GymDAO {
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.exerciseId WHERE parentSessionId = :key")
     fun getSessionExercisesWithExerciseForSession(key: Long) : LiveData<List<SessionExerciseWithExercise>>
 
+    @Query("SELECT * FROM exercises " +
+            "WHERE title LIKE '%' || :string || '%' " +
+            "OR muscleGroups LIKE '%' || :string || '%' " +
+            "OR equipment LIKE '%' || :string || '%' ")
+    fun getExercisesByQuery(string: String) : LiveData<List<Exercise>>
+
 }
 

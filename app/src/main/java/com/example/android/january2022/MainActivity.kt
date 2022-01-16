@@ -69,9 +69,12 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     ) {
-                        ExercisePickerScreen(onPopBackStack = {
-                            navController.popBackStack()
-                        })
+                        ExercisePickerScreen(
+                            onPopBackStack = {
+                                navController.popBackStack()
+                            },
+                            onNavigate = { navController.navigate(it.route) }
+                        )
                     }
                     composable(
                         route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",

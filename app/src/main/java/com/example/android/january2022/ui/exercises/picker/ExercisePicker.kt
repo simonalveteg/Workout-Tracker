@@ -1,20 +1,16 @@
 package com.example.android.january2022.ui.exercises.picker
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import com.example.android.january2022.db.Equipment
+import com.example.android.january2022.db.MuscleGroup
+import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
-import com.example.android.january2022.ui.home.HomeViewModel
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
 
@@ -22,13 +18,16 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun ExercisePickerScreen(
     onPopBackStack: () -> Unit,
+    onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: ExerciseViewModel = hiltViewModel()
 ) {
+    var searchString by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when(event) {
                 is UiEvent.PopBackStack -> onPopBackStack()
+                is UiEvent.Navigate -> onNavigate(event)
             }
         }
     }
@@ -42,6 +41,17 @@ fun ExercisePickerScreen(
         Box(Modifier.weight(1f)) {
             ExercisesList(viewModel, viewModel::onEvent, true)
         }
+        TextField(
+            value = searchString,
+            onValueChange = { newText ->
+                searchString = newText
+                viewModel.onEvent(
+                    ExerciseEvent.FilterExerciseList(newText)
+                )
+            },
+            placeholder = { Text(text = "Filter list") },
+            modifier = Modifier.fillMaxWidth().padding(4.dp)
+        )
     }
 }
 

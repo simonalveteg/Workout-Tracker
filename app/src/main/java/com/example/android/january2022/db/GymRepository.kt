@@ -14,6 +14,9 @@ class GymRepository(
     fun getExercise(id: Long) =
         dao.getExercise(id)
 
+    fun getExercisesByQuery(searchString: String = "") =
+        dao.getExercisesByQuery(searchString)
+
     fun getSession(id: Long) =
         dao.getSession(id)
 
