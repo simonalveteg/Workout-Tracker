@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import com.google.accompanist.flowlayout.FlowRow
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -28,11 +29,10 @@ import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.utils.Event
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 
 
-@ExperimentalComposeUiApi
-@OptIn(ExperimentalAnimationApi::class)
-@ExperimentalFoundationApi
 @Composable
 fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
@@ -65,10 +65,10 @@ fun SessionExerciseCard(
                 )
             }
     ) {
-        Column {
+        Column(Modifier.padding(start = 16.dp,  top = 8.dp, end = 2.dp, bottom = 8.dp )) {
             Row(
                 modifier = Modifier
-                    .padding(start = 16.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
+                    .padding(bottom = 8.dp)
             ) {
                 Text(
                     text = sessionExercise.exercise.exerciseTitle,
@@ -77,7 +77,7 @@ fun SessionExerciseCard(
                         .weight(1f)
                         .align(Alignment.CenterVertically),
                 )
-                if(isSelected){
+                if (isSelected) {
                     IconButton(
                         onClick = {
                             onEvent(
@@ -103,7 +103,7 @@ fun SessionExerciseCard(
                 } else {
                     IconButton(
                         onClick = { onEvent(SessionEvent.OnAddSet(sessionExercise)) },
-                        ) {
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Add Set to Exercise"
@@ -111,33 +111,38 @@ fun SessionExerciseCard(
                     }
                 }
             }
-            sets.forEach { set ->
+            FlowRow(
+                Modifier.padding(start = 2.dp),
+                crossAxisAlignment = FlowCrossAxisAlignment.Start,
+                mainAxisSpacing = 12.dp,
+                mainAxisAlignment = FlowMainAxisAlignment.Center
+            ) {
+                sets.forEach { set ->
 
-                key(set.setId) {
-                    AnimatedVisibility(
-                        visible = !set.deleted,
-                        exit = shrinkVertically(
-                            animationSpec = tween(
-                                durationMillis = 400,
-                                delayMillis = 25,
-                                easing = LinearOutSlowInEasing
+                    key(set.setId) {
+                        AnimatedVisibility(
+                            visible = !set.deleted,
+                            exit = shrinkVertically(
+                                animationSpec = tween(
+                                    durationMillis = 400,
+                                    delayMillis = 25,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ),
+                            enter = expandVertically(
+                                animationSpec = tween(
+                                    durationMillis = 400,
+                                    delayMillis = 25,
+                                    easing = LinearOutSlowInEasing
+                                )
                             )
-                        ),
-                        enter = expandVertically(
-                            animationSpec = tween(
-                                durationMillis = 400,
-                                delayMillis = 25,
-                                easing = LinearOutSlowInEasing
-                            )
-                        )
-                    ) {
-                        SetCard(set, viewModel::onEvent)
+                        ) {
+                            NewSetCard(set, viewModel::onEvent)
+                        }
                     }
-
-
                 }
-            }
 
+            }
         }
     }
 

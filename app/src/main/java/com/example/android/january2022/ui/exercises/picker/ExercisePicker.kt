@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.Equipment
@@ -49,6 +50,10 @@ fun ExercisePickerScreen(
                     ExerciseEvent.FilterExerciseList(newText)
                 )
             },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
             placeholder = { Text(text = "Filter list") },
             modifier = Modifier.fillMaxWidth().padding(4.dp)
         )
