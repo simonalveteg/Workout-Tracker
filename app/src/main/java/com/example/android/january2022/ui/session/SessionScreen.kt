@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
@@ -86,7 +88,7 @@ fun SessionScreen(
                     .fillMaxSize()
                     .weight(3f)
             ) {
-                items(items = sessionExercises) { sessionExercise ->
+                items(items = sessionExercises, key = {it}) { sessionExercise ->
 
                     val sets = mutableListOf<GymSet>()
                     allSets.forEach { set ->

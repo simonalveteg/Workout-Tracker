@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -29,6 +30,7 @@ import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.utils.Event
 
 
+@ExperimentalComposeUiApi
 @OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
@@ -66,7 +68,7 @@ fun SessionExerciseCard(
         Column {
             Row(
                 modifier = Modifier
-                    .padding(start = 12.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
+                    .padding(start = 16.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
             ) {
                 Text(
                     text = sessionExercise.exercise.exerciseTitle,

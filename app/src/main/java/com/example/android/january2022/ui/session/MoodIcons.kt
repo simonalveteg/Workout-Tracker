@@ -1,5 +1,7 @@
 package com.example.android.january2022.ui.session
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -15,14 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 
+@ExperimentalAnimationApi
 @Composable
 fun MoodIcons(
     set: GymSet,
     mood: Int,
     onEvent: (SessionEvent) -> Unit,
 ) {
+    // TODO: Decide to fix or remove AnimatedVisibility
     Row {
-        if (mood == -1 || mood == 1) {
+        AnimatedVisibility(visible = true) {
             IconToggleButton(
                 checked = mood == 1, onCheckedChange = {
                     onEvent(SessionEvent.MoodChanged(set, 1))
@@ -34,30 +38,32 @@ fun MoodIcons(
                     tint = if (mood == 1) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
                 )
             }
-        } else {
-            Spacer(Modifier.width(0.dp))
         }
-        if (mood == -1 || mood == 2) IconToggleButton(
-            checked = mood == 2, onCheckedChange = {
-                onEvent(SessionEvent.MoodChanged(set, 2))
+        AnimatedVisibility(visible = true) {
+            IconToggleButton(
+                checked = mood == 2, onCheckedChange = {
+                    onEvent(SessionEvent.MoodChanged(set, 2))
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.SentimentNeutral,
+                    contentDescription = "Neutral",
+                    tint = if (mood == 2) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
+                )
             }
-        ) {
-            Icon(
-                imageVector = Icons.Default.SentimentNeutral,
-                contentDescription = "Neutral",
-                tint = if (mood == 2) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
-            )
         }
-        if (mood == -1 || mood == 3) IconToggleButton(
-            checked = mood == 3, onCheckedChange = {
-                onEvent(SessionEvent.MoodChanged(set, 3))
+        AnimatedVisibility(visible = true) {
+            IconToggleButton(
+                checked = mood == 3, onCheckedChange = {
+                    onEvent(SessionEvent.MoodChanged(set, 3))
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.SentimentVerySatisfied,
+                    contentDescription = "Good",
+                    tint = if (mood == 3) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
+                )
             }
-        ) {
-            Icon(
-                imageVector = Icons.Default.SentimentVerySatisfied,
-                contentDescription = "Good",
-                tint = if (mood == 3) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
-            )
         }
     }
 }

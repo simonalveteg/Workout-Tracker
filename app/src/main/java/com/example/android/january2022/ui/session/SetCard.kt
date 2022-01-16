@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
@@ -25,6 +27,8 @@ import com.example.android.january2022.db.entities.GymSet
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
 fun SetCard(
