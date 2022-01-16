@@ -15,7 +15,9 @@ data class Exercise(
     @ColumnInfo(name = "title")
     var exerciseTitle: String = "Exercise",
     @ColumnInfo(defaultValue = MuscleGroup.NULL)
-    var muscleGroup: String,
+    var muscleGroups: String = MuscleGroup.NULL,
     @ColumnInfo(defaultValue = Equipment.NULL)
-    var equipment: String
+    var equipment: String = Equipment.NULL,
+    @ColumnInfo(defaultValue = "https://www.musclewiki.com")
+    var url: String = "https://www.musclewiki.com"
 )

@@ -22,9 +22,9 @@ object AppModule {
             .databaseBuilder(
                 app,
                 GymDatabase::class.java,
-                "gd.db"
+                "gymdatabase.db"
             )
-            .createFromAsset("gd.db")
+            .createFromAsset("gymdatabase.db")
             //.fallbackToDestructiveMigration()
             .build()
     }

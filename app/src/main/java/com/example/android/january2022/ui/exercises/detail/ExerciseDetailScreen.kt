@@ -24,10 +24,7 @@ fun ExerciseDetailScreen(
         Box(modifier = Modifier.padding(24.dp)) {
             Text(text = viewModel.currentExercise.toString())
         }
-        val equipment = viewModel.currentExercise?.equipment
-        val muscleGroup = viewModel.currentExercise?.muscleGroup
-        val title = viewModel.currentExercise?.exerciseTitle?.replace(" ", "-")
-        val url = "https://www.musclewiki.com/$equipment/Male/$muscleGroup#$title"
+        val url = viewModel.currentExercise.url
         AndroidView(factory = {
             WebView(it).apply {
                 layoutParams = ViewGroup.LayoutParams(

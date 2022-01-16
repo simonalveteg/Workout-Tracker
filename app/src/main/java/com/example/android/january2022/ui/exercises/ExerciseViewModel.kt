@@ -55,13 +55,7 @@ class ExerciseViewModel @Inject constructor(
         when(event) {
             is ExerciseEvent.NewExerciseClicked -> {
                 viewModelScope.launch {
-                    repository.insertExercise(
-                        Exercise(
-                            exerciseTitle = event.title,
-                            muscleGroup = event.muscleGroup,
-                            equipment = event.equipment
-                        )
-                    )
+                    // TODO: Remove or implement functionality. "add exercise to db"
                 }
             }
             is ExerciseEvent.ExerciseSelected -> {

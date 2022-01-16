@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "6f8cc6c4f6d3192dde997fa69a827308",
+    "identityHash": "3b5ded7b46126dd9173ded0f19d47b48",
     "entities": [
       {
         "tableName": "sessions",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "exercises",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exerciseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `muscleGroup` TEXT NOT NULL DEFAULT 'not specified', `equipment` TEXT NOT NULL DEFAULT 'not specified')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exerciseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `muscleGroups` TEXT NOT NULL DEFAULT 'not specified', `equipment` TEXT NOT NULL DEFAULT 'not specified', `url` TEXT NOT NULL DEFAULT 'https://www.musclewiki.com')",
         "fields": [
           {
             "fieldPath": "exerciseId",
@@ -59,8 +59,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "muscleGroup",
-            "columnName": "muscleGroup",
+            "fieldPath": "muscleGroups",
+            "columnName": "muscleGroups",
             "affinity": "TEXT",
             "notNull": true,
             "defaultValue": "'not specified'"
@@ -71,6 +71,13 @@
             "affinity": "TEXT",
             "notNull": true,
             "defaultValue": "'not specified'"
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'https://www.musclewiki.com'"
           }
         ],
         "primaryKey": {
@@ -193,7 +200,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f8cc6c4f6d3192dde997fa69a827308')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3b5ded7b46126dd9173ded0f19d47b48')"
     ]
   }
 }

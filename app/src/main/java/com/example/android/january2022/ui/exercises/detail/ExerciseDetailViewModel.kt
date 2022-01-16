@@ -25,7 +25,7 @@ class ExerciseDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    var currentExercise by mutableStateOf<Exercise?>(null)
+    var currentExercise by mutableStateOf(Exercise(-1))
         private set
 
     private val _uiEvent =  Channel<UiEvent>()
