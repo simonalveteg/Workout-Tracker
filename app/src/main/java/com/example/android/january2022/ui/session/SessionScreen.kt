@@ -24,9 +24,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun SessionScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
@@ -88,7 +85,7 @@ fun SessionScreen(
                     .fillMaxSize()
                     .weight(3f)
             ) {
-                items(items = sessionExercises, key = {it}) { sessionExercise ->
+                items(items = sessionExercises, key = {it.sessionExercise.sessionExerciseId}) { sessionExercise ->
 
                     val sets = mutableListOf<GymSet>()
                     allSets.forEach { set ->

@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,

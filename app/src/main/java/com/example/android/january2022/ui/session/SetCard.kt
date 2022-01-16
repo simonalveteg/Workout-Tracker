@@ -27,9 +27,6 @@ import com.example.android.january2022.db.entities.GymSet
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
 @Composable
 fun SetCard(
     set: GymSet,

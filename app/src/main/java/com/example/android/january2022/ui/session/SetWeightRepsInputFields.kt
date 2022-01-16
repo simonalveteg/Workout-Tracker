@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 
 
-@ExperimentalComposeUiApi
 @Composable
 fun SetWeightRepsInputFields(
     set: GymSet,
