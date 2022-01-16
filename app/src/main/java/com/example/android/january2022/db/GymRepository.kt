@@ -59,4 +59,7 @@ class GymRepository(
     suspend fun removeSet(set: GymSet) =
         dao.removeSet(set)
 
+    suspend fun removeSessionExercise(sessionExercise: SessionExercise) =
+        dao.removeSessionExercise(sessionExercise)
+
 }

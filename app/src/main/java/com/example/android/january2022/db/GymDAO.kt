@@ -23,6 +23,9 @@ interface GymDAO {
     suspend fun insertSet(item: GymSet)
 
     @Delete
+    suspend fun removeSessionExercise(item: SessionExercise)
+
+    @Delete
     suspend fun removeSet(item: GymSet)
 
     @Update

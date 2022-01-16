@@ -5,6 +5,7 @@ sealed class UiEvent {
     data class Navigate(val route: String): UiEvent()
     data class ShowSnackbar(
         val message: String,
-        val action: String? = null
+        val actionLabel: String? = null,
+        val action: Event? = null
     ): UiEvent()
 }

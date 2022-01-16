@@ -31,7 +31,7 @@ fun SessionScreen(
     viewModel: SessionViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
-    var selectedSessionExercise by remember { mutableStateOf(-1L) }
+    val selectedSessionExercise = viewModel.selectedSessionExercise
     val session = viewModel.currentSession
     val allSets by viewModel.setsList.observeAsState(listOf())
     val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession().observeAsState(
@@ -45,10 +45,10 @@ fun SessionScreen(
                 is UiEvent.ShowSnackbar -> {
                     val result = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
-                        actionLabel = event.action
+                        actionLabel = event.actionLabel
                     )
                     if(result == SnackbarResult.ActionPerformed) {
-                        viewModel.onEvent(SessionEvent.RestoreRemovedSet)
+                        if(event.action != null) viewModel.onEvent(event.action)
                     }
                 }
             }

@@ -8,6 +8,7 @@ import androidx.lifecycle.*
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
@@ -29,11 +30,18 @@ class SessionViewModel @Inject constructor(
     var currentSession by mutableStateOf<Session?>(null)
         private set
 
+    var selectedSessionExercise by mutableStateOf(-1L)
+        private set
+
     val setsList: LiveData<List<GymSet>> = repository.getSets()
 
     private val _removedSet = MutableLiveData<GymSet>()
     val removedSet: LiveData<GymSet>
         get() = _removedSet
+
+    private val _removedSessionExercise = MutableLiveData<SessionExercise>()
+    val removedSessionExercise: LiveData<SessionExercise>
+        get() = _removedSessionExercise
 
     init {
         // did we get here from an existing session?
@@ -87,7 +95,8 @@ class SessionViewModel @Inject constructor(
                 _removedSet.value = event.set
                 sendUiEvent(UiEvent.ShowSnackbar(
                     message = "Set removed from session",
-                    action = "Undo"
+                    actionLabel = "Undo",
+                    action = SessionEvent.RestoreRemovedSet
                 ))
             }
             is SessionEvent.RestoreRemovedSet -> {
@@ -95,11 +104,32 @@ class SessionViewModel @Inject constructor(
                     repository.updateSet(removedSet.value!!.copy(deleted = false))
                 }
             }
+            is SessionEvent.RestoreRemovedSessionExercise -> {
+                viewModelScope.launch {
+                    removedSessionExercise.value?.let { repository.insertSessionExercise(it) }
+                }
+            }
             is SessionEvent.OnAddSessionExerciseClicked -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN+"?sessionId=${currentSession?.sessionId}"))
             }
             is SessionEvent.OnSessionExerciseInfoClicked -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN+"?exerciseId=${event.exerciseId}"))
+            }
+            is SessionEvent.SetSelectedSessionExercise -> {
+                val newId = event.sessionExercise.sessionExercise.sessionExerciseId
+                selectedSessionExercise = if(newId != selectedSessionExercise) newId else -1L
+            }
+            is SessionEvent.OnDeleteSessionExercise -> {
+                _removedSessionExercise.value = event.sessionExercise.sessionExercise
+                selectedSessionExercise = -1L
+                viewModelScope.launch {
+                    repository.removeSessionExercise(event.sessionExercise.sessionExercise)
+                }
+                sendUiEvent(UiEvent.ShowSnackbar(
+                    message = "Exercise removed from session",
+                    actionLabel = "Undo",
+                    action = SessionEvent.RestoreRemovedSessionExercise
+                ))
             }
         }
     }

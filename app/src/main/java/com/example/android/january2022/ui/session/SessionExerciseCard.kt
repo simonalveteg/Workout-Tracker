@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
@@ -36,7 +40,7 @@ fun SessionExerciseCard(
     onEvent: (Event) -> Unit,
 ) {
 
-
+    val haptic = LocalHapticFeedback.current
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
 
     Card(
@@ -53,6 +57,7 @@ fun SessionExerciseCard(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onEvent(SessionEvent.SetSelectedSessionExercise(sessionExercise))
                     }
                 )
@@ -61,38 +66,47 @@ fun SessionExerciseCard(
         Column {
             Row(
                 modifier = Modifier
-                    .padding(start = 2.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
+                    .padding(start = 12.dp, bottom = 8.dp, top = 8.dp, end = 2.dp)
             ) {
-                IconButton(
-                    onClick = {
-                        onEvent(
-                            SessionEvent.OnSessionExerciseInfoClicked(
-                                sessionExercise.exercise.exerciseId
-                            )
-                        )
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = "Show Exercise Info"
-                    )
-                }
                 Text(
                     text = sessionExercise.exercise.exerciseTitle,
                     style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
                 )
-                IconButton(
-                    onClick = { onEvent(SessionEvent.OnAddSet(sessionExercise)) },
-
+                if(isSelected){
+                    IconButton(
+                        onClick = {
+                            onEvent(
+                                SessionEvent.OnSessionExerciseInfoClicked(
+                                    sessionExercise.exercise.exerciseId
+                                )
+                            )
+                        }
                     ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Exercise"
-                    )
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = "Show Exercise Info"
+                        )
+                    }
+                    IconButton(
+                        onClick = { onEvent(SessionEvent.OnDeleteSessionExercise(sessionExercise)) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Remove Exercise from Session"
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = { onEvent(SessionEvent.OnAddSet(sessionExercise)) },
+                        ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add Set to Exercise"
+                        )
+                    }
                 }
             }
             sets.forEach { set ->

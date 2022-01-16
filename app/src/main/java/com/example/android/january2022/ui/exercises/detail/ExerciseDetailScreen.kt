@@ -20,22 +20,17 @@ import com.example.android.january2022.ui.exercises.ExerciseViewModel
 fun ExerciseDetailScreen(
     viewModel: ExerciseDetailViewModel = hiltViewModel()
 ) {
-    Column {
-        Box(modifier = Modifier.padding(24.dp)) {
-            Text(text = viewModel.currentExercise.toString())
+    val url = viewModel.currentExercise.url
+    AndroidView(factory = {
+        WebView(it).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            webViewClient = WebViewClient()
+            loadUrl(url)
         }
-        val url = viewModel.currentExercise.url
-        AndroidView(factory = {
-            WebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                webViewClient = WebViewClient()
-                loadUrl(url)
-            }
-        }, update = {
-            it.loadUrl(url)
-        })
-    }
+    }, update = {
+        it.loadUrl(url)
+    })
 }
