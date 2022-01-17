@@ -91,8 +91,6 @@ fun SetCard(
         Spacer(modifier = Modifier.weight(1f))
         SetWeightRepsInputFields(
             set = set,
-            reps = reps,
-            weight = weight,
             onEvent
         )
 

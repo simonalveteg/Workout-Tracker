@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.UnfoldMore
@@ -18,6 +15,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -29,12 +27,12 @@ import com.example.android.january2022.db.entities.GymSet
 @Composable
 fun SetWeightRepsInputFields(
     set: GymSet,
-    reps: Int = -1,
-    weight: Float = -1F,
     onEvent: (SessionEvent) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Number,
 ) {
     val localFocusManager = LocalFocusManager.current
+    val reps: Int = set.reps
+    val weight: Float = set.weight
 
     Row {
         TextField(
