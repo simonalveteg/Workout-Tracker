@@ -65,7 +65,7 @@ fun SessionExerciseCard(
                 )
             }
     ) {
-        Column(Modifier.padding(start = 16.dp,  top = 8.dp, end = 2.dp, bottom = 8.dp )) {
+        Column(Modifier.padding(start = 16.dp, top = 8.dp, end = 2.dp, bottom = 8.dp)) {
             Row(
                 modifier = Modifier
                     .padding(bottom = 8.dp)
@@ -79,6 +79,17 @@ fun SessionExerciseCard(
                 )
                 if (isSelected) {
                     IconButton(
+                        onClick = { onEvent(SessionEvent.OnDeleteSessionExercise(sessionExercise)) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Remove Exercise from Session",
+                            tint = MaterialTheme.colors.error
+
+                        )
+                    }
+                } else {
+                    IconButton(
                         onClick = {
                             onEvent(
                                 SessionEvent.OnSessionExerciseInfoClicked(
@@ -89,24 +100,7 @@ fun SessionExerciseCard(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Info,
-                            contentDescription = "Show Exercise Info"
-                        )
-                    }
-                    IconButton(
-                        onClick = { onEvent(SessionEvent.OnDeleteSessionExercise(sessionExercise)) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Remove Exercise from Session"
-                        )
-                    }
-                } else {
-                    IconButton(
-                        onClick = { onEvent(SessionEvent.OnAddSet(sessionExercise)) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add Set to Exercise"
+                            contentDescription = "Show Exercise Info",
                         )
                     }
                 }
@@ -115,7 +109,7 @@ fun SessionExerciseCard(
                 Modifier.padding(start = 2.dp),
                 crossAxisAlignment = FlowCrossAxisAlignment.Start,
                 mainAxisSpacing = 12.dp,
-                mainAxisAlignment = FlowMainAxisAlignment.Center
+                mainAxisAlignment = FlowMainAxisAlignment.Start
             ) {
                 sets.forEach { set ->
 
@@ -141,7 +135,14 @@ fun SessionExerciseCard(
                         }
                     }
                 }
-
+                IconButton(
+                    onClick = { onEvent(SessionEvent.OnAddSet(sessionExercise)) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add Set to Exercise"
+                    )
+                }
             }
         }
     }

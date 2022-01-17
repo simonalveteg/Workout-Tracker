@@ -13,12 +13,10 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.focusOrder
-import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -36,11 +34,11 @@ import com.example.android.january2022.db.entities.GymSet
 @Composable
 fun NewSetCard(
     set: GymSet,
-    onEvent: (SessionEvent) -> Unit
+    onEvent: (SessionEvent) -> Unit,
 ) {
     val weight = set.weight
     val reps = set.reps
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf((reps == -1 && weight == -1F)) }
 
     Row(
         Modifier
@@ -63,6 +61,7 @@ fun NewSetCard(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ExpandedSetCard(
     set: GymSet,
@@ -74,6 +73,7 @@ fun ExpandedSetCard(
     val reps: Int = set.reps
     val weight: Float = set.weight
 
+    if (reps == -1) localFocusManager.moveFocus(FocusDirection.In)
 
     Row {
         BasicTextField(
@@ -128,7 +128,7 @@ fun ExpandedSetCard(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    localFocusManager.clearFocus()
+                    localFocusManager.moveFocus(FocusDirection.Next)
                     onDone()
                 }
             ),
