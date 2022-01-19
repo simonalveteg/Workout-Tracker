@@ -44,6 +44,9 @@ fun SessionExerciseCard(
 
     val haptic = LocalHapticFeedback.current
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
+    val cardBackgroundColor by animateColorAsState(
+        targetValue = if(isSelected) MaterialTheme.colors.error else MaterialTheme.colors.surface)
+
 
     Card(
         Modifier
@@ -63,7 +66,8 @@ fun SessionExerciseCard(
                         onEvent(SessionEvent.SetSelectedSessionExercise(sessionExercise))
                     }
                 )
-            }
+            },
+        backgroundColor = cardBackgroundColor
     ) {
         Column(Modifier.padding(start = 16.dp, top = 8.dp, end = 2.dp, bottom = 8.dp)) {
             Row(
@@ -84,8 +88,6 @@ fun SessionExerciseCard(
                         Icon(
                             imageVector = Icons.Filled.Delete,
                             contentDescription = "Remove Exercise from Session",
-                            tint = MaterialTheme.colors.error
-
                         )
                     }
                 } else {
