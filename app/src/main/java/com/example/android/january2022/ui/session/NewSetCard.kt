@@ -1,6 +1,5 @@
 package com.example.android.january2022.ui.session
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
@@ -8,9 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -31,6 +30,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NewSetCard(
     set: GymSet,
+    isSelected: Boolean,
     onEvent: (SessionEvent) -> Unit,
 ) {
     val weight = set.weight
@@ -66,8 +66,17 @@ fun NewSetCard(
                 }
             }
         }
-
-        AnimatedVisibility(visible = expanded) {
+        AnimatedVisibility(visible = isSelected) {
+            IconButton(
+                onClick = { onEvent(SessionEvent.RemoveSelectedSet(set)) },
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Remove Set from Session",
+                )
+            }
+        }
+        AnimatedVisibility(visible = expanded && !isSelected) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
                 ExpandedSetCard(set, onEvent, {
@@ -78,7 +87,7 @@ fun NewSetCard(
                 })
             }
         }
-        AnimatedVisibility(visible = !expanded) {
+        AnimatedVisibility(visible = !expanded && !isSelected) {
             CompactSetCard(reps, weight)
         }
     }

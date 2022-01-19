@@ -1,10 +1,8 @@
 package com.example.android.january2022.ui.session
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,19 +10,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import com.google.accompanist.flowlayout.FlowRow
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
@@ -118,14 +112,14 @@ fun SessionExerciseCard(
                     key(set.setId) {
                         AnimatedVisibility(
                             visible = !set.deleted,
-                            exit = shrinkVertically(
+                            exit = shrinkHorizontally (
                                 animationSpec = tween(
                                     durationMillis = 400,
                                     delayMillis = 25,
                                     easing = LinearOutSlowInEasing
                                 )
                             ),
-                            enter = expandVertically(
+                            enter = expandHorizontally(
                                 animationSpec = tween(
                                     durationMillis = 400,
                                     delayMillis = 25,
@@ -133,7 +127,7 @@ fun SessionExerciseCard(
                                 )
                             )
                         ) {
-                            NewSetCard(set, viewModel::onEvent)
+                            NewSetCard(set, isSelected , viewModel::onEvent)
                         }
                     }
                 }
