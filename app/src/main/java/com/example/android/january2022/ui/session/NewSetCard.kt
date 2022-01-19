@@ -1,35 +1,32 @@
 package com.example.android.january2022.ui.session
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.UnfoldMore
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.*
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.january2022.db.entities.GymSet
+import kotlinx.coroutines.launch
 
 @Composable
 fun NewSetCard(
@@ -38,26 +35,41 @@ fun NewSetCard(
 ) {
     val weight = set.weight
     val reps = set.reps
+    val coroutineScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf((reps == -1 && weight == -1F)) }
+    val moodWidth = remember { Animatable(if (expanded) 26f else 2f) }
 
     Row(
         Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable {
                 expanded = !expanded
-            },
+                coroutineScope.launch {
+                    moodWidth.animateTo(if (expanded) 26f else 2f)
+                }
+            }
+            .requiredHeight(42.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Surface(color = MaterialTheme.colors.primary) {
             Box(
                 Modifier
-                    .width(2.dp)
                     .height(34.dp)
+                    .width(moodWidth.value.dp)
             )
         }
-        if (!expanded) CompactSetCard(reps, weight)
-        else ExpandedSetCard(set, onEvent, { expanded = false })
+        AnimatedVisibility(visible = expanded) {
+            ExpandedSetCard(set, onEvent, {
+                expanded = false
+                coroutineScope.launch {
+                    moodWidth.animateTo(if (expanded) 26f else 2f)
+                }
+            })
+        }
+        AnimatedVisibility(visible = !expanded) {
+            CompactSetCard(reps, weight)
+        }
     }
 }
 
@@ -153,7 +165,7 @@ fun CompactSetCard(
             Text(text = "reps", fontSize = 10.sp)
         }
         Row() {
-            Text(text = if(weight > -1) weight.toString() else "0", fontWeight = FontWeight.Bold)
+            Text(text = if (weight > -1) weight.toString() else "0", fontWeight = FontWeight.Bold)
             Text(text = "kg", fontSize = 10.sp)
         }
     }
