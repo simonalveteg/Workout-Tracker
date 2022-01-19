@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "3b5ded7b46126dd9173ded0f19d47b48",
+    "identityHash": "0a7f9c26f39ba315d2a60beeb2ca5c14",
     "entities": [
       {
         "tableName": "sessions",
@@ -148,7 +148,7 @@
       },
       {
         "tableName": "sets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`setId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentSessionExerciseId` INTEGER NOT NULL, `reps` INTEGER NOT NULL, `weight` REAL NOT NULL, `mood` INTEGER NOT NULL, `deleted` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`setId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentSessionExerciseId` INTEGER NOT NULL, `reps` INTEGER NOT NULL, `weight` REAL NOT NULL, `mood` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `setType` TEXT NOT NULL DEFAULT 'Normal')",
         "fields": [
           {
             "fieldPath": "setId",
@@ -185,6 +185,13 @@
             "columnName": "deleted",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "setType",
+            "columnName": "setType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Normal'"
           }
         ],
         "primaryKey": {
@@ -200,7 +207,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3b5ded7b46126dd9173ded0f19d47b48')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0a7f9c26f39ba315d2a60beeb2ca5c14')"
     ]
   }
 }

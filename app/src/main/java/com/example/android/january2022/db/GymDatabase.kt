@@ -33,13 +33,8 @@ import androidx.room.DeleteTable
         GymSet::class
     ],
     autoMigrations = [
-        AutoMigration(
-            from = 8,
-            to = 9,
-            spec = GymDatabase.MyExampleAutoMigration::class
-        )
     ],
-    version = 9, exportSchema = true
+    version = 1, exportSchema = true
 )
 abstract class GymDatabase : RoomDatabase() {
 
@@ -52,6 +47,12 @@ abstract class GymDatabase : RoomDatabase() {
     internal class MyExampleAutoMigration : AutoMigrationSpec {
         override fun onPostMigrate(db: SupportSQLiteDatabase) {
             // Invoked once auto migration is done
+        }
+    }
+    @RenameColumn(tableName = "sets", fromColumnName = "setType", toColumnName = "type")
+    internal class AddSetType : AutoMigrationSpec {
+        override fun onPostMigrate(db: SupportSQLiteDatabase) {
+
         }
     }
 }

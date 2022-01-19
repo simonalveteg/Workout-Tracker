@@ -1,7 +1,10 @@
 package com.example.android.january2022.db.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.android.january2022.db.Equipment
+import com.example.android.january2022.db.SetType
 
 
 /**
@@ -16,6 +19,8 @@ data class GymSet(
     val reps: Int = -1,
     val weight: Float = -1f,
     val mood: Int = -1,
-    val deleted: Boolean = false
+    val deleted: Boolean = false,
+    @ColumnInfo(defaultValue = SetType.NORMAL)
+    val setType: String = SetType.NORMAL
     //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )

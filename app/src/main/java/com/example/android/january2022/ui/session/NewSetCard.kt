@@ -37,7 +37,8 @@ fun NewSetCard(
     val reps = set.reps
     val coroutineScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf((reps == -1 && weight == -1F)) }
-    val moodWidth = remember { Animatable(if (expanded) 26f else 2f) }
+    val expandedWidth = 80f
+    val moodWidth = remember { Animatable(if (expanded) expandedWidth else 2f) }
 
     Row(
         Modifier
@@ -45,7 +46,7 @@ fun NewSetCard(
             .clickable {
                 expanded = !expanded
                 coroutineScope.launch {
-                    moodWidth.animateTo(if (expanded) 26f else 2f)
+                    moodWidth.animateTo(if (expanded) expandedWidth else 2f)
                 }
             }
             .requiredHeight(42.dp),
@@ -56,16 +57,26 @@ fun NewSetCard(
             Box(
                 Modifier
                     .height(34.dp)
-                    .width(moodWidth.value.dp)
-            )
-        }
-        AnimatedVisibility(visible = expanded) {
-            ExpandedSetCard(set, onEvent, {
-                expanded = false
-                coroutineScope.launch {
-                    moodWidth.animateTo(if (expanded) 26f else 2f)
+                    .width(moodWidth.value.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                // bug in kotlin makes the fully qualified name necessary
+                androidx.compose.animation.AnimatedVisibility(visible = expanded) {
+                    Text("test")
                 }
-            })
+            }
+        }
+
+        AnimatedVisibility(visible = expanded) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+
+                ExpandedSetCard(set, onEvent, {
+                    expanded = false
+                    coroutineScope.launch {
+                        moodWidth.animateTo(if (expanded) expandedWidth else 2f)
+                    }
+                })
+            }
         }
         AnimatedVisibility(visible = !expanded) {
             CompactSetCard(reps, weight)
