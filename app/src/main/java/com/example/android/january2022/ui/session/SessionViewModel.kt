@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.example.android.january2022.db.GymRepository
+import com.example.android.january2022.db.SetType
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
@@ -79,6 +80,11 @@ class SessionViewModel @Inject constructor(
             is SessionEvent.RepsChanged -> {
                 viewModelScope.launch {
                     repository.updateSet(event.set.copy(reps = event.newReps))
+                }
+            }
+            is SessionEvent.SetTypeChanged -> {
+                viewModelScope.launch {
+                    repository.updateSet(event.set.copy(setType = SetType.next(event.set.setType)))
                 }
             }
             is SessionEvent.OnAddSet -> {

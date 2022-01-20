@@ -10,6 +10,7 @@ import com.example.android.january2022.utils.Event
 sealed class SessionEvent : Event {
     data class RemoveSelectedSet(val set: GymSet): SessionEvent()
     data class MoodChanged(val set: GymSet, val newMood: Int): SessionEvent()
+    data class SetTypeChanged(val set: GymSet): SessionEvent()
     data class WeightChanged(val set: GymSet, val newWeight: Float): SessionEvent()
     data class RepsChanged(val set: GymSet, val newReps: Int): SessionEvent()
     object OnAddSessionExerciseClicked: SessionEvent()

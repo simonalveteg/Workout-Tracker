@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.session
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.january2022.db.entities.GymSet
 import kotlinx.coroutines.launch
+import com.example.android.january2022.db.SetType
 
 @Composable
 fun NewSetCard(
@@ -35,12 +37,28 @@ fun NewSetCard(
     errorColor: Color,
     onEvent: (SessionEvent) -> Unit,
 ) {
+    val colors = MaterialTheme.colors
     val weight = set.weight
     val reps = set.reps
     val coroutineScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf((reps == -1 && weight == -1F)) }
     val expandedWidth = 80f
-    val moodWidth = remember { Animatable(if (expanded) expandedWidth else 2f) }
+    val expandedHeight = 34f
+    val collapsedWidth = 2f
+    val collapsedHeight = 34f
+    val moodWidth = remember { Animatable(if (expanded) expandedWidth else collapsedWidth) }
+    val moodHeight = remember {Animatable(if (expanded) expandedHeight else collapsedHeight)}
+
+    val setTypeColor by animateColorAsState(
+        targetValue = when(set.setType) {
+            SetType.WARMUP -> Color(0xFF97935E)
+            SetType.EASY -> Color(0xFFA37A52)
+            SetType.NORMAL -> colors.primary
+            SetType.HARD -> Color(0xFF7d4a61)
+            SetType.DROP -> Color(0xFFD6504B)
+            else -> colors.primary
+        }
+    )
 
     Row(
         Modifier
@@ -48,23 +66,27 @@ fun NewSetCard(
             .clickable {
                 expanded = !expanded
                 coroutineScope.launch {
-                    moodWidth.animateTo(if (expanded) expandedWidth else 2f)
+                    moodWidth.animateTo(if (expanded) expandedWidth else collapsedWidth)
+                    moodHeight.animateTo(if (expanded) expandedHeight else collapsedHeight)
                 }
             }
             .requiredHeight(42.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Surface(color = MaterialTheme.colors.primary) {
+        Surface(color = setTypeColor) {
             Box(
                 Modifier
-                    .height(34.dp)
-                    .width(moodWidth.value.dp),
+                    .height(moodHeight.value.dp)
+                    .width(moodWidth.value.dp)
+                    .clickable(enabled = expanded) {
+                       onEvent(SessionEvent.SetTypeChanged(set))
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 // bug in kotlin makes the fully qualified name necessary
                 androidx.compose.animation.AnimatedVisibility(visible = expanded) {
-                    Text("test")
+                    Text(set.setType)
                 }
             }
         }
@@ -84,7 +106,7 @@ fun NewSetCard(
                 ExpandedSetCard(set, onEvent, {
                     expanded = false
                     coroutineScope.launch {
-                        moodWidth.animateTo(if (expanded) expandedWidth else 2f)
+                        moodWidth.animateTo(if (expanded) expandedWidth else collapsedWidth)
                     }
                 })
             }
