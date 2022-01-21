@@ -10,6 +10,9 @@ import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import java.util.*
 import javax.inject.Inject
@@ -31,6 +34,7 @@ class HomeViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
 
 
     fun onEvent(event: Event) {
@@ -63,4 +67,12 @@ class HomeViewModel @Inject constructor(
             _uiEvent.send(event)
         }
     }
+
+    fun getMuscleGroupsForSession(sessionId: Long): Flow<List<String>> {
+        return flow {
+            val muscleGroups = repository.getMuscleGroupsForSession(sessionId)
+            emit(muscleGroups)
+        }.flowOn(Dispatchers.IO)
+    }
+
 }

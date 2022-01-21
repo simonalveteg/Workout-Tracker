@@ -1,6 +1,5 @@
 package com.example.android.january2022.ui.session
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,7 +10,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,7 +17,6 @@ import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.exercises.picker.SubTitleText
 import com.example.android.january2022.ui.exercises.picker.TitleText
 import com.example.android.january2022.utils.UiEvent
-import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,6 +34,7 @@ fun SessionScreen(
     val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession().observeAsState(
         listOf()
     )
+    val muscleGroups = session?.let { viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(initial = emptyList()) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -54,7 +52,6 @@ fun SessionScreen(
             }
         }
     }
-    MaterialContainerTransform()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -78,7 +75,7 @@ fun SessionScreen(
                     .padding(16.dp)
             ) {
                 if (session != null) {
-                    SessionInfoThings(session)
+                    SessionInfoThings(session, muscleGroups)
                 }
             }
             LazyColumn(
@@ -109,7 +106,7 @@ fun SessionScreen(
 }
 
 @Composable
-fun SessionInfoThings(session: Session) {
+fun SessionInfoThings(session: Session, muscleGroups: State<List<String>>?) {
     val startDate = SimpleDateFormat(
         "MMM d yyyy",
         Locale.ENGLISH
@@ -131,5 +128,11 @@ fun SessionInfoThings(session: Session) {
         }
         SubTitleText(text = "$startTime - $endTime", indent = 16)
         SubTitleText(text = session.trainingType)
+        Row {
+            muscleGroups?.value?.filter{it.isNotEmpty()}?.forEach { s ->
+                Text(text = s)
+                Spacer(Modifier.width(4.dp))
+            }
+        }
     }
 }

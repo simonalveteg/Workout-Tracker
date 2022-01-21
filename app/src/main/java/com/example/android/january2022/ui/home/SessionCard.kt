@@ -27,6 +27,7 @@ fun SessionCard(
     session: Session,
     sessionContent: List<SessionExerciseWithExercise>,
     sets: List<GymSet>,
+    viewModel: HomeViewModel,
     onEvent: (Event) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -38,6 +39,7 @@ fun SessionCard(
         "HH:mm",
         Locale.ENGLISH
     ).format(session.startTimeMilli)
+    val muscleGroups = viewModel.getMuscleGroupsForSession(session.sessionId).collectAsState(initial = emptyList())
 
     Card(
         modifier = Modifier
@@ -60,7 +62,12 @@ fun SessionCard(
             Row {
                 Column {
                     Text(text = startDate)
-                    Text(text = startTime)
+                    Row {
+                        muscleGroups.value.filter { it.isNotEmpty() }.take(3).forEach {
+                            Text(text = it)
+                            Spacer(Modifier.width(4.dp))
+                        }
+                    }
                 }
                 Spacer(Modifier.weight(1f))
                 IconButton(

@@ -1,9 +1,5 @@
 package com.example.android.january2022.ui.home
 
-import android.util.Log
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,19 +13,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.R
-import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -150,9 +140,17 @@ fun SessionCardList(
     val sessionContent = viewModel.sessionExerciseList.observeAsState(listOf())
     val sets = viewModel.sets.observeAsState(listOf())
 
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
         items(items = sessions) { session ->
-            SessionCard(session, sessionContent.value, sets.value, viewModel::onEvent)
+            SessionCard(
+                session,
+                sessionContent.value,
+                sets.value,
+                viewModel,
+                viewModel::onEvent
+            )
         }
         item {
             Spacer(modifier = Modifier.height(124.dp))

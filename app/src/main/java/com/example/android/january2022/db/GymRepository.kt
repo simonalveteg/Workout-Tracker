@@ -1,6 +1,7 @@
 package com.example.android.january2022.db
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.example.android.january2022.db.entities.*
 
 
@@ -34,6 +35,17 @@ class GymRepository(
 
     fun getSessionExercisesForSession(sessionId: Long) : LiveData<List<SessionExerciseWithExercise>> =
         dao.getSessionExercisesWithExerciseForSession(sessionId)
+
+    fun getMuscleGroupsForSession(sessionId: Long) : List<String> {
+        val muscleGroups = dao.getSessionMuscleGroups(sessionId)
+        val sb = StringBuilder()
+        muscleGroups.forEach {
+            sb.append(it)
+            sb.append(", ")
+        }
+        val muscleGroupsByCount = sb.split(", ").groupingBy { it }.eachCount()
+        return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }
+    }
 
     fun getSetsForSessionExercise(id: Long) =
         dao.getSetsForSessionExercise(id)

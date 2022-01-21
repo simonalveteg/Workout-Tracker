@@ -17,6 +17,9 @@ import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,7 +64,12 @@ class SessionViewModel @Inject constructor(
     fun getSessionExercisesForSession() : LiveData<List<SessionExerciseWithExercise>> {
         return repository.getSessionExercisesForSession(currentSession?.sessionId ?: -1)
     }
-
+    fun getMuscleGroupsForSession(sessionId: Long): Flow<List<String>> {
+        return flow {
+            val muscleGroups = repository.getMuscleGroupsForSession(sessionId)
+            emit(muscleGroups)
+        }.flowOn(Dispatchers.IO)
+    }
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 

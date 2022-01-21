@@ -68,7 +68,7 @@ fun SessionExerciseCard(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = sessionExercise.exercise.exerciseTitle,
+                    text = sessionExercise.exercise.exerciseTitle +":"+ sessionExercise.exercise.muscleGroups,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier
                         .weight(1f)
