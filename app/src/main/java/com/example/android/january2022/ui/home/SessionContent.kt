@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.home
 
+import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -22,7 +23,7 @@ fun SessionContent(
             .fillMaxWidth()
             .padding(vertical = 2.dp)
     ) {
-        Text(sessionExercise.exercise.exerciseTitle, modifier = Modifier.weight(1f))
+        Text(sessionExercise.exercise.exerciseTitle, modifier = Modifier.weight(4f))
         val string = StringBuilder()
         sets.forEach { set ->
             val reps = set.reps
@@ -41,6 +42,6 @@ fun SessionContent(
             }
         }
         val concat = string.toString().removeSuffix(", ")
-        Text(concat, modifier = Modifier.weight(1f), textAlign = TextAlign.Justify)
+        Text(concat, modifier = Modifier.weight(3f), textAlign = TextAlign.Justify)
     }
 }
