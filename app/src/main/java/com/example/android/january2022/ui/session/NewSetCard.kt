@@ -51,11 +51,11 @@ fun NewSetCard(
 
     val setTypeColor by animateColorAsState(
         targetValue = when(set.setType) {
-            SetType.WARMUP -> Color(0xFF97935E)
-            SetType.EASY -> Color(0xFFA37A52)
-            SetType.NORMAL -> colors.primary
-            SetType.HARD -> Color(0xFF7d4a61)
-            SetType.DROP -> Color(0xFFD6504B)
+            SetType.WARMUP -> Color(0xFF6B6B65)
+            SetType.EASY -> Color(0xFF638D46)
+            SetType.NORMAL -> Color(0xFFCAA42D)
+            SetType.HARD -> Color(0xFFA73430)
+            SetType.DROP -> Color(0xFF965874)
             else -> colors.primary
         }
     )
@@ -90,6 +90,7 @@ fun NewSetCard(
                 }
             }
         }
+
         AnimatedVisibility(visible = isSelected) {
             IconButton(
                 onClick = { onEvent(SessionEvent.RemoveSelectedSet(set)) },

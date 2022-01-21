@@ -4,16 +4,20 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
+import com.google.accompanist.navigation.animation.navigation
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.transition.Slide
 import com.example.android.january2022.ui.exercises.detail.ExerciseDetailScreen
 import com.example.android.january2022.ui.theme.January2022Theme
 import com.example.android.january2022.ui.exercises.ExercisesScreen
@@ -21,18 +25,21 @@ import com.example.android.january2022.ui.exercises.picker.ExercisePickerScreen
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.utils.Routes
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             January2022Theme {
-                val navController = rememberNavController()
+                val navController = rememberAnimatedNavController()
 
-                NavHost(
+                AnimatedNavHost(
                     navController = navController,
                     startDestination = Routes.HOME_SCREEN
                 ) {

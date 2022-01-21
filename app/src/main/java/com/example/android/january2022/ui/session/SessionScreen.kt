@@ -19,6 +19,7 @@ import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.exercises.picker.SubTitleText
 import com.example.android.january2022.ui.exercises.picker.TitleText
 import com.example.android.january2022.utils.UiEvent
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,7 +54,7 @@ fun SessionScreen(
             }
         }
     }
-
+    MaterialContainerTransform()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
