@@ -1,13 +1,12 @@
 package com.example.android.january2022.ui.home
 
 import android.util.Log
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
@@ -23,8 +22,7 @@ fun SessionContent(
             .fillMaxWidth()
             .padding(vertical = 2.dp)
     ) {
-        Text(sessionExercise.exercise.exerciseTitle)
-        Spacer(Modifier.weight(1f))
+        Text(sessionExercise.exercise.exerciseTitle, modifier = Modifier.weight(1f))
         val string = StringBuilder()
         sets.forEach { set ->
             val reps = set.reps
@@ -43,6 +41,6 @@ fun SessionContent(
             }
         }
         val concat = string.toString().removeSuffix(", ")
-        Text(concat)
+        Text(concat, modifier = Modifier.weight(1f), textAlign = TextAlign.Justify)
     }
 }
