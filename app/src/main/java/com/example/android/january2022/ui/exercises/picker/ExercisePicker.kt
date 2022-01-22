@@ -36,7 +36,7 @@ fun ExercisePickerScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(vertical = 8.dp, horizontal = 8.dp)
     ) {
         TitleText("CHOOSE EXERCISE",32)
         Box(Modifier.weight(1f)) {

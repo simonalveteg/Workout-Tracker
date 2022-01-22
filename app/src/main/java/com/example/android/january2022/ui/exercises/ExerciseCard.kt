@@ -1,50 +1,60 @@
 package com.example.android.january2022.ui.exercises
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import android.util.Log
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 
 @Composable
 fun ExerciseCard(
     exercise: Exercise,
+    selected: Boolean,
     onEvent: (Event) -> Unit
 ) {
-    Card() {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp)
-        ) {
-            IconButton(
-                onClick = {
-                    onEvent(
-                        ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
-                    )
-                }
-            ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth()) {
+            Row(Modifier.padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(exercise.exerciseTitle.uppercase(), style = MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.weight(1f))
+                Log.d("EC","Exercise ${exercise.exerciseId} selected $selected")
                 Icon(
-                    imageVector = Icons.Filled.Info,
-                    contentDescription = "Show Exercise Info"
+                    imageVector = if(selected) Icons.Filled.RadioButtonChecked else Icons.Filled.RadioButtonUnchecked,
+                    contentDescription = "Exercise Selected Identifier"
                 )
             }
+            Column(Modifier.padding(start = 8.dp)) {
 
-            Column() {
-                Text(exercise.exerciseTitle)
-                Text(exercise.muscleGroups)
-                Text(exercise.equipment)
+                Row(Modifier.padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text("MUSCLE GROUPS", style = MaterialTheme.typography.subtitle2)
+                    Spacer(Modifier.width(8.dp))
+                    Text(exercise.muscleGroups)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("EQUIPMENT", style = MaterialTheme.typography.subtitle2)
+                    Spacer(Modifier.width(8.dp))
+                    Text(exercise.equipment)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(Modifier.weight(1f))
+                    OutlinedButton(
+                        onClick = {
+                            onEvent(
+                                ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
+                            )
+                        }
+                    ) {
+                        Text("VIEW ON MUSCLEWIKI")
+                    }
+                }
             }
         }
     }

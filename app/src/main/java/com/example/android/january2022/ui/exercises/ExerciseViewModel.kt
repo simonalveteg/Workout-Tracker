@@ -20,6 +20,7 @@ import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,6 +39,9 @@ class ExerciseViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     var exerciseList: LiveData<List<Exercise>> = repository.getExercisesByQuery()
+        private set
+
+    var selectedExercises = MutableStateFlow<Set<Long>>(emptySet())
         private set
 
     init {
@@ -60,7 +64,16 @@ class ExerciseViewModel @Inject constructor(
                 }
             }
             is ExerciseEvent.ExerciseSelected -> {
+                val id = event.exercise.exerciseId
                 viewModelScope.launch {
+                    if(selectedExercises.value.contains(id)) {
+                        selectedExercises.value = selectedExercises.value.filter{it != id}.toSet()
+                    } else {
+                        selectedExercises.value += id
+                    }
+                }
+
+                /*viewModelScope.launch {
                     Log.d("EVM","Exercise selected, sID: ${currentSession?.sessionId}")
                     val newSessionExercise = SessionExercise(
                         parentSessionId = currentSession?.sessionId?: -1L,
@@ -68,7 +81,7 @@ class ExerciseViewModel @Inject constructor(
                     )
                     repository.insertSessionExercise(newSessionExercise)
                 }
-                sendUiEvent(UiEvent.PopBackStack)
+                sendUiEvent(UiEvent.PopBackStack)*/
             }
             is ExerciseEvent.ExerciseInfoClicked -> {
                 val exerciseId = event.exercise.exerciseId
