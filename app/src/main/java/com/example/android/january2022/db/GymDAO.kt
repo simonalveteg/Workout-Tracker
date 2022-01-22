@@ -90,7 +90,8 @@ interface GymDAO {
         "SELECT * FROM exercises " +
                 "WHERE title LIKE '%' || :string || '%' " +
                 "OR muscleGroups LIKE '%' || :string || '%' " +
-                "OR equipment LIKE '%' || :string || '%' "
+                "OR equipment LIKE '%' || :string || '%' " +
+                "ORDER BY title ASC"
     )
     fun getExercisesByQuery(string: String): LiveData<List<Exercise>>
 
