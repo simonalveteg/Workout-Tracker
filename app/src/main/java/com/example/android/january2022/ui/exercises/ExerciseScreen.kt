@@ -7,11 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.android.january2022.db.Equipment
 import com.example.android.january2022.db.MuscleGroup
-import com.example.android.january2022.ui.home.HomeViewModel
-import com.example.android.january2022.db.entities.Exercise
 
 
 @Composable
@@ -32,7 +29,11 @@ fun ExercisesScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Box(Modifier.weight(1f)) {
-                ExercisesList(viewModel, viewModel::onEvent, false)
+                ExercisesList(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    inPicker = false
+                )
             }
             Row(
                 Modifier

@@ -15,4 +15,5 @@ sealed class ExerciseEvent : Event {
     data class ExerciseInfoClicked(val exercise: Exercise): ExerciseEvent()
     data class ExerciseUpdated(val exercise: Exercise): ExerciseEvent()
     data class FilterExerciseList(val searchString: String) : ExerciseEvent()
+    object AddExercisesToSession: ExerciseEvent()
 }

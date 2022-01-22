@@ -16,9 +16,13 @@ import com.example.android.january2022.utils.Event
 
 
 @Composable
-fun ExercisesList(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit, inPicker: Boolean) {
+fun ExercisesList(
+    viewModel: ExerciseViewModel,
+    selectedExercises: Set<Long> = emptySet(),
+    onEvent: (Event) -> Unit,
+    inPicker: Boolean
+) {
     val exercises: List<Exercise> by viewModel.exerciseList.observeAsState(listOf())
-    val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
 
     LazyColumn(
         modifier = Modifier

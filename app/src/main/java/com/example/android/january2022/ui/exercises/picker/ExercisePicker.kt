@@ -1,14 +1,14 @@
 package com.example.android.january2022.ui.exercises.picker
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.db.Equipment
-import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
@@ -23,6 +23,7 @@ fun ExercisePickerScreen(
     viewModel: ExerciseViewModel = hiltViewModel()
 ) {
     var searchString by remember { mutableStateOf("") }
+    val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -40,23 +41,35 @@ fun ExercisePickerScreen(
     ) {
         TitleText("CHOOSE EXERCISE",32)
         Box(Modifier.weight(1f)) {
-            ExercisesList(viewModel, viewModel::onEvent, true)
+            ExercisesList(viewModel, selectedExercises, viewModel::onEvent, true)
         }
-        TextField(
-            value = searchString,
-            onValueChange = { newText ->
-                searchString = newText
-                viewModel.onEvent(
-                    ExerciseEvent.FilterExerciseList(newText)
-                )
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            placeholder = { Text(text = "Filter list") },
-            modifier = Modifier.fillMaxWidth().padding(4.dp)
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextField(
+                value = searchString,
+                onValueChange = { newText ->
+                    searchString = newText
+                    viewModel.onEvent(
+                        ExerciseEvent.FilterExerciseList(newText)
+                    )
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                placeholder = { Text(text = "Filter list") },
+                modifier = Modifier
+                    .padding(4.dp)
+                    .weight(1f)
+            )
+            AnimatedVisibility(visible = selectedExercises.isNotEmpty()) {
+                Button(
+                    onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
+                    modifier = Modifier.height(56.dp)
+                ) {
+                    Text("ADD ${selectedExercises.size}")
+                }
+            }
+        }
     }
 }
 

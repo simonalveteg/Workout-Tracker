@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,22 +67,27 @@ class ExerciseViewModel @Inject constructor(
             is ExerciseEvent.ExerciseSelected -> {
                 val id = event.exercise.exerciseId
                 viewModelScope.launch {
-                    if(selectedExercises.value.contains(id)) {
-                        selectedExercises.value = selectedExercises.value.filter{it != id}.toSet()
+                    if (selectedExercises.value.contains(id)) {
+                        selectedExercises.value =
+                            selectedExercises.value.filter { it != id }.toSet()
                     } else {
                         selectedExercises.value += id
                     }
                 }
-
-                /*viewModelScope.launch {
-                    Log.d("EVM","Exercise selected, sID: ${currentSession?.sessionId}")
-                    val newSessionExercise = SessionExercise(
-                        parentSessionId = currentSession?.sessionId?: -1L,
-                        parentExerciseId = event.exercise.exerciseId
-                    )
-                    repository.insertSessionExercise(newSessionExercise)
+            }
+            is ExerciseEvent.AddExercisesToSession -> {
+                viewModelScope.launch {
+                    selectedExercises.collect {
+                        it.forEach { exerciseId ->
+                            val newSessionExercise = SessionExercise(
+                                parentSessionId = currentSession?.sessionId?: -1L,
+                                parentExerciseId = exerciseId
+                            )
+                            repository.insertSessionExercise(newSessionExercise)
+                        }
+                    }
                 }
-                sendUiEvent(UiEvent.PopBackStack)*/
+                sendUiEvent(UiEvent.PopBackStack)
             }
             is ExerciseEvent.ExerciseInfoClicked -> {
                 val exerciseId = event.exercise.exerciseId
