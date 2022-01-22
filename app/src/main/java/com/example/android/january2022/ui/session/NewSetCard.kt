@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
@@ -70,7 +72,7 @@ fun NewSetCard(
                     moodHeight.animateTo(if (expanded) expandedHeight else collapsedHeight)
                 }
             }
-            .requiredHeight(42.dp),
+            .requiredHeight(48.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -80,7 +82,7 @@ fun NewSetCard(
                     .height(moodHeight.value.dp)
                     .width(moodWidth.value.dp)
                     .clickable(enabled = expanded) {
-                       onEvent(SessionEvent.SetTypeChanged(set))
+                        onEvent(SessionEvent.SetTypeChanged(set))
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -129,8 +131,10 @@ fun ExpandedSetCard(
     val localFocusManager = LocalFocusManager.current
     val reps: Int = set.reps
     val weight: Float = set.weight
-
-    if (reps == -1) localFocusManager.moveFocus(FocusDirection.In)
+    val requester = FocusRequester()
+    LaunchedEffect(Unit){
+        requester.requestFocus()
+    }
 
     Row {
         BasicTextField(
@@ -160,6 +164,7 @@ fun ExpandedSetCard(
                 .width(IntrinsicSize.Min)
                 .padding(start = 6.dp)
                 .padding(horizontal = 8.dp)
+                .focusRequester(requester)
         )
         Text(
             text = "reps",

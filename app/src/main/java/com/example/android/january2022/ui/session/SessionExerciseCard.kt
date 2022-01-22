@@ -101,7 +101,7 @@ fun SessionExerciseCard(
                 }
             }
             FlowRow(
-                Modifier.padding(start = 2.dp),
+                Modifier.padding(start = 2.dp).animateContentSize(),
                 crossAxisAlignment = FlowCrossAxisAlignment.Start,
                 mainAxisSpacing = 12.dp,
                 mainAxisAlignment = FlowMainAxisAlignment.Start
