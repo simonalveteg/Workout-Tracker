@@ -61,6 +61,8 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
     // Compose Material Design
     implementation "androidx.compose.material:material:$compose_version"
+    // Compose material3
+    implementation("androidx.compose.material3:material3:1.0.0-alpha03")
     // Animations
     implementation "androidx.compose.animation:animation:$compose_version"
     // Tooling support (Previews, etc.)

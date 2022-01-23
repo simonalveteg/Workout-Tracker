@@ -43,11 +43,14 @@ fun ExercisePickerScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
+        bottomBar = { BottomAppBar() {
+
+        }},
         floatingActionButton = {
             // TODO: Animate fab entering and exiting screen when items get selected.
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
-                shape = RoundedCornerShape(50),
+                shape = RoundedCornerShape(35),
                 backgroundColor = MaterialTheme.colors.primary,
                 text = { Text("ADD ${selectedExercises.size}") }
             )

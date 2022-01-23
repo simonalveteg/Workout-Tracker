@@ -54,10 +54,13 @@ fun SessionScreen(
     }
     Scaffold(
         scaffoldState = scaffoldState,
+        bottomBar = { BottomAppBar() {
+            
+        }},
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(SessionEvent.OnAddSessionExerciseClicked) },
-                shape = RoundedCornerShape(50),
+                shape = RoundedCornerShape(35),
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(Icons.Filled.Add, "")
