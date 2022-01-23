@@ -5,7 +5,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
@@ -24,9 +26,10 @@ fun ExerciseCard(
     selected: Boolean,
     onEvent: (Event) -> Unit
 ) {
-    val cornerCutDp by animateDpAsState(targetValue = if(selected) 24.dp else 0.dp)
-    Box(Modifier.background(color = MaterialTheme.colors.primary)) {
-        Card(
+    val cornerCutDp by animateDpAsState(targetValue = if (selected) 24.dp else 0.dp)
+    Box(Modifier.background(color = MaterialTheme.colorScheme.primary)) {
+        Surface(
+            tonalElevation = 1.dp,
             modifier = Modifier
                 .fillMaxWidth(),
             shape = CutCornerShape(topEnd = cornerCutDp)
@@ -36,18 +39,18 @@ fun ExerciseCard(
                     .padding(start = 16.dp, top = 12.dp, bottom = 4.dp, end = 8.dp)
                     .fillMaxWidth()
             ) {
-                Text(exercise.exerciseTitle.uppercase(), style = MaterialTheme.typography.h5)
+                Text(exercise.exerciseTitle.uppercase(), style = MaterialTheme.typography.headlineSmall)
                 Column(Modifier.padding(start = 8.dp, top = 8.dp)) {
                     Row(
                         Modifier.padding(bottom = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("MUSCLE GROUPS", style = MaterialTheme.typography.subtitle2)
+                        Text("MUSCLE GROUPS", style = MaterialTheme.typography.labelSmall)
                         Spacer(Modifier.width(8.dp))
                         Text(exercise.muscleGroups)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("EQUIPMENT", style = MaterialTheme.typography.subtitle2)
+                        Text("EQUIPMENT", style = MaterialTheme.typography.labelSmall)
                         Spacer(Modifier.width(8.dp))
                         Text(exercise.equipment)
                     }

@@ -9,14 +9,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FabPosition
+import androidx.compose.material3.FabPosition
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -33,7 +34,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class,ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
@@ -41,8 +42,7 @@ fun HomeScreen(
 ) {
     val sessions by viewModel.sessionList.observeAsState(listOf())
     val composableScope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
-    val colors = MaterialTheme.colors
+    val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -53,7 +53,6 @@ fun HomeScreen(
         }
     }
     Scaffold(
-        scaffoldState = scaffoldState,
         bottomBar = { BottomAppBar() {
 
         }},
@@ -70,7 +69,7 @@ fun HomeScreen(
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
     ) {
         SessionCardList(sessions = sessions, viewModel)
     }

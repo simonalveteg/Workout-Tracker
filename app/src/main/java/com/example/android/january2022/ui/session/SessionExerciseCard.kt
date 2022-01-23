@@ -5,7 +5,9 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -39,11 +41,13 @@ fun SessionExerciseCard(
     val haptic = LocalHapticFeedback.current
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
     val errorColor by animateColorAsState(
-        targetValue = if(isSelected) MaterialTheme.colors.error else MaterialTheme.colors.onSurface)
+        targetValue = if(isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
 
 
-    Card(
-        Modifier
+    Surface(
+        shape = RoundedCornerShape(15),
+        tonalElevation = 1.dp,
+        modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
             .animateContentSize(
@@ -68,8 +72,8 @@ fun SessionExerciseCard(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = sessionExercise.exercise.exerciseTitle +":"+ sessionExercise.exercise.muscleGroups,
-                    style = MaterialTheme.typography.h6,
+                    text = sessionExercise.exercise.exerciseTitle ,
+                    style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),

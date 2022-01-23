@@ -6,7 +6,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,7 +23,7 @@ import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ExercisePickerScreen(
     onPopBackStack: () -> Unit,
@@ -42,7 +45,6 @@ fun ExercisePickerScreen(
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
         bottomBar = { BottomAppBar() {
 
         }},
@@ -51,11 +53,10 @@ fun ExercisePickerScreen(
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
                 shape = RoundedCornerShape(35),
-                backgroundColor = MaterialTheme.colors.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 text = { Text("ADD ${selectedExercises.size}") }
             )
         },
-        isFloatingActionButtonDocked = false,
         floatingActionButtonPosition = FabPosition.End
     ) {
         Column(
@@ -117,19 +118,19 @@ fun MuscleChip(
     onEvent: (String) -> Unit
 ) {
     val chipColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
     )
     Surface(
         shape = RoundedCornerShape(50),
         color = chipColor.value,
-        elevation = 1.dp
+        tonalElevation = 1.dp
     ) {
         Box(modifier = Modifier.toggleable(value = isSelected, onValueChange = {
             onEvent(title)
         })) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(8.dp)
             )
         }
@@ -140,8 +141,8 @@ fun MuscleChip(
 fun TitleText(text: String, bottomPadding: Int = 0, startPadding: Int = 0) {
     Text(
         text = text,
-        color = MaterialTheme.colors.primary,
-        style = MaterialTheme.typography.h3,
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.displayMedium,
         modifier = Modifier.padding(bottom = bottomPadding.dp, start = startPadding.dp)
     )
 }
@@ -150,8 +151,8 @@ fun TitleText(text: String, bottomPadding: Int = 0, startPadding: Int = 0) {
 fun SubTitleText(text: String, bottomPadding: Int = 0, indent: Int = 0) {
     Text(
         text = text,
-        color = MaterialTheme.colors.primaryVariant,
-        style = MaterialTheme.typography.h6,
+        color = MaterialTheme.colorScheme.secondary,
+        style = MaterialTheme.typography.headlineSmall,
         modifier = Modifier.padding(bottom = bottomPadding.dp, start = indent.dp)
     )
 }

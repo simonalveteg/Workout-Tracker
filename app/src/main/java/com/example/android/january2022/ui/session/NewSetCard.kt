@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
@@ -39,7 +39,7 @@ fun NewSetCard(
     errorColor: Color,
     onEvent: (SessionEvent) -> Unit,
 ) {
-    val colors = MaterialTheme.colors
+    val colors = MaterialTheme.colorScheme
     val weight = set.weight
     val reps = set.reps
     val coroutineScope = rememberCoroutineScope()
@@ -148,7 +148,7 @@ fun ExpandedSetCard(
                 }
             },
             textStyle = TextStyle(
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             ),
@@ -159,7 +159,7 @@ fun ExpandedSetCard(
             keyboardActions = KeyboardActions(
                 onNext = { localFocusManager.moveFocus(FocusDirection.Right) }
             ),
-            cursorBrush = SolidColor(MaterialTheme.colors.onSurface),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             modifier = Modifier
                 .width(IntrinsicSize.Min)
                 .padding(start = 6.dp)
@@ -180,7 +180,7 @@ fun ExpandedSetCard(
                 }
             },
             textStyle = TextStyle(
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             ),
@@ -194,7 +194,7 @@ fun ExpandedSetCard(
                     onDone()
                 }
             ),
-            cursorBrush = SolidColor(MaterialTheme.colors.onSurface),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             modifier = Modifier
                 .width(IntrinsicSize.Min)
                 .padding(start = 6.dp)

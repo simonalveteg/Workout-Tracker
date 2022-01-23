@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarResult.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -22,12 +25,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: SessionViewModel = hiltViewModel()
 ) {
-    val scaffoldState = rememberScaffoldState()
     val selectedSessionExercise = viewModel.selectedSessionExercise
     val session = viewModel.currentSession
     val allSets by viewModel.setsList.observeAsState(listOf())
@@ -41,19 +44,11 @@ fun SessionScreen(
             when(event) {
                 is UiEvent.Navigate -> onNavigate(event)
                 is UiEvent.ShowSnackbar -> {
-                    val result = scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = event.actionLabel
-                    )
-                    if(result == SnackbarResult.ActionPerformed) {
-                        if(event.action != null) viewModel.onEvent(event.action)
-                    }
                 }
             }
         }
     }
     Scaffold(
-        scaffoldState = scaffoldState,
         bottomBar = { BottomAppBar() {
             
         }},
@@ -61,7 +56,7 @@ fun SessionScreen(
             FloatingActionButton(
                 onClick = { viewModel.onEvent(SessionEvent.OnAddSessionExerciseClicked) },
                 shape = RoundedCornerShape(35),
-                backgroundColor = MaterialTheme.colors.primary
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Filled.Add, "")
             }

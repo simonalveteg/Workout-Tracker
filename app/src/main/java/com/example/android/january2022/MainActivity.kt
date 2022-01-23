@@ -8,7 +8,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
@@ -22,11 +22,11 @@ import androidx.navigation.NavType
 import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
 import com.example.android.january2022.ui.exercises.detail.ExerciseDetailScreen
-import com.example.android.january2022.ui.theme.January2022Theme
 import com.example.android.january2022.ui.exercises.ExercisesScreen
 import com.example.android.january2022.ui.exercises.picker.ExercisePickerScreen
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
+import com.example.android.january2022.ui.theme.January2022Theme
 import com.example.android.january2022.utils.Routes
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -41,10 +41,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             January2022Theme {
                 val navController = rememberAnimatedNavController()
-                val colors = MaterialTheme.colors
+                val colors = MaterialTheme.colorScheme
 
                 Scaffold(
-                    containerColor = colors.background,
                     bottomBar = {
                         var selectedItem by remember { mutableStateOf(1) }
                         NavigationBar(

@@ -4,12 +4,15 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -46,7 +49,8 @@ fun SessionCard(
     val iconRotation = animateFloatAsState(targetValue = if(expanded) 180f else 0f)
 
 
-    Card(
+    Surface(
+        tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
@@ -104,7 +108,7 @@ fun SessionCard(
             }
             if (expanded) {
                 Box(Modifier.padding(top = 12.dp, bottom = 8.dp, start = 0.dp, end = 0.dp)) {
-                    Divider(color = MaterialTheme.colors.onSurface, thickness = 1.dp)
+                    Divider(color = MaterialTheme.colorScheme.onPrimaryContainer, thickness = 1.dp)
                 }
                 sessionContent.filter { it.sessionExercise.parentSessionId == session.sessionId }
                     .forEach { sessionExercise ->
