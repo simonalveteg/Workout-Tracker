@@ -55,6 +55,9 @@ interface GymDAO {
     @Query("SELECT * FROM sessions WHERE sessionId = :key")
     fun getSession(key: Long): Session
 
+    @Query("SELECT DISTINCT muscleGroups FROM exercises ORDER BY muscleGroups ASC")
+    fun getAllMuscleGroups(): LiveData<List<String>>
+
     @Query("SELECT * FROM sessions ORDER BY start_time_milli DESC")
     fun getAllSessions(): LiveData<List<Session>>
 

@@ -10,10 +10,12 @@ sealed class ExerciseEvent : Event {
         val title: String,
         val muscleGroup: String,
         val equipment: String
-    ): ExerciseEvent()
-    data class ExerciseSelected(val exercise: Exercise): ExerciseEvent()
-    data class ExerciseInfoClicked(val exercise: Exercise): ExerciseEvent()
-    data class ExerciseUpdated(val exercise: Exercise): ExerciseEvent()
+    ) : ExerciseEvent()
+
+    data class ExerciseSelected(val exercise: Exercise) : ExerciseEvent()
+    data class ExerciseInfoClicked(val exercise: Exercise) : ExerciseEvent()
+    data class ExerciseUpdated(val exercise: Exercise) : ExerciseEvent()
     data class FilterExerciseList(val searchString: String) : ExerciseEvent()
-    object AddExercisesToSession: ExerciseEvent()
+    object AddExercisesToSession : ExerciseEvent()
+    data class MuscleGroupSelectionChange(val muscleGroup: String) : ExerciseEvent()
 }

@@ -64,12 +64,14 @@ class SessionViewModel @Inject constructor(
     fun getSessionExercisesForSession() : LiveData<List<SessionExerciseWithExercise>> {
         return repository.getSessionExercisesForSession(currentSession?.sessionId ?: -1)
     }
+
     fun getMuscleGroupsForSession(sessionId: Long): Flow<List<String>> {
         return flow {
             val muscleGroups = repository.getMuscleGroupsForSession(sessionId)
             emit(muscleGroups)
         }.flowOn(Dispatchers.IO)
     }
+
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 

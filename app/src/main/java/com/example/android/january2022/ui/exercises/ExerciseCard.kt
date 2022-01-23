@@ -33,7 +33,7 @@ fun ExerciseCard(
         ) {
             Column(
                 Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(start = 16.dp, top = 12.dp, bottom = 4.dp, end = 8.dp)
                     .fillMaxWidth()
             ) {
                 Text(exercise.exerciseTitle.uppercase(), style = MaterialTheme.typography.h5)

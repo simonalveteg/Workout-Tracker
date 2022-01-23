@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.january2022.db.GymRepository
+import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
@@ -20,12 +21,12 @@ import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.spec.MGF1ParameterSpec
 import javax.inject.Inject
+import kotlin.reflect.KType
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
@@ -36,8 +37,28 @@ class ExerciseViewModel @Inject constructor(
     var currentSession by mutableStateOf<Session?>(null)
         private set
 
-    private val _uiEvent =  Channel<UiEvent>()
+    private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    var muscleGroups: List<String> = listOf(
+        MuscleGroup.BICEPS,
+        MuscleGroup.CHEST,
+        MuscleGroup.QUADS,
+        MuscleGroup.TRAPS,
+        MuscleGroup.TRICEPS,
+        MuscleGroup.SHOULDERS,
+        MuscleGroup.LATS,
+        MuscleGroup.HAMSTRINGS,
+        MuscleGroup.GLUTES,
+        MuscleGroup.FOREARMS,
+        MuscleGroup.CALVES,
+        MuscleGroup.ABDOMINALS,
+        MuscleGroup.LOWER_BACK,
+        MuscleGroup.TRAPS_MID_BACK
+    ).sorted()
+
+    var selectedMuscleGroups = MutableStateFlow<List<String>>(emptyList())
+        private set
 
     var exerciseList: LiveData<List<Exercise>> = repository.getExercisesByQuery()
         private set
@@ -95,6 +116,17 @@ class ExerciseViewModel @Inject constructor(
             }
             is ExerciseEvent.FilterExerciseList -> {
                 exerciseList = repository.getExercisesByQuery(event.searchString)
+            }
+            is ExerciseEvent.MuscleGroupSelectionChange -> {
+                val muscleGroup = event.muscleGroup
+                viewModelScope.launch {
+                    if (selectedMuscleGroups.value.contains(muscleGroup)) {
+                        selectedMuscleGroups.value =
+                            selectedMuscleGroups.value.filter { it != muscleGroup }.toList()
+                    } else {
+                        selectedMuscleGroups.value += muscleGroup
+                    }
+                }
             }
         }
     }
