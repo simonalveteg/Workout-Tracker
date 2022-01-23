@@ -59,7 +59,7 @@ fun ExercisePickerScreen(
             Modifier
                 .fillMaxSize()
         ) {
-            TitleText("CHOOSE EXERCISE", 32)
+            TitleText("CHOOSE EXERCISE", 8, 16)
             ExerciseSearchFilters(viewModel, viewModel::onEvent)
             Box(
                 Modifier
@@ -133,12 +133,12 @@ fun MuscleChip(
 }
 
 @Composable
-fun TitleText(text: String, bottomPadding: Int = 0) {
+fun TitleText(text: String, bottomPadding: Int = 0, startPadding: Int = 0) {
     Text(
         text = text,
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.h3,
-        modifier = Modifier.padding(bottom = bottomPadding.dp)
+        modifier = Modifier.padding(bottom = bottomPadding.dp, start = startPadding.dp)
     )
 }
 
