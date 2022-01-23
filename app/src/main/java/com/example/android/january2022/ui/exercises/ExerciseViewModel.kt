@@ -79,6 +79,7 @@ class ExerciseViewModel @Inject constructor(
                 }
             }
         }
+        updateExerciseList()
     }
 
 
