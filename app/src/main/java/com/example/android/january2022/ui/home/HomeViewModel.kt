@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
-import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -27,7 +25,7 @@ class HomeViewModel @Inject constructor(
     val sessionId = MutableLiveData<Long>()
 
     val sessionList: LiveData<List<Session>> = repository.getSessions()
-    val exerciseList: LiveData<List<Exercise>> = repository.getExercises()
+    val exerciseList: LiveData<List<Exercise>> = repository.getAllExercises()
     val sessionExerciseList: LiveData<List<SessionExerciseWithExercise>> =
         repository.getSessionExercises()
     val sets: LiveData<List<GymSet>> = repository.getSets()

@@ -8,9 +8,11 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
@@ -26,15 +28,15 @@ fun ExercisePickerScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: ExerciseViewModel = hiltViewModel()
 ) {
-    var searchString by remember { mutableStateOf("") }
+    val exercises: List<Exercise> by viewModel.exerciseList.collectAsState(listOf())
     val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
-    var searchActive by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.PopBackStack -> onPopBackStack()
                 is UiEvent.Navigate -> onNavigate(event)
+                else -> Unit
             }
         }
     }
@@ -64,7 +66,7 @@ fun ExercisePickerScreen(
                 Modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp)) {
-                ExercisesList(viewModel, selectedExercises, viewModel::onEvent, true)
+                ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true)
             }
         }
     }

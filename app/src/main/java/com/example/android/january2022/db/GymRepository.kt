@@ -2,7 +2,10 @@ package com.example.android.january2022.db
 
 import androidx.lifecycle.LiveData
 import com.example.android.january2022.db.entities.*
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.forEach
 
 
 class GymRepository(
@@ -15,8 +18,21 @@ class GymRepository(
     fun getExercise(id: Long) =
         dao.getExercise(id)
 
-    fun getExercisesByQuery(searchString: String = "") =
-        dao.getExercisesByQuery(searchString)
+    suspend fun getExercisesByQuery(muscleGroup: List<String> = emptyList()): Flow<List<Exercise>> {
+        return flow {
+            if(muscleGroup.isEmpty()) {
+                dao.getExercisesByQuery("%").collect {
+                    emit(it)
+                }
+            } else {
+                muscleGroup.forEach { muscle ->
+                    dao.getExercisesByQuery(muscle).collect {
+                        emit(it)
+                    }
+                }
+            }
+        }
+    }
 
     fun getSession(id: Long) =
         dao.getSession(id)
@@ -24,7 +40,7 @@ class GymRepository(
     fun getSessions() =
         dao.getAllSessions()
 
-    fun getExercises() =
+    fun getAllExercises() =
         dao.getAllExercises()
 
     fun getSets() =
@@ -33,10 +49,10 @@ class GymRepository(
     fun getSessionExercises() =
         dao.getSessionExercisesWithExercise()
 
-    fun getSessionExercisesForSession(sessionId: Long) : LiveData<List<SessionExerciseWithExercise>> =
+    fun getSessionExercisesForSession(sessionId: Long): LiveData<List<SessionExerciseWithExercise>> =
         dao.getSessionExercisesWithExerciseForSession(sessionId)
 
-    fun getMuscleGroupsForSession(sessionId: Long) : List<String> {
+    fun getMuscleGroupsForSession(sessionId: Long): List<String> {
         val muscleGroups = dao.getSessionMuscleGroups(sessionId)
         val sb = StringBuilder()
         muscleGroups.forEach {
@@ -59,7 +75,7 @@ class GymRepository(
     suspend fun insertSet(item: GymSet) =
         dao.insertSet(item)
 
-    suspend fun insertSession(item: Session) : Long =
+    suspend fun insertSession(item: Session): Long =
         dao.insertSession(item)
 
     suspend fun insertExercise(exercise: Exercise) =

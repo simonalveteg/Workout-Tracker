@@ -1,10 +1,9 @@
 package com.example.android.january2022.db
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.example.android.january2022.db.entities.*
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -90,13 +89,9 @@ interface GymDAO {
     fun getSessionExercisesWithExerciseForSession(key: Long): LiveData<List<SessionExerciseWithExercise>>
 
     @Query(
-        "SELECT * FROM exercises " +
-                "WHERE title LIKE '%' || :string || '%' " +
-                "OR muscleGroups LIKE '%' || :string || '%' " +
-                "OR equipment LIKE '%' || :string || '%' " +
-                "ORDER BY title ASC"
+        "SELECT * FROM exercises WHERE muscleGroups = :string ORDER BY title ASC"
     )
-    fun getExercisesByQuery(string: String): LiveData<List<Exercise>>
+    fun getExercisesByQuery(string: String): Flow<List<Exercise>>
 
 }
 

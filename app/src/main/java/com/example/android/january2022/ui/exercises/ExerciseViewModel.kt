@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.exercises
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -32,7 +33,7 @@ import kotlin.reflect.KType
 class ExerciseViewModel @Inject constructor(
     private val repository: GymRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     var currentSession by mutableStateOf<Session?>(null)
         private set
@@ -60,15 +61,18 @@ class ExerciseViewModel @Inject constructor(
     var selectedMuscleGroups = MutableStateFlow<List<String>>(emptyList())
         private set
 
-    var exerciseList: LiveData<List<Exercise>> = repository.getExercisesByQuery()
+    var allExercises: LiveData<List<Exercise>> = repository.getAllExercises()
+        private set
+
+    var exerciseList = MutableStateFlow<List<Exercise>>(emptyList())
         private set
 
     var selectedExercises = MutableStateFlow<Set<Long>>(emptySet())
         private set
 
     init {
-        val sessionId = savedStateHandle.get<Long>("sessionId")?: -1L
-        if(sessionId != -1L) {
+        val sessionId = savedStateHandle.get<Long>("sessionId") ?: -1L
+        if (sessionId != -1L) {
             viewModelScope.launch {
                 currentSession = withContext(Dispatchers.IO) {
                     repository.getSession(sessionId)
@@ -79,7 +83,7 @@ class ExerciseViewModel @Inject constructor(
 
 
     fun onEvent(event: Event) {
-        when(event) {
+        when (event) {
             is ExerciseEvent.NewExerciseClicked -> {
                 viewModelScope.launch {
                     // TODO: Remove or implement functionality. "add exercise to db"
@@ -101,7 +105,7 @@ class ExerciseViewModel @Inject constructor(
                     selectedExercises.collect {
                         it.forEach { exerciseId ->
                             val newSessionExercise = SessionExercise(
-                                parentSessionId = currentSession?.sessionId?: -1L,
+                                parentSessionId = currentSession?.sessionId ?: -1L,
                                 parentExerciseId = exerciseId
                             )
                             repository.insertSessionExercise(newSessionExercise)
@@ -115,7 +119,7 @@ class ExerciseViewModel @Inject constructor(
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId=${exerciseId}"))
             }
             is ExerciseEvent.FilterExerciseList -> {
-                exerciseList = repository.getExercisesByQuery(event.searchString)
+                // TODO: remove?
             }
             is ExerciseEvent.MuscleGroupSelectionChange -> {
                 val muscleGroup = event.muscleGroup
@@ -124,9 +128,19 @@ class ExerciseViewModel @Inject constructor(
                         selectedMuscleGroups.value =
                             selectedMuscleGroups.value.filter { it != muscleGroup }.toList()
                     } else {
-                        selectedMuscleGroups.value += muscleGroup
+                        selectedMuscleGroups.value = listOf(muscleGroup)
                     }
                 }
+                updateExerciseList()
+            }
+        }
+    }
+
+    private fun updateExerciseList() {
+        viewModelScope.launch {
+            exerciseList.value = emptyList()
+            repository.getExercisesByQuery(selectedMuscleGroups.value).collect {
+                exerciseList.value += it
             }
         }
     }
