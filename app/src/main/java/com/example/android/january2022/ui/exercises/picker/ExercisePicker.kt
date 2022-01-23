@@ -8,7 +8,6 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,7 +64,8 @@ fun ExercisePickerScreen(
             Box(
                 Modifier
                     .weight(1f)
-                    .padding(horizontal = 8.dp)) {
+                    .padding(horizontal = 8.dp)
+            ) {
                 ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true)
             }
         }
@@ -75,42 +75,56 @@ fun ExercisePickerScreen(
 @Composable
 fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit) {
     val selectedMuscleGroups by viewModel.selectedMuscleGroups.collectAsState(emptyList())
-    val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }.also { list ->
-        list.value.filter { !selectedMuscleGroups.contains(it) }
-    }
+    val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }
+    val selectedEquipment by viewModel.selectedEquipment.collectAsState("")
+    val equipment by remember { mutableStateOf(viewModel.equipment)}
 
     LazyRow(contentPadding = PaddingValues(4.dp)) {
         items(muscleGroups) { muscleGroup ->
             val isSelected = selectedMuscleGroups.contains(muscleGroup)
             MuscleChip(
-                muscleGroup = muscleGroup,
+                title = muscleGroup,
                 isSelected = isSelected,
-                onEvent = viewModel::onEvent
+                onEvent = {
+                    viewModel.onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
+                }
             )
+        }
+    }
+    LazyRow(contentPadding = PaddingValues(4.dp)) {
+        items(equipment) { equipment ->
+            val isSelected = selectedEquipment.contains(equipment)
+            MuscleChip(
+                title = equipment,
+                isSelected = isSelected,
+                onEvent = {
+                    viewModel.onEvent(ExerciseEvent.EquipmentSelectionChange(it))
+                }
+            )
+
         }
     }
 }
 
 @Composable
 fun MuscleChip(
-    muscleGroup: String,
+    title: String,
     isSelected: Boolean,
-    onEvent: (Event) -> Unit
+    onEvent: (String) -> Unit
 ) {
     val chipColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface)
+        targetValue = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface
+    )
     Surface(
         shape = RoundedCornerShape(50),
         color = chipColor.value,
         elevation = 1.dp
     ) {
         Box(modifier = Modifier.toggleable(value = isSelected, onValueChange = {
-            onEvent(
-                ExerciseEvent.MuscleGroupSelectionChange(muscleGroup)
-            )
+            onEvent(title)
         })) {
             Text(
-                text = muscleGroup,
+                text = title,
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.padding(8.dp)
             )

@@ -18,4 +18,5 @@ sealed class ExerciseEvent : Event {
     data class FilterExerciseList(val searchString: String) : ExerciseEvent()
     object AddExercisesToSession : ExerciseEvent()
     data class MuscleGroupSelectionChange(val muscleGroup: String) : ExerciseEvent()
+    data class EquipmentSelectionChange(val equipment: String) : ExerciseEvent()
 }

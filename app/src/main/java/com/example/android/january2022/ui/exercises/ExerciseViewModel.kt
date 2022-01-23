@@ -10,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.android.january2022.db.Equipment
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
@@ -57,8 +58,19 @@ class ExerciseViewModel @Inject constructor(
         MuscleGroup.LOWER_BACK,
         MuscleGroup.TRAPS_MID_BACK
     ).sorted()
+    var equipment: List<String> = listOf(
+        Equipment.BARBELL,
+        Equipment.MACHINE,
+        Equipment.DUMBBELLS,
+        Equipment.KETTLEBELLS,
+        Equipment.STRETCHES,
+        Equipment.BODYWEIGHT
+    ).sorted()
 
     var selectedMuscleGroups = MutableStateFlow<List<String>>(emptyList())
+        private set
+
+    var selectedEquipment = MutableStateFlow("")
         private set
 
     var allExercises: LiveData<List<Exercise>> = repository.getAllExercises()
@@ -125,6 +137,7 @@ class ExerciseViewModel @Inject constructor(
             is ExerciseEvent.MuscleGroupSelectionChange -> {
                 val muscleGroup = event.muscleGroup
                 viewModelScope.launch {
+                    // update selected muscle groups
                     if (selectedMuscleGroups.value.contains(muscleGroup)) {
                         selectedMuscleGroups.value =
                             selectedMuscleGroups.value.filter { it != muscleGroup }.toList()
@@ -134,13 +147,24 @@ class ExerciseViewModel @Inject constructor(
                 }
                 updateExerciseList()
             }
+            is ExerciseEvent.EquipmentSelectionChange -> {
+                val equipment = event.equipment
+                viewModelScope.launch {
+                    // update selected equipment
+                    selectedEquipment.value = if(selectedEquipment.value == equipment) "" else equipment
+                }
+                updateExerciseList()
+            }
         }
     }
 
     private fun updateExerciseList() {
         viewModelScope.launch {
             exerciseList.value = emptyList()
-            repository.getExercisesByQuery(selectedMuscleGroups.value).collect {
+            repository.getExercisesByQuery(
+                muscleGroup = selectedMuscleGroups.value,
+                equipment = selectedEquipment.value
+            ).collect {
                 exerciseList.value += it
             }
         }

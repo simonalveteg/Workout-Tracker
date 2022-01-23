@@ -89,9 +89,12 @@ interface GymDAO {
     fun getSessionExercisesWithExerciseForSession(key: Long): LiveData<List<SessionExerciseWithExercise>>
 
     @Query(
-        "SELECT * FROM exercises WHERE muscleGroups LIKE :string ORDER BY title ASC"
+        "SELECT * FROM exercises " +
+                "WHERE muscleGroups LIKE :string " +
+                "AND equipment LIKE :equipment " +
+                "ORDER BY title ASC"
     )
-    fun getExercisesByQuery(string: String): Flow<List<Exercise>>
+    fun getExercisesByQuery(string: String, equipment: String): Flow<List<Exercise>>
 
 }
 
