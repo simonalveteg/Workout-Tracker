@@ -61,6 +61,7 @@ fun ExercisePickerScreen(
         ) {
             TitleText("CHOOSE EXERCISE", 8, 16)
             ExerciseSearchFilters(viewModel, viewModel::onEvent)
+            Spacer(Modifier.height(8.dp))
             Box(
                 Modifier
                     .weight(1f)
