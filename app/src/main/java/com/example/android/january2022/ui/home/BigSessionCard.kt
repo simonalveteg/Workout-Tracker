@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -92,10 +93,30 @@ fun BigSessionCard(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-                Text(
-                    text = if (muscleGroups.isNotEmpty()) muscleGroups[muscleGroups.lastIndex] else "",
-                    style = MaterialTheme.typography.headlineSmall
-                )
+                Column(verticalArrangement = Arrangement.Center) {
+                    Text(
+                        text = if (muscleGroups.isNotEmpty()) muscleGroups[0].uppercase() else "",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Row {
+                        muscleGroups.forEachIndexed { index, string ->
+                            if(index in 1..3) {
+                                var newString = string
+                                if(index in 1..2 && muscleGroups.size >= index+2) {
+                                    newString = "$string, "
+                                }
+                                Text(
+                                    text = newString.uppercase(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = LocalContentColor.current.copy(alpha = 0.7f)
+                                )
+
+                            }
+
+                        }
+                    }
+                }
+
                 Spacer(Modifier.weight(1f))
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
@@ -105,6 +126,8 @@ fun BigSessionCard(
                     )
                 }
             }
+
+
             AnimatedVisibility(visible = expanded) {
                 Divider(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
             }

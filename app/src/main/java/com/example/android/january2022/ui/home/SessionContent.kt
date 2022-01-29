@@ -3,6 +3,7 @@ package com.example.android.january2022.ui.home
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +25,11 @@ fun SessionContent(
             .fillMaxWidth()
             .padding(vertical = 2.dp)
     ) {
-        Text(sessionExercise.exercise.exerciseTitle, modifier = Modifier.weight(4f))
+        Text(
+            sessionExercise.exercise.exerciseTitle,
+            modifier = Modifier.weight(4f),
+            color = LocalContentColor.current.copy(alpha = 0.85f)
+        )
         val string = StringBuilder()
         sets.forEach { set ->
             val reps = set.reps
@@ -43,6 +48,12 @@ fun SessionContent(
             }
         }
         val concat = string.toString().removeSuffix(", ")
-        Text(concat, modifier = Modifier.weight(3f), textAlign = TextAlign.End, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            concat,
+            modifier = Modifier.weight(3f),
+            textAlign = TextAlign.End,
+            style = MaterialTheme.typography.bodyMedium,
+            color = LocalContentColor.current.copy(alpha = 0.75f)
+        )
     }
 }

@@ -8,7 +8,6 @@ import androidx.compose.material.BottomAppBar
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.SnackbarResult.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -59,7 +58,7 @@ fun SessionScreen(
         }
     }
     Scaffold(
-        bottomBar = { BottomAppBar() {
+        bottomBar = { BottomAppBar {
 
         }},
         snackbarHost = { SnackbarHost(snackbarHostState) },

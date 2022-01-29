@@ -57,14 +57,8 @@ class GymRepository(
         dao.getSessionExercisesWithExerciseForSession(sessionId)
 
     fun getMuscleGroupsForSession(sessionId: Long): List<String> {
-        val muscleGroups = dao.getSessionMuscleGroups(sessionId)
-        val sb = StringBuilder()
-        muscleGroups.forEach {
-            sb.append(it)
-            sb.append(", ")
-        }
-        val muscleGroupsByCount = sb.split(", ").groupingBy { it }.eachCount()
-        return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }
+        val muscleGroupsByCount = dao.getSessionMuscleGroups(sessionId).groupingBy { it }.eachCount()
+        return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }.reversed()
     }
 
     fun getSetsForSessionExercise(id: Long) =
