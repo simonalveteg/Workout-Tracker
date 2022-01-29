@@ -84,6 +84,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     implementation "com.google.accompanist:accompanist-flowlayout:0.22.0-rc"
     implementation "com.google.accompanist:accompanist-navigation-animation:0.24.0-alpha"
+    implementation "com.google.accompanist:accompanist-pager:0.24.0-alpha"
+    implementation "androidx.compose.ui:ui-util:$compose_version"
 
 
     //Dagger - Hilt

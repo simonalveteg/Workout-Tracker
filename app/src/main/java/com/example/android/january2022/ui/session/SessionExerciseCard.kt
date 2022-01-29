@@ -49,7 +49,7 @@ fun SessionExerciseCard(
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .padding(4.dp)
             .animateContentSize(
                 animationSpec = tween(
                     durationMillis = 300,
@@ -66,10 +66,10 @@ fun SessionExerciseCard(
                 )
             }
     ) {
-        Column(Modifier.padding(start = 16.dp, top = 8.dp, end = 2.dp, bottom = 8.dp)) {
+        Column(Modifier.padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 8.dp)) {
             Row(
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 0.dp)
             ) {
                 Text(
                     text = sessionExercise.exercise.exerciseTitle ,

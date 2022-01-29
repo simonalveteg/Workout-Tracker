@@ -23,9 +23,9 @@ fun ExercisesScreen(
     val exercises: List<Exercise> by viewModel.exerciseList.collectAsState(emptyList())
 
     Surface(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 16.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

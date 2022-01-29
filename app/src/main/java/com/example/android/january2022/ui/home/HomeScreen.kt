@@ -2,9 +2,11 @@ package com.example.android.january2022.ui.home
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,17 +26,25 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.util.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.absoluteValue
 
 
-@OptIn(ExperimentalMaterialApi::class,ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
@@ -53,9 +63,11 @@ fun HomeScreen(
         }
     }
     Scaffold(
-        bottomBar = { BottomAppBar() {
+        bottomBar = {
+            BottomAppBar() {
 
-        }},
+            }
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(HomeEvent.OnAddSessionClick) },
@@ -71,29 +83,34 @@ fun HomeScreen(
         },
         floatingActionButtonPosition = FabPosition.End,
     ) {
-        SessionCardList(sessions = sessions, viewModel)
+        Column {
+            Box(Modifier.weight(1f)) {
+                SessionCardList(sessions = sessions, viewModel)
+            }
+        }
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SessionCardList(
     sessions: List<Session>,
     viewModel: HomeViewModel
 ) {
-    val sessionContent = viewModel.sessionExerciseList.observeAsState(listOf())
-    val sets = viewModel.sets.observeAsState(listOf())
+    val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
+    val sets by viewModel.sets.observeAsState(listOf())
     LazyColumn {
-        items(items = sessions) { session ->
-            SessionCard(
-                session,
-                sessionContent.value,
-                sets.value,
-                viewModel,
-                viewModel::onEvent
+        items(sessions) { session ->
+            BigSessionCard(
+                session = session,
+                sessionContent = sessionContent.filter { it.sessionExercise.parentSessionId == session.sessionId },
+                sets = sets,
+                viewModel = viewModel,
+                onEvent = viewModel::onEvent
             )
         }
-        item { Spacer(Modifier.height(86.dp)) }
     }
 }
+
 
 
