@@ -5,20 +5,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme.colorScheme as colors
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
@@ -28,6 +25,7 @@ import com.example.android.january2022.ui.exercises.picker.ExercisePickerScreen
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.ui.theme.January2022Theme
+import com.example.android.january2022.utils.BottomBarScreen
 import com.example.android.january2022.utils.Routes
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -44,133 +42,129 @@ class MainActivity : ComponentActivity() {
             January2022Theme {
                 ProvideWindowInsets {
                     val navController = rememberAnimatedNavController()
-                    val colors = MaterialTheme.colorScheme
                     WindowCompat.setDecorFitsSystemWindows(window, false)
 
                     Scaffold(
                         bottomBar = {
-                            var selectedItem by remember { mutableStateOf(1) }
-                            NavigationBar(
-                                containerColor = colors.surface,
-                                modifier = Modifier.height(60.dp)
-                            ) {
-
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(
-                                            Icons.Filled.BarChart, null,
-                                            tint = animateColorAsState(
-                                                targetValue = if (selectedItem == 2) colors.onPrimary else colors.onSurface
-                                            ).value
-                                        )
-                                    },
-                                    selected = selectedItem == 2,
-                                    onClick = {
-                                        selectedItem = 2
-                                    },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        indicatorColor = colors.primary
-                                    )
-                                )
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(
-                                            Icons.Filled.Home, null,
-                                            tint = animateColorAsState(
-                                                targetValue = if (selectedItem == 1) colors.onPrimary else colors.onSurface
-                                            ).value
-                                        )
-                                    },
-                                    selected = selectedItem == 1,
-                                    onClick = {
-                                        selectedItem = 1
-                                        navController.navigate(Routes.HOME_SCREEN) {
-                                            popUpTo(Routes.HOME_SCREEN)
-                                        }
-                                    },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        indicatorColor = colors.primary
-                                    )
-                                )
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(
-                                            imageVector = Icons.Filled.Person,
-                                            contentDescription = null,
-                                            tint = animateColorAsState(
-                                                targetValue = if (selectedItem == 3) colors.onPrimary else colors.onSurface
-                                            ).value
-                                        )
-                                    },
-                                    selected = selectedItem == 3,
-                                    onClick = { selectedItem = 3 },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        indicatorColor = colors.primary
-                                    )
-                                )
-                            }
+                            BottomBar()
                         }
                     ) {
-                        AnimatedNavHost(
-                            navController = navController,
-                            startDestination = Routes.HOME_SCREEN
-                        ) {
-                            composable(route = Routes.HOME_SCREEN) {
-                                HomeScreen(
-                                    onNavigate = {
-                                        navController.navigate(it.route)
-                                    }
-                                )
-                            }
-                            composable(
-                                route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
-                                arguments = listOf(
-                                    navArgument(name = "sessionId") {
-                                        type = NavType.LongType
-                                        defaultValue = -1
-                                    }
-                                )
-                            ) {
-                                SessionScreen(onNavigate = {
-                                    navController.navigate(it.route)
-                                })
-                            }
-                            composable(Routes.EXERCISE_SCREEN) {
-                                ExercisesScreen()
-                            }
-                            composable(
-                                route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
-                                arguments = listOf(
-                                    navArgument(name = "sessionId") {
-                                        type = NavType.LongType
-                                        defaultValue = -1
-                                    }
-                                )
-                            ) {
-                                ExercisePickerScreen(
-                                    onPopBackStack = {
-                                        navController.popBackStack()
-                                    },
-                                    onNavigate = { navController.navigate(it.route) }
-                                )
-                            }
-                            composable(
-                                route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",
-                                arguments = listOf(
-                                    navArgument(name = "exerciseId") {
-                                        type = NavType.LongType
-                                        defaultValue = -1
-                                    }
-                                )
-                            ) {
-                                ExerciseDetailScreen()
-                            }
-                        }
+                        GymNavHost(navController)
                     }
                 }
             }
         }
     }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun GymNavHost(navController: NavHostController) {
+    AnimatedNavHost(
+        navController = navController,
+        startDestination = Routes.HOME_SCREEN
+    ) {
+        composable(route = Routes.HOME_SCREEN) {
+            HomeScreen(
+                onNavigate = {
+                    navController.navigate(it.route)
+                }
+            )
+        }
+        composable(
+            route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
+            arguments = listOf(
+                navArgument(name = "sessionId") {
+                    type = NavType.LongType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            SessionScreen(onNavigate = {
+                navController.navigate(it.route)
+            })
+        }
+        composable(Routes.EXERCISE_SCREEN) {
+            ExercisesScreen()
+        }
+        composable(
+            route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
+            arguments = listOf(
+                navArgument(name = "sessionId") {
+                    type = NavType.LongType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            ExercisePickerScreen(
+                onPopBackStack = {
+                    navController.popBackStack()
+                },
+                onNavigate = { navController.navigate(it.route) }
+            )
+        }
+        composable(
+            route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",
+            arguments = listOf(
+                navArgument(name = "exerciseId") {
+                    type = NavType.LongType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            ExerciseDetailScreen()
+        }
+    }
+}
+
+@Composable
+fun BottomBar() {
+    var selectedItem by remember { mutableStateOf<BottomBarScreen>(BottomBarScreen.Home) }
+    NavigationBar(
+        containerColor = colors.surface,
+        modifier = Modifier.height(60.dp)
+    ) {
+        NavigationItem(
+            screen = BottomBarScreen.Statistics,
+            selectedScreen = selectedItem,
+            onScreenClick = { selectedItem = it }
+        )
+        NavigationItem(
+            screen = BottomBarScreen.Home,
+            selectedScreen = selectedItem,
+            onScreenClick = { selectedItem = it }
+        )
+        NavigationItem(
+            screen = BottomBarScreen.Profile,
+            selectedScreen = selectedItem,
+            onScreenClick = { selectedItem = it }
+        )
+    }
+}
+
+@Composable
+fun RowScope.NavigationItem(
+    screen: BottomBarScreen,
+    selectedScreen: BottomBarScreen,
+    onScreenClick: (BottomBarScreen) -> Unit
+) {
+    val isSelected = selectedScreen == screen
+    NavigationBarItem(
+        icon = {
+            Icon(
+                imageVector = screen.icon,
+                contentDescription = null,
+                tint = animateColorAsState(
+                    targetValue = if (isSelected) colors.onPrimary else colors.onSurface
+                ).value
+            )
+        },
+        selected = isSelected,
+        onClick = { onScreenClick(screen) },
+        colors = NavigationBarItemDefaults.colors(
+            indicatorColor = colors.primary
+        )
+    )
 }
 
 

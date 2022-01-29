@@ -64,9 +64,7 @@ fun HomeScreen(
     }
     Scaffold(
         bottomBar = {
-            BottomAppBar() {
-
-            }
+            BottomAppBar { }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -84,7 +82,10 @@ fun HomeScreen(
         floatingActionButtonPosition = FabPosition.End,
     ) {
         Column {
-            Box(Modifier.weight(1f).statusBarsPadding()) {
+            Box(
+                Modifier
+                    .weight(1f)
+                    .statusBarsPadding()) {
                 SessionCardList(sessions = sessions, viewModel)
             }
         }
