@@ -15,6 +15,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
+import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun ExerciseDetailScreen(
@@ -32,5 +33,5 @@ fun ExerciseDetailScreen(
         }
     }, update = {
         it.loadUrl(url)
-    })
+    }, modifier = Modifier.statusBarsPadding())
 }

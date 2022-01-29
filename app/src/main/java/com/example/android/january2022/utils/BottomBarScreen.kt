@@ -18,12 +18,12 @@ sealed class BottomBarScreen(
         icon = Icons.Filled.Home,
     )
     object Statistics : BottomBarScreen(
-        route = Routes.HOME_SCREEN,
+        route = Routes.STATISTICS_SCREEN,
         title = "Statistics",
         icon = Icons.Filled.BarChart,
     )
     object Profile : BottomBarScreen(
-        route = Routes.HOME_SCREEN,
+        route = Routes.PROFILE_SCREEN,
         title = "Profile",
         icon = Icons.Filled.Person,
     )

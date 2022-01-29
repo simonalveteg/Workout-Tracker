@@ -63,9 +63,7 @@ fun HomeScreen(
         }
     }
     Scaffold(
-        bottomBar = {
-            BottomAppBar { }
-        },
+        modifier = Modifier.padding(bottom = 60.dp),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(HomeEvent.OnAddSessionClick) },
