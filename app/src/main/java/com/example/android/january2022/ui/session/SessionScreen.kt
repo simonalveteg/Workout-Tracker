@@ -39,19 +39,30 @@ fun SessionScreen(
     )
     val muscleGroups = session?.let { viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(initial = emptyList()) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when(event) {
                 is UiEvent.Navigate -> onNavigate(event)
                 is UiEvent.ShowSnackbar -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel
+                    )
+                    if(result == ActionPerformed) {
+                        if(event.action != null) viewModel.onEvent(event.action)
+                    }
                 }
+                else -> Unit
             }
         }
     }
     Scaffold(
         bottomBar = { BottomAppBar() {
-            
+
         }},
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(SessionEvent.OnAddSessionExerciseClicked) },
