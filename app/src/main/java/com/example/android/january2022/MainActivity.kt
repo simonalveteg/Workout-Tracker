@@ -31,6 +31,7 @@ import com.example.android.january2022.utils.BottomBarScreen
 import com.example.android.january2022.utils.Routes
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -71,13 +72,40 @@ fun GymNavHost(navController: NavHostController) {
         popExitTransition = { fadeOut() }
     ) {
         composable(
-            route = Routes.STATISTICS_SCREEN
+            route = Routes.STATISTICS_SCREEN,
+            enterTransition = {
+                slideIntoContainer(AnimatedContentScope.SlideDirection.Right) + fadeIn()
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentScope.SlideDirection.Left) + fadeOut()
+            }
         ) {
             StatisticsScreen()
         }
 
 
-        navigation(startDestination = Routes.HOME_SCREEN, route = Routes.HOME_GRAPH) {
+        navigation(
+            startDestination = Routes.HOME_SCREEN,
+            route = Routes.HOME_GRAPH,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Routes.STATISTICS_SCREEN ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left) + fadeIn()
+                    Routes.PROFILE_SCREEN ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Right) + fadeIn()
+                    else -> fadeIn()
+                }
+            },
+            exitTransition = {
+                when(targetState.destination.route) {
+                    Routes.PROFILE_SCREEN ->
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Left) + fadeOut()
+                    Routes.STATISTICS_SCREEN ->
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right) + fadeOut()
+                    else -> fadeOut()
+                }
+            }
+        ) {
             composable(route = Routes.HOME_SCREEN) {
                 HomeScreen(
                     onNavigate = {
@@ -85,7 +113,6 @@ fun GymNavHost(navController: NavHostController) {
                     }
                 )
             }
-
             composable(
                 route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
                 arguments = listOf(
@@ -132,7 +159,13 @@ fun GymNavHost(navController: NavHostController) {
         }
 
         composable(
-            route = Routes.PROFILE_SCREEN
+            route = Routes.PROFILE_SCREEN,
+            enterTransition = {
+                slideIntoContainer(AnimatedContentScope.SlideDirection.Left) + fadeIn()
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentScope.SlideDirection.Right) + fadeOut()
+            }
         ) {
             ProfileScreen()
         }
