@@ -124,21 +124,17 @@ fun BottomBar() {
         containerColor = colors.surface,
         modifier = Modifier.height(60.dp)
     ) {
-        NavigationItem(
-            screen = BottomBarScreen.Statistics,
-            selectedScreen = selectedItem,
-            onScreenClick = { selectedItem = it }
-        )
-        NavigationItem(
-            screen = BottomBarScreen.Home,
-            selectedScreen = selectedItem,
-            onScreenClick = { selectedItem = it }
-        )
-        NavigationItem(
-            screen = BottomBarScreen.Profile,
-            selectedScreen = selectedItem,
-            onScreenClick = { selectedItem = it }
-        )
+        listOf(
+            BottomBarScreen.Statistics,
+            BottomBarScreen.Home,
+            BottomBarScreen.Profile
+        ).forEach { screen ->
+            NavigationItem(
+                screen = screen,
+                selectedScreen = selectedItem,
+                onScreenClick = { selectedItem = it }
+            )
+        }
     }
 }
 
