@@ -20,6 +20,7 @@ import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.flow.collect
 
 
@@ -42,12 +43,9 @@ fun ExercisePickerScreen(
             }
         }
     }
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        bottomBar = { BottomAppBar() {
-
-        }},
+        bottomBar = { BottomAppBar() {}},
         floatingActionButton = {
             // TODO: Animate fab entering and exiting screen when items get selected.
             ExtendedFloatingActionButton(
@@ -62,6 +60,7 @@ fun ExercisePickerScreen(
         Column(
             Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
         ) {
             TitleText("CHOOSE EXERCISE", 8, 16)
             ExerciseSearchFilters(viewModel, viewModel::onEvent)
@@ -91,7 +90,7 @@ fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit
                 title = muscleGroup,
                 isSelected = isSelected,
                 onEvent = {
-                    viewModel.onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
+                    onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
                 }
             )
         }
@@ -103,7 +102,7 @@ fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit
                 title = equipment,
                 isSelected = isSelected,
                 onEvent = {
-                    viewModel.onEvent(ExerciseEvent.EquipmentSelectionChange(it))
+                    onEvent(ExerciseEvent.EquipmentSelectionChange(it))
                 }
             )
 

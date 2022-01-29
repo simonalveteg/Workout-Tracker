@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -51,7 +52,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val sessions by viewModel.sessionList.observeAsState(listOf())
-    val composableScope = rememberCoroutineScope()
     val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(key1 = true) {
@@ -84,7 +84,7 @@ fun HomeScreen(
         floatingActionButtonPosition = FabPosition.End,
     ) {
         Column {
-            Box(Modifier.weight(1f)) {
+            Box(Modifier.weight(1f).statusBarsPadding()) {
                 SessionCardList(sessions = sessions, viewModel)
             }
         }

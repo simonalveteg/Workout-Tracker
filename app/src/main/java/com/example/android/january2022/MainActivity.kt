@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
@@ -28,6 +29,7 @@ import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.ui.theme.January2022Theme
 import com.example.android.january2022.utils.Routes
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,126 +42,129 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             January2022Theme {
-                val navController = rememberAnimatedNavController()
-                val colors = MaterialTheme.colorScheme
+                ProvideWindowInsets {
+                    val navController = rememberAnimatedNavController()
+                    val colors = MaterialTheme.colorScheme
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
 
-                Scaffold(
-                    bottomBar = {
-                        var selectedItem by remember { mutableStateOf(1) }
-                        NavigationBar(
-                            containerColor = colors.surface,
-                            modifier = Modifier.height(60.dp)
-                        ) {
+                    Scaffold(
+                        bottomBar = {
+                            var selectedItem by remember { mutableStateOf(1) }
+                            NavigationBar(
+                                containerColor = colors.surface,
+                                modifier = Modifier.height(60.dp)
+                            ) {
 
-                            NavigationBarItem(
-                                icon = {
-                                    androidx.compose.material.Icon(
-                                        Icons.Filled.BarChart, null,
-                                        tint = animateColorAsState(
-                                            targetValue = if (selectedItem == 2) colors.onPrimary else colors.onSurface
-                                        ).value
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.BarChart, null,
+                                            tint = animateColorAsState(
+                                                targetValue = if (selectedItem == 2) colors.onPrimary else colors.onSurface
+                                            ).value
+                                        )
+                                    },
+                                    selected = selectedItem == 2,
+                                    onClick = {
+                                        selectedItem = 2
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        indicatorColor = colors.primary
                                     )
-                                },
-                                selected = selectedItem == 2,
-                                onClick = {
-                                    selectedItem = 2
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = colors.primary
                                 )
-                            )
-                            NavigationBarItem(
-                                icon = {
-                                    androidx.compose.material.Icon(
-                                        Icons.Filled.Home, null,
-                                        tint = animateColorAsState(
-                                            targetValue = if (selectedItem == 1) colors.onPrimary else colors.onSurface
-                                        ).value
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.Home, null,
+                                            tint = animateColorAsState(
+                                                targetValue = if (selectedItem == 1) colors.onPrimary else colors.onSurface
+                                            ).value
+                                        )
+                                    },
+                                    selected = selectedItem == 1,
+                                    onClick = {
+                                        selectedItem = 1
+                                        navController.navigate(Routes.HOME_SCREEN) {
+                                            popUpTo(Routes.HOME_SCREEN)
+                                        }
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        indicatorColor = colors.primary
                                     )
-                                },
-                                selected = selectedItem == 1,
-                                onClick = {
-                                    selectedItem = 1
-                                    navController.navigate(Routes.HOME_SCREEN) {
-                                        popUpTo(Routes.HOME_SCREEN)
-                                    }
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = colors.primary
                                 )
-                            )
-                            NavigationBarItem(
-                                icon = {
-                                    androidx.compose.material.Icon(
-                                        imageVector = Icons.Filled.Person,
-                                        contentDescription = null,
-                                        tint = animateColorAsState(
-                                            targetValue = if (selectedItem == 3) colors.onPrimary else colors.onSurface
-                                        ).value
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.Person,
+                                            contentDescription = null,
+                                            tint = animateColorAsState(
+                                                targetValue = if (selectedItem == 3) colors.onPrimary else colors.onSurface
+                                            ).value
+                                        )
+                                    },
+                                    selected = selectedItem == 3,
+                                    onClick = { selectedItem = 3 },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        indicatorColor = colors.primary
                                     )
-                                },
-                                selected = selectedItem == 3,
-                                onClick = { selectedItem = 3 },
-                                colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = colors.primary
                                 )
-                            )
+                            }
                         }
-                    }
-                ) {
-                    AnimatedNavHost(
-                        navController = navController,
-                        startDestination = Routes.HOME_SCREEN
                     ) {
-                        composable(route = Routes.HOME_SCREEN) {
-                            HomeScreen(
-                                onNavigate = {
+                        AnimatedNavHost(
+                            navController = navController,
+                            startDestination = Routes.HOME_SCREEN
+                        ) {
+                            composable(route = Routes.HOME_SCREEN) {
+                                HomeScreen(
+                                    onNavigate = {
+                                        navController.navigate(it.route)
+                                    }
+                                )
+                            }
+                            composable(
+                                route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
+                                arguments = listOf(
+                                    navArgument(name = "sessionId") {
+                                        type = NavType.LongType
+                                        defaultValue = -1
+                                    }
+                                )
+                            ) {
+                                SessionScreen(onNavigate = {
                                     navController.navigate(it.route)
-                                }
-                            )
-                        }
-                        composable(
-                            route = Routes.SESSION_SCREEN + "?sessionId={sessionId}",
-                            arguments = listOf(
-                                navArgument(name = "sessionId") {
-                                    type = NavType.LongType
-                                    defaultValue = -1
-                                }
-                            )
-                        ) {
-                            SessionScreen(onNavigate = {
-                                navController.navigate(it.route)
-                            })
-                        }
-                        composable(Routes.EXERCISE_SCREEN) {
-                            ExercisesScreen()
-                        }
-                        composable(
-                            route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
-                            arguments = listOf(
-                                navArgument(name = "sessionId") {
-                                    type = NavType.LongType
-                                    defaultValue = -1
-                                }
-                            )
-                        ) {
-                            ExercisePickerScreen(
-                                onPopBackStack = {
-                                    navController.popBackStack()
-                                },
-                                onNavigate = { navController.navigate(it.route) }
-                            )
-                        }
-                        composable(
-                            route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",
-                            arguments = listOf(
-                                navArgument(name = "exerciseId") {
-                                    type = NavType.LongType
-                                    defaultValue = -1
-                                }
-                            )
-                        ) {
-                            ExerciseDetailScreen()
+                                })
+                            }
+                            composable(Routes.EXERCISE_SCREEN) {
+                                ExercisesScreen()
+                            }
+                            composable(
+                                route = Routes.EXERCISE_PICKER_SCREEN + "?sessionId={sessionId}",
+                                arguments = listOf(
+                                    navArgument(name = "sessionId") {
+                                        type = NavType.LongType
+                                        defaultValue = -1
+                                    }
+                                )
+                            ) {
+                                ExercisePickerScreen(
+                                    onPopBackStack = {
+                                        navController.popBackStack()
+                                    },
+                                    onNavigate = { navController.navigate(it.route) }
+                                )
+                            }
+                            composable(
+                                route = Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId={exerciseId}",
+                                arguments = listOf(
+                                    navArgument(name = "exerciseId") {
+                                        type = NavType.LongType
+                                        defaultValue = -1
+                                    }
+                                )
+                            ) {
+                                ExerciseDetailScreen()
+                            }
                         }
                     }
                 }
