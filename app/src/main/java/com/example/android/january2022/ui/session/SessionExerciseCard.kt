@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -41,11 +43,12 @@ fun SessionExerciseCard(
     val haptic = LocalHapticFeedback.current
     val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
     val errorColor by animateColorAsState(
-        targetValue = if(isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+        targetValue = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+    )
 
 
     Surface(
-        shape = RoundedCornerShape(15),
+        shape = Shapes.medium,
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
@@ -72,13 +75,13 @@ fun SessionExerciseCard(
                     .padding(bottom = 0.dp)
             ) {
                 Text(
-                    text = sessionExercise.exercise.exerciseTitle ,
+                    text = sessionExercise.exercise.exerciseTitle.uppercase(),
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
                 )
-                if (isSelected) {
+                AnimatedVisibility(visible = isSelected) {
                     IconButton(
                         onClick = { onEvent(SessionEvent.OnDeleteSessionExercise(sessionExercise)) },
                     ) {
@@ -87,7 +90,8 @@ fun SessionExerciseCard(
                             contentDescription = "Remove Exercise from Session"
                         )
                     }
-                } else {
+                }
+                AnimatedVisibility(visible = !isSelected) {
                     IconButton(
                         onClick = {
                             onEvent(
@@ -98,14 +102,16 @@ fun SessionExerciseCard(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = "Show Exercise Info",
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Show Exercise Options",
                         )
                     }
                 }
             }
             FlowRow(
-                Modifier.padding(start = 2.dp).animateContentSize(),
+                Modifier
+                    .padding(start = 2.dp)
+                    .animateContentSize(),
                 crossAxisAlignment = FlowCrossAxisAlignment.Start,
                 mainAxisSpacing = 12.dp,
                 mainAxisAlignment = FlowMainAxisAlignment.Start
@@ -115,7 +121,7 @@ fun SessionExerciseCard(
                     key(set.setId) {
                         AnimatedVisibility(
                             visible = !set.deleted,
-                            exit = shrinkHorizontally (
+                            exit = shrinkHorizontally(
                                 animationSpec = tween(
                                     durationMillis = 400,
                                     delayMillis = 25,

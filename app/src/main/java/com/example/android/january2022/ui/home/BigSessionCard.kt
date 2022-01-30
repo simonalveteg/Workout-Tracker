@@ -29,6 +29,7 @@ import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.ui.session.SessionEvent
+import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import java.text.SimpleDateFormat
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -60,7 +61,7 @@ fun BigSessionCard(
         onClick = {
             onEvent(HomeEvent.OnSessionClick(session))
         },
-        shape = RoundedCornerShape(10.dp),
+        shape = Shapes.medium,
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()

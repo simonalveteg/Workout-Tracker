@@ -49,10 +49,10 @@ fun NewSetCard(
     val collapsedWidth = 2f
     val collapsedHeight = 34f
     val moodWidth = remember { Animatable(if (expanded) expandedWidth else collapsedWidth) }
-    val moodHeight = remember {Animatable(if (expanded) expandedHeight else collapsedHeight)}
+    val moodHeight = remember { Animatable(if (expanded) expandedHeight else collapsedHeight) }
 
     val setTypeColor by animateColorAsState(
-        targetValue = when(set.setType) {
+        targetValue = when (set.setType) {
             SetType.WARMUP -> Color(0xFF6B6B65)
             SetType.EASY -> Color(0xFF638D46)
             SetType.NORMAL -> Color(0xFFCAA42D)
@@ -105,7 +105,6 @@ fun NewSetCard(
         }
         AnimatedVisibility(visible = expanded && !isSelected) {
             Box(modifier = Modifier.fillMaxWidth()) {
-
                 ExpandedSetCard(set, onEvent, {
                     expanded = false
                     coroutineScope.launch {
@@ -132,7 +131,7 @@ fun ExpandedSetCard(
     val reps: Int = set.reps
     val weight: Float = set.weight
     val requester = FocusRequester()
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         requester.requestFocus()
     }
 
@@ -168,7 +167,8 @@ fun ExpandedSetCard(
         )
         Text(
             text = "reps",
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            color = LocalContentColor.current.copy(alpha = 0.9f)
         )
         BasicTextField(
             value = if (weight > -1) weight.toString() else " ",
@@ -200,7 +200,9 @@ fun ExpandedSetCard(
                 .padding(start = 6.dp)
                 .padding(horizontal = 8.dp)
         )
-        Text(text = "kg", fontSize = 14.sp)
+        Text(
+            text = "kg", fontSize = 14.sp, color = LocalContentColor.current.copy(alpha = 0.9f)
+        )
     }
 }
 
@@ -212,11 +214,17 @@ fun CompactSetCard(
     Column(Modifier.padding(start = 4.dp)) {
         Row() {
             Text(text = if (reps > -1) reps.toString() else "0", fontWeight = FontWeight.Bold)
-            Text(text = "reps", fontSize = 10.sp)
+            Text(
+                text = "reps",
+                fontSize = 10.sp,
+                color = LocalContentColor.current.copy(alpha = 0.85f)
+            )
         }
         Row() {
             Text(text = if (weight > -1) weight.toString() else "0", fontWeight = FontWeight.Bold)
-            Text(text = "kg", fontSize = 10.sp)
+            Text(
+                text = "kg", fontSize = 10.sp, color = LocalContentColor.current.copy(alpha = 0.85f)
+            )
         }
     }
 }

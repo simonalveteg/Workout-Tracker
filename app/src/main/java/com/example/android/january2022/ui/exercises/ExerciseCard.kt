@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 
 @Composable
@@ -28,7 +29,6 @@ fun ExerciseCard(
     inPicker: Boolean,
     onEvent: (Event) -> Unit
 ) {
-    val roundedCornerDp = 10.dp
     val cornerCutDp by animateDpAsState(targetValue = if (selected) 24.dp else 0.dp)
 
     Surface(
@@ -42,7 +42,7 @@ fun ExerciseCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp),
-        shape = RoundedCornerShape(roundedCornerDp)
+        shape = Shapes.medium
     ) {
         Box {
             // row containing the upper-right selection-indicator
