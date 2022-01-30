@@ -223,11 +223,16 @@ fun RowScope.NavigationItem(
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
-                // Avoid multiple copies of the same destination when
-                // re-selecting the same item
-                launchSingleTop = true
-                // Restore state when re-selecting a previously selected item
-                restoreState = true
+                // if the current tab isn't already selected, launchSingleTop and restore previous state
+                if(!isSelected) {
+                    // Avoid multiple copies of the same destination when
+                    // re-selecting the same item
+                    launchSingleTop = true
+                    // Restore state when re-selecting a previously selected item
+                    restoreState = true
+                } else {
+                    popUpTo(screen.route)
+                }
             }
         },
         colors = NavigationBarItemDefaults.colors(
