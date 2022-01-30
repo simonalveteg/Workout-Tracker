@@ -43,15 +43,6 @@ fun BigSessionCard(
     onEvent: (Event) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val startDate = SimpleDateFormat(
-        "dd-MM-yy",
-        Locale.ENGLISH
-    ).format(session.startTimeMilli)
-    val startTime = SimpleDateFormat(
-        "HH:mm",
-        Locale.ENGLISH
-    ).format(session.startTimeMilli)
-
     val startMonth = SimpleDateFormat(
         "MMM", Locale.ENGLISH
     ).format(session.startTimeMilli)

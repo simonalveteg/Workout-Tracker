@@ -11,8 +11,7 @@ import androidx.compose.material.Card
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.RadioButtonChecked
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,8 +28,8 @@ fun ExerciseCard(
     inPicker: Boolean,
     onEvent: (Event) -> Unit
 ) {
-    val roundedCornerDp = 20.dp
-    val cornerCutDp by animateDpAsState(targetValue = if (selected) 34.dp else 0.dp)
+    val roundedCornerDp = 10.dp
+    val cornerCutDp by animateDpAsState(targetValue = if (selected) 24.dp else 0.dp)
 
     Surface(
         onClick = {
@@ -41,7 +40,8 @@ fun ExerciseCard(
         },
         tonalElevation = 1.dp,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp),
         shape = RoundedCornerShape(roundedCornerDp)
     ) {
         Box {
@@ -54,42 +54,31 @@ fun ExerciseCard(
                     shape = CutCornerShape(bottomStart = 100f)
                 ) {}
             }
-
-            Column(
-                Modifier
-                    .padding(start = 16.dp, top = 12.dp, bottom = 4.dp, end = 8.dp)
-                    .fillMaxWidth()
+            Row(
+                modifier = Modifier
+                    .padding(14.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    exercise.exerciseTitle.uppercase(),
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Column(Modifier.padding(start = 8.dp, top = 8.dp)) {
-                    Row(
-                        Modifier.padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("MUSCLE GROUPS:", style = MaterialTheme.typography.labelSmall)
-                        Spacer(Modifier.width(8.dp))
-                        Text(exercise.muscleGroups.uppercase(), style = MaterialTheme.typography.bodySmall)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("EQUIPMENT:", style = MaterialTheme.typography.labelSmall)
-                        Spacer(Modifier.width(8.dp))
-                        Text(exercise.equipment.uppercase(), style = MaterialTheme.typography.bodySmall)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(Modifier.weight(1f))
-                        OutlinedButton(
-                            onClick = {
-                                onEvent(
-                                    ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
-                                )
-                            }
-                        ) {
-                            Text("VIEW ON MUSCLEWIKI")
-                        }
-                    }
+                Column {
+                    Text(
+                        exercise.exerciseTitle.uppercase(),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Text(
+                        exercise.muscleGroups.uppercase() + ", " +
+                                exercise.equipment.uppercase(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = LocalContentColor.current.copy(alpha = 0.7f)
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                IconButton(onClick = {
+                    onEvent(
+                        ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
+                    )
+                }) {
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Show more")
                 }
             }
         }

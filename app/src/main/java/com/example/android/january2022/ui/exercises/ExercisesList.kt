@@ -31,13 +31,8 @@ fun ExercisesList(
     ) {
         items(items = exercises) { exercise ->
             AnimatedVisibility(visible = true) {
-                Box(
-                    Modifier
-                        .padding(vertical = 4.dp)
-                ) {
-                    val selected = selectedExercises.contains(exercise.exerciseId)
-                    ExerciseCard(exercise, selected, inPicker, viewModel::onEvent)
-                }
+                val selected = selectedExercises.contains(exercise.exerciseId)
+                ExerciseCard(exercise, selected, inPicker, viewModel::onEvent)
             }
         }
     }

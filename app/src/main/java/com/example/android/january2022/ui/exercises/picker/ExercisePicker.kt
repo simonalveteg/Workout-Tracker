@@ -66,9 +66,7 @@ fun ExercisePickerScreen(
             ExerciseSearchFilters(viewModel, viewModel::onEvent)
             Spacer(Modifier.height(8.dp))
             Box(
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
+                Modifier.weight(1f)
             ) {
                 ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true)
             }
