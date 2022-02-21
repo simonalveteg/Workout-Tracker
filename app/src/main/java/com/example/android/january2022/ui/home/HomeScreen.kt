@@ -83,14 +83,15 @@ fun HomeScreen(
             Box(
                 Modifier
                     .weight(1f)
-                    .statusBarsPadding()) {
+                    .statusBarsPadding()
+            ) {
                 SessionCardList(sessions = sessions, viewModel)
             }
         }
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun SessionCardList(
     sessions: List<Session>,
@@ -99,7 +100,7 @@ fun SessionCardList(
     val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
     val sets by viewModel.sets.observeAsState(listOf())
     LazyColumn {
-        items(sessions) { session ->
+        items(sessions, key = { it.sessionId }) { session ->
             BigSessionCard(
                 session = session,
                 sessionContent = sessionContent.filter { it.sessionExercise.parentSessionId == session.sessionId },

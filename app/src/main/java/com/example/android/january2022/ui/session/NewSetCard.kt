@@ -131,20 +131,31 @@ fun ExpandedSetCard(
     val reps: Int = set.reps
     val weight: Float = set.weight
     val requester = FocusRequester()
+    var repsText by remember { mutableStateOf(reps.toString()) }
+    var weightText by remember { mutableStateOf(weight.toString()) }
     LaunchedEffect(Unit) {
         requester.requestFocus()
+    }
+    LaunchedEffect(weightText) {
+        try {
+            val newWeight = weightText.trim().toFloat()
+            onEvent(SessionEvent.WeightChanged(set, newWeight))
+        } catch (e: Exception) {
+        }
+    }
+    LaunchedEffect(repsText) {
+        try {
+            val newReps = repsText.trim().toInt()
+            onEvent(SessionEvent.RepsChanged(set, newReps))
+        } catch (e: Exception) {
+        }
     }
 
     Row {
         BasicTextField(
-            value = if (reps > -1) reps.toString() else " ",
+            value = if (repsText != "-1") repsText else " ",
             onValueChange = {
-                try {
-                    val newValue = it.trim().toInt()
-                    onEvent(SessionEvent.RepsChanged(set, newValue))
-                } catch (e: Exception) {
-                    onEvent(SessionEvent.RepsChanged(set, -1))
-                }
+                repsText = it
             },
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface,
@@ -171,13 +182,9 @@ fun ExpandedSetCard(
             color = LocalContentColor.current.copy(alpha = 0.9f)
         )
         BasicTextField(
-            value = if (weight > -1) weight.toString() else " ",
+            value = if (weightText != "-1.0") weightText else " ",
             onValueChange = {
-                try {
-                    val newValue = it.trim().toFloat()
-                    onEvent(SessionEvent.WeightChanged(set, newValue))
-                } catch (e: Exception) {
-                }
+                weightText = it
             },
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface,

@@ -58,14 +58,12 @@ fun BigSessionCard(
 
 
     Surface(
-        onClick = {
-            onEvent(HomeEvent.OnSessionClick(session))
-        },
         shape = Shapes.medium,
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .clickable { onEvent(HomeEvent.OnSessionClick(session)) }
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(

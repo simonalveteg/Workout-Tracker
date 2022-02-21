@@ -2,6 +2,7 @@ package com.example.android.january2022.ui.exercises
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.utils.Event
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExercisesList(
     viewModel: ExerciseViewModel,

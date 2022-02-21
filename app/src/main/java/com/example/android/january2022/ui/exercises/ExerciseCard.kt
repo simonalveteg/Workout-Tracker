@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.RoundedCorner
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,16 +33,15 @@ fun ExerciseCard(
     val cornerCutDp by animateDpAsState(targetValue = if (selected) 24.dp else 0.dp)
 
     Surface(
-        onClick = {
-            if (inPicker) {
-                Log.d("EC", "Exercise clicked: ${exercise.exerciseId}")
-                onEvent(ExerciseEvent.ExerciseSelected(exercise))
-            }
-        },
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp),
+            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .clickable {
+                if (inPicker) {
+                    Log.d("EC", "Exercise clicked: ${exercise.exerciseId}")
+                    onEvent(ExerciseEvent.ExerciseSelected(exercise))
+                } },
         shape = Shapes.medium
     ) {
         Box {
