@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -45,6 +46,7 @@ fun SessionExerciseCard(
     val errorColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     )
+    Log.d("SEC", "selected sessionExercise: $selected")
 
 
     Surface(

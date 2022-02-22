@@ -1,9 +1,13 @@
 package com.example.android.january2022.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.*
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -23,6 +27,16 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val sessionId = MutableLiveData<Long>()
+
+
+    var selectedSession by mutableStateOf(-1L)
+        private set
+
+
+    private val _removedSession = MutableLiveData<Session>()
+    val removedSession: LiveData<Session>
+        get() = _removedSession
+
 
     val sessionList: LiveData<List<Session>> = repository.getSessions()
     val exerciseList: LiveData<List<Exercise>> = repository.getAllExercises()
@@ -56,6 +70,27 @@ class HomeViewModel @Inject constructor(
                     }!!
                 }
                 sendUiEvent(UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${sessionId.value}"))
+            }
+            is HomeEvent.SetSelectedSession -> {
+                val newId = event.session.sessionId
+                selectedSession = if(newId != selectedSession) newId else -1L
+            }
+            is HomeEvent.OnDeleteSession -> {
+                _removedSession.value = event.session
+                selectedSession = -1L
+                viewModelScope.launch {
+                    repository.removeSession(event.session)
+                }
+                sendUiEvent(UiEvent.ShowSnackbar(
+                    message = "Session removed",
+                    actionLabel = "Undo",
+                    action = HomeEvent.RestoreRemovedSession
+                ))
+            }
+            is HomeEvent.RestoreRemovedSession -> {
+                viewModelScope.launch {
+                    removedSession.value?.let { repository.insertSession(it) }
+                }
             }
         }
     }
