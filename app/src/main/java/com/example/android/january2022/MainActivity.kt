@@ -167,7 +167,7 @@ fun GymNavHost(navController: NavHostController) {
                 slideOutOfContainer(AnimatedContentScope.SlideDirection.Right) + fadeOut()
             }
         ) {
-            ProfileScreen()
+            ProfileScreen(onNavigate = { navController.navigate(it.route) })
         }
     }
 }

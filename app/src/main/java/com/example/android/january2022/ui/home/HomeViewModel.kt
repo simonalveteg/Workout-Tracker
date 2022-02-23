@@ -28,10 +28,8 @@ class HomeViewModel @Inject constructor(
 
     val sessionId = MutableLiveData<Long>()
 
-
     var selectedSession by mutableStateOf(-1L)
         private set
-
 
     private val _removedSession = MutableLiveData<Session>()
     val removedSession: LiveData<Session>
