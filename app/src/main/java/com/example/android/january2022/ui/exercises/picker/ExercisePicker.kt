@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.exercises.picker
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -8,10 +9,12 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Exercise
@@ -20,8 +23,6 @@ import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
-import com.google.accompanist.insets.statusBarsPadding
-import kotlinx.coroutines.flow.collect
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -33,6 +34,10 @@ fun ExercisePickerScreen(
 ) {
     val exercises: List<Exercise> by viewModel.exerciseList.collectAsState(listOf())
     val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior = remember(decayAnimationSpec) {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -43,20 +48,38 @@ fun ExercisePickerScreen(
             }
         }
     }
-
     Scaffold(
-        bottomBar = { BottomAppBar() {}},
+        topBar = {
+            LargeTopAppBar(
+                title = { Text("Exercises") },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(),
+                actions = {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        },
+        bottomBar = { BottomAppBar() {} },
         floatingActionButton = {
             // TODO: Animate fab entering and exiting screen when items get selected.
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
                 shape = RoundedCornerShape(35),
-                containerColor = MaterialTheme.colorScheme.primary,
-                text = { Text("ADD ${selectedExercises.size}") }
-            )
+                containerColor = MaterialTheme.colorScheme.primary
+            ) { Text("ADD ${selectedExercises.size}") }
         },
-        floatingActionButtonPosition = FabPosition.End
-    ) {
+        floatingActionButtonPosition = FabPosition.End,
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .windowInsetsPadding(WindowInsets.statusBars)
+    ) { innerPadding ->
+        ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true, innerPadding)
+/*
         Column(
             Modifier
                 .fillMaxSize()
@@ -68,9 +91,8 @@ fun ExercisePickerScreen(
             Box(
                 Modifier.weight(1f)
             ) {
-                ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true)
             }
-        }
+        }*/
     }
 }
 
@@ -79,7 +101,7 @@ fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit
     val selectedMuscleGroups by viewModel.selectedMuscleGroups.collectAsState(emptyList())
     val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }
     val selectedEquipment by viewModel.selectedEquipment.collectAsState("")
-    val equipment by remember { mutableStateOf(viewModel.equipment)}
+    val equipment by remember { mutableStateOf(viewModel.equipment) }
 
     LazyRow(contentPadding = PaddingValues(4.dp)) {
         items(muscleGroups) { muscleGroup ->
