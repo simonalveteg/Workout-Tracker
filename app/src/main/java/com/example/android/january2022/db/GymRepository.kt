@@ -22,7 +22,7 @@ class GymRepository(
         muscleGroup: List<String> = emptyList(),
         equipment: String = "%"
     ): Flow<List<Exercise>> {
-        val equip = if(equipment.isEmpty()) "%" else equipment
+        val equip = equipment.ifEmpty { "%" }
         return flow {
             if(muscleGroup.isEmpty()) {
                 dao.getExercisesByQuery("%", equip).collect {
