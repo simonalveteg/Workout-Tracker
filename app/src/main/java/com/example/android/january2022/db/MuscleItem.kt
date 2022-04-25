@@ -28,29 +28,27 @@ fun MuscleItem(
     }
     Surface(
         shape = Shapes.large,
-        tonalElevation = 1.dp,
+        tonalElevation = if (selectionCount > 0) 10.dp else 1.dp,
         modifier = Modifier
             .height(100.dp)
             .padding(horizontal = 4.dp, vertical = 4.dp)
             .clickable { onSelection() }
     ) {
-        Row(horizontalArrangement = Arrangement.Center) {
+
+        Box {
             Text(
                 text = muscleGroup,
                 style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.Center)
             )
-            AnimatedVisibility(visible = selectionCount > 0) {
-                Text(
-                    text = "$selectionCount",
-                    style = MaterialTheme.typography.titleSmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                )
-            }
+            Text(
+                text = "${selectionCount.takeIf { it > 0 } ?: ""}",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.TopEnd).padding(top = 8.dp, end = 10.dp)
+            )
         }
+
     }
 }
