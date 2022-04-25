@@ -92,7 +92,6 @@ fun GymNavHost(navController: NavHostController) {
         }
 
         homeNavGraph(navController)
-        exercisePickerGraph(navController)
         composable(
             route = Routes.PROFILE_SCREEN,
             enterTransition = {
@@ -175,21 +174,6 @@ fun RowScope.NavigationItem(
         )
     )
 }
-
-// extension function to return a navgraph scoped viewmodel
-@Composable
-inline fun <reified VM : ViewModel> NavBackStackEntry.parentViewModel(
-    navController: NavController
-): VM {
-    Log.d("MA","${destination.parent}")
-    // First, get the parent of the current destination
-    // This always exists since every destination in your graph has a parent
-    val parentId = destination.parent?.id ?: return hiltViewModel()
-
-    // Now get the NavBackStackEntry associated with the parent
-    return hiltViewModel(navController.getBackStackEntry(parentId))
-}
-
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable

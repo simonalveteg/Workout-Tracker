@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -55,9 +56,12 @@ fun NavGraphBuilder.exercisePickerGraph(
             Log.d("EPG","$route")
             val id = it.arguments?.getLong("sessionId")
             Log.d("EPG","$id")
+            val parentEntry = remember {
+                navController.getBackStackEntry(Routes.EXERCISE_PICKER_GRAPH)
+            }
             MusclePickerScreen(
-                viewModel = it.parentViewModel(navController),
-                onPopBackStack = { navController.popBackStack() },
+                viewModel = hiltViewModel(parentEntry),
+                onPopBackStack = { navController.popBackStack(Routes.EXERCISE_PICKER_GRAPH,true) },
                 onNavigate = { navController.navigate(it.route) }
             )
         }
@@ -71,10 +75,14 @@ fun NavGraphBuilder.exercisePickerGraph(
             )
         ) {
             Log.d("EPG","$route")
+            // get parent entry to make view model scoped to nav graph
+            val parentEntry = remember {
+                navController.getBackStackEntry(Routes.EXERCISE_PICKER_GRAPH)
+            }
             ExercisePickerScreen(
-                viewModel = it.parentViewModel(navController),
+                viewModel = hiltViewModel(parentEntry),
                 onPopBackStack = {
-                    navController.popBackStack()
+                    navController.popBackStack(Routes.EXERCISE_PICKER_GRAPH,true)
                 },
                 onNavigate = { navController.navigate(it.route) }
             )

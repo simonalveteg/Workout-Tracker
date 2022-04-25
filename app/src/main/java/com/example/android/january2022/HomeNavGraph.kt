@@ -76,6 +76,7 @@ fun NavGraphBuilder.homeNavGraph(
         ) {
             ExerciseDetailScreen()
         }
+        exercisePickerGraph(navController)
 
     }
 }
