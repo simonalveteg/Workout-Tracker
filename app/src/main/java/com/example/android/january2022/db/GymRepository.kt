@@ -19,20 +19,18 @@ class GymRepository(
         dao.getExercise(id)
 
     suspend fun getExercisesByQuery(
-        muscleGroup: List<String> = emptyList(),
+        muscleGroup: String = "",
         equipment: String = "%"
     ): Flow<List<Exercise>> {
         val equip = equipment.ifEmpty { "%" }
         return flow {
-            if(muscleGroup.isEmpty()) {
+            if(muscleGroup.isBlank()) {
                 dao.getExercisesByQuery("%", equip).collect {
                     emit(it)
                 }
             } else {
-                muscleGroup.forEach { muscle ->
-                    dao.getExercisesByQuery(muscle, equip).collect {
-                        emit(it)
-                    }
+                dao.getExercisesByQuery(muscleGroup, equip).collect {
+                    emit(it)
                 }
             }
         }

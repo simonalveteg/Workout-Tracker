@@ -42,10 +42,11 @@ fun ExerciseCard(
         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 6.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val indicatorHeight by animateDpAsState(targetValue = if(selected) 32.dp else 0.dp)
         Surface(
             color = indicatorColor.value,
             modifier = Modifier
-                .height(32.dp)
+                .height(indicatorHeight)
                 .width(4.dp),
             shape = Shapes.small
         ) {}
@@ -89,7 +90,9 @@ fun ExerciseCard(
                             ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
                         )
                     },
-                    modifier = Modifier.weight(1f).padding(start = 8.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
                 ) {
                     Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "Show more")
                 }

@@ -24,7 +24,7 @@ import com.example.android.january2022.utils.Event
 fun ExercisesList(
     viewModel: ExerciseViewModel,
     exercises: List<Exercise>,
-    selectedExercises: Set<Long> = emptySet(),
+    selectedExercises: Set<Exercise> = emptySet(),
     onEvent: (Event) -> Unit,
     inPicker: Boolean,
 ) {
@@ -35,7 +35,7 @@ fun ExercisesList(
     ) {
         items(items = exercises) { exercise ->
             AnimatedVisibility(visible = true) {
-                val selected = selectedExercises.contains(exercise.exerciseId)
+                val selected = selectedExercises.contains(exercise)
                 ExerciseCard(exercise, selected, inPicker, viewModel::onEvent)
             }
         }

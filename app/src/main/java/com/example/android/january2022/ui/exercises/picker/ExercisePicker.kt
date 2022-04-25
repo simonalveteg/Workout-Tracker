@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.exercises.picker
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
@@ -16,16 +17,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -41,7 +38,7 @@ fun ExercisePickerScreen(
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
-    val currentMuscleGroup by viewModel.selectedMuscleGroups.collectAsState()
+    val currentMuscleGroup by viewModel.selectedMuscleGroup.collectAsState()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -55,7 +52,7 @@ fun ExercisePickerScreen(
     Scaffold(
         topBar = {
             LargeTopAppBar(
-                title = { Text(text = currentMuscleGroup[0]) },
+                title = { Text(text = currentMuscleGroup) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
@@ -68,7 +65,6 @@ fun ExercisePickerScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        bottomBar = { BottomAppBar() {} },
         floatingActionButton = {
             // TODO: Animate fab entering and exiting screen when items get selected.
             ExtendedFloatingActionButton(
@@ -81,6 +77,7 @@ fun ExercisePickerScreen(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(bottom = 60.dp)
     ) { innerPadding ->
         Column {
             ExerciseEquipmentFilter(viewModel, viewModel::onEvent, innerPadding)
@@ -121,11 +118,11 @@ fun ExerciseEquipmentFilter(
 
 @Composable
 fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit) {
-    val selectedMuscleGroups by viewModel.selectedMuscleGroups.collectAsState(emptyList())
+    val selectedMuscleGroup by viewModel.selectedMuscleGroup.collectAsState()
     val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }
     LazyRow(contentPadding = PaddingValues(4.dp)) {
         items(muscleGroups) { muscleGroup ->
-            val isSelected = selectedMuscleGroups.contains(muscleGroup)
+            val isSelected = selectedMuscleGroup.contains(muscleGroup)
             MuscleChip(
                 title = muscleGroup,
                 isSelected = isSelected,

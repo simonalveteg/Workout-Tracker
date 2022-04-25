@@ -1,25 +1,26 @@
 package com.example.android.january2022.ui.exercises.picker
 
-import android.text.Layout
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.db.MuscleItem
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
-import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.UiEvent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusclePickerScreen(
     onPopBackStack: () -> Unit,
@@ -36,28 +37,61 @@ fun MusclePickerScreen(
         }
     }
     val muscleGroups = viewModel.muscleGroups
-    Column(
-        horizontalAlignment = CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
-    ) {
-        muscleGroups.forEach { muscleGroup ->
-            Surface(
-                shape = Shapes.medium,
-                tonalElevation = 1.dp,
-                modifier = Modifier.padding(horizontal = 32.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = muscleGroup,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .align(CenterHorizontally)
-                        .clickable {
-                            viewModel.onEvent(ExerciseEvent.OnMuscleGroupSelected(muscleGroup))
-                        }
+    val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior = remember(decayAnimationSpec) {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+    }
+
+    Scaffold(
+        topBar = {
+            SmallTopAppBar(
+                title = { Text(text = "Exercises") },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(),
+                actions = {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        },
+        floatingActionButton = {
+            // TODO: Animate fab entering and exiting screen when items get selected.
+            ExtendedFloatingActionButton(
+                onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
+                shape = RoundedCornerShape(35),
+                containerColor = MaterialTheme.colorScheme.primary
+            ) { Text("ADD ${selectedExercises.size}") }
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(bottom = 60.dp)
+    ) { innerPadding ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            userScrollEnabled = false,
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(
+                    top = innerPadding.calculateTopPadding()
                 )
+        ) {
+            items(
+                count = muscleGroups.size,
+            ) { index ->
+                val muscleGroup = muscleGroups[index]
+                MuscleItem(
+                    muscleGroup = muscleGroup,
+                    selectedExercises = selectedExercises
+                ) { viewModel.onEvent(ExerciseEvent.OnMuscleGroupSelected(muscleGroup)) }
             }
         }
     }
