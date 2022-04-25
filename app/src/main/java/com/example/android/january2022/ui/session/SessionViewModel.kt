@@ -126,7 +126,9 @@ class SessionViewModel @Inject constructor(
                 }
             }
             is SessionEvent.OnAddSessionExerciseClicked -> {
-                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN+"?sessionId=${currentSession?.sessionId}"))
+                val route = Routes.EXERCISE_PICKER_GRAPH+"?sessionId=${currentSession?.sessionId}"
+                Log.d("SVM",route)
+                sendUiEvent(UiEvent.Navigate(route))
             }
             is SessionEvent.OnSessionExerciseInfoClicked -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN+"?exerciseId=${event.exerciseId}"))

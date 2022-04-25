@@ -11,7 +11,7 @@ sealed class ExerciseEvent : Event {
         val muscleGroup: String,
         val equipment: String
     ) : ExerciseEvent()
-
+    data class OnMuscleGroupSelected(val muscleGroup: String) : ExerciseEvent()
     data class ExerciseSelected(val exercise: Exercise) : ExerciseEvent()
     data class ExerciseInfoClicked(val exercise: Exercise) : ExerciseEvent()
     data class ExerciseUpdated(val exercise: Exercise) : ExerciseEvent()

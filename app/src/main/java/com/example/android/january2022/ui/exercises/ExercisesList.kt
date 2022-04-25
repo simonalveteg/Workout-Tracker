@@ -15,7 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.ui.exercises.picker.ExerciseSearchFilters
+import com.example.android.january2022.ui.exercises.picker.ExerciseEquipmentFilter
 import com.example.android.january2022.utils.Event
 
 
@@ -27,17 +27,12 @@ fun ExercisesList(
     selectedExercises: Set<Long> = emptySet(),
     onEvent: (Event) -> Unit,
     inPicker: Boolean,
-    innerPadding: PaddingValues = PaddingValues(0.dp)
 ) {
 
     LazyColumn(
-        contentPadding = innerPadding,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        item {
-            ExerciseSearchFilters(viewModel, viewModel::onEvent)
-        }
         items(items = exercises) { exercise ->
             AnimatedVisibility(visible = true) {
                 val selected = selectedExercises.contains(exercise.exerciseId)

@@ -59,9 +59,7 @@ fun SessionScreen(
         }
     }
     Scaffold(
-        bottomBar = { BottomAppBar {
-
-        }},
+        modifier = Modifier.padding(bottom = 60.dp),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(

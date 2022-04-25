@@ -83,7 +83,9 @@ class ExerciseViewModel @Inject constructor(
         private set
 
     init {
+        Log.d("EVM","initialisation")
         val sessionId = savedStateHandle.get<Long>("sessionId") ?: -1L
+        Log.d("EVM","sessionId: $sessionId")
         if (sessionId != -1L) {
             viewModelScope.launch {
                 currentSession = withContext(Dispatchers.IO) {
@@ -154,6 +156,13 @@ class ExerciseViewModel @Inject constructor(
                     selectedEquipment.value = if(selectedEquipment.value == equipment) "" else equipment
                 }
                 updateExerciseList()
+            }
+            is ExerciseEvent.OnMuscleGroupSelected -> {
+                // update exercise list
+                onEvent(ExerciseEvent.MuscleGroupSelectionChange(event.muscleGroup))
+                // navigate to exercise picker
+                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN))
+
             }
         }
     }

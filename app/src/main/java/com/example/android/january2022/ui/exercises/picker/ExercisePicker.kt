@@ -17,12 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -30,7 +33,7 @@ import com.example.android.january2022.utils.UiEvent
 fun ExercisePickerScreen(
     onPopBackStack: () -> Unit,
     onNavigate: (UiEvent.Navigate) -> Unit,
-    viewModel: ExerciseViewModel = hiltViewModel()
+    viewModel: ExerciseViewModel
 ) {
     val exercises: List<Exercise> by viewModel.exerciseList.collectAsState(listOf())
     val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
@@ -38,6 +41,7 @@ fun ExercisePickerScreen(
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
+    val currentMuscleGroup by viewModel.selectedMuscleGroups.collectAsState()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -51,7 +55,7 @@ fun ExercisePickerScreen(
     Scaffold(
         topBar = {
             LargeTopAppBar(
-                title = { Text("Exercises") },
+                title = { Text(text = currentMuscleGroup[0]) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
@@ -78,31 +82,47 @@ fun ExercisePickerScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) { innerPadding ->
-        ExercisesList(viewModel, exercises, selectedExercises, viewModel::onEvent, true, innerPadding)
-/*
-        Column(
-            Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-        ) {
-            TitleText("CHOOSE EXERCISE", 8, 16)
-            ExerciseSearchFilters(viewModel, viewModel::onEvent)
-            Spacer(Modifier.height(8.dp))
-            Box(
-                Modifier.weight(1f)
-            ) {
-            }
-        }*/
+        Column {
+            ExerciseEquipmentFilter(viewModel, viewModel::onEvent, innerPadding)
+            ExercisesList(
+                viewModel,
+                exercises,
+                selectedExercises,
+                viewModel::onEvent,
+                true
+            )
+        }
     }
 }
 
 @Composable
-fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit) {
-    val selectedMuscleGroups by viewModel.selectedMuscleGroups.collectAsState(emptyList())
-    val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }
+fun ExerciseEquipmentFilter(
+    viewModel: ExerciseViewModel,
+    onEvent: (Event) -> Unit,
+    innerPadding: PaddingValues
+) {
     val selectedEquipment by viewModel.selectedEquipment.collectAsState("")
     val equipment by remember { mutableStateOf(viewModel.equipment) }
+    LazyRow(
+        modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+    ) {
+        items(equipment) { equipment ->
+            val isSelected = selectedEquipment.contains(equipment)
+            MuscleChip(
+                title = equipment,
+                isSelected = isSelected,
+                onEvent = {
+                    onEvent(ExerciseEvent.EquipmentSelectionChange(it))
+                }
+            )
+        }
+    }
+}
 
+@Composable
+fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit) {
+    val selectedMuscleGroups by viewModel.selectedMuscleGroups.collectAsState(emptyList())
+    val muscleGroups by remember { mutableStateOf(viewModel.muscleGroups) }
     LazyRow(contentPadding = PaddingValues(4.dp)) {
         items(muscleGroups) { muscleGroup ->
             val isSelected = selectedMuscleGroups.contains(muscleGroup)
@@ -113,19 +133,6 @@ fun ExerciseSearchFilters(viewModel: ExerciseViewModel, onEvent: (Event) -> Unit
                     onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
                 }
             )
-        }
-    }
-    LazyRow(contentPadding = PaddingValues(4.dp)) {
-        items(equipment) { equipment ->
-            val isSelected = selectedEquipment.contains(equipment)
-            MuscleChip(
-                title = equipment,
-                isSelected = isSelected,
-                onEvent = {
-                    onEvent(ExerciseEvent.EquipmentSelectionChange(it))
-                }
-            )
-
         }
     }
 }
@@ -140,7 +147,7 @@ fun MuscleChip(
         targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
     )
     Surface(
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(5),
         color = chipColor.value,
         tonalElevation = 1.dp
     ) {
@@ -149,7 +156,7 @@ fun MuscleChip(
         })) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(8.dp)
             )
         }
