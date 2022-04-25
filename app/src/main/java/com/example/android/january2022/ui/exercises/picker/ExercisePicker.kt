@@ -12,9 +12,11 @@ import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
@@ -55,6 +57,12 @@ fun ExercisePickerScreen(
                 title = { Text(text = currentMuscleGroup) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Localized description"
+                        )
+                    }
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
@@ -100,18 +108,25 @@ fun ExerciseEquipmentFilter(
 ) {
     val selectedEquipment by viewModel.selectedEquipment.collectAsState("")
     val equipment by remember { mutableStateOf(viewModel.equipment) }
-    LazyRow(
-        modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 3.dp,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        items(equipment) { equipment ->
-            val isSelected = selectedEquipment.contains(equipment)
-            MuscleChip(
-                title = equipment,
-                isSelected = isSelected,
-                onEvent = {
-                    onEvent(ExerciseEvent.EquipmentSelectionChange(it))
-                }
-            )
+        LazyRow(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+        ) {
+            items(equipment) { equipment ->
+                val isSelected = selectedEquipment.contains(equipment)
+                MuscleChip(
+                    title = equipment,
+                    isSelected = isSelected,
+                    onEvent = {
+                        onEvent(ExerciseEvent.EquipmentSelectionChange(it))
+                    }
+                )
+            }
         }
     }
 }
@@ -141,12 +156,11 @@ fun MuscleChip(
     onEvent: (String) -> Unit
 ) {
     val chipColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
     )
     Surface(
-        shape = RoundedCornerShape(5),
+        shape = RoundedCornerShape(0),
         color = chipColor.value,
-        tonalElevation = 1.dp
     ) {
         Box(modifier = Modifier.toggleable(value = isSelected, onValueChange = {
             onEvent(title)
