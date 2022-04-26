@@ -203,16 +203,31 @@ fun ExercisePickerScreen(
                 }
             }
         }
-        Column {
-            ExerciseEquipmentFilter(viewModel, viewModel::onEvent, innerPadding)
-            ExercisesList(
-                viewModel,
-                exercises,
-                selectedExercises,
-                viewModel::onEvent,
-                true
-            )
-        }
+        ExerciseListWithFilter(
+            viewModel = viewModel,
+            innerPadding = innerPadding,
+            exercises = exercises,
+            selectedExercises = selectedExercises
+        )
+    }
+}
+
+@Composable
+fun ExerciseListWithFilter(
+    viewModel: ExerciseViewModel,
+    innerPadding: PaddingValues,
+    exercises: List<Exercise>,
+    selectedExercises: Set<Exercise> = emptySet()
+) {
+    Column {
+        ExerciseEquipmentFilter(viewModel, viewModel::onEvent, innerPadding)
+        ExercisesList(
+            viewModel,
+            exercises,
+            selectedExercises,
+            viewModel::onEvent,
+            true
+        )
     }
 }
 
