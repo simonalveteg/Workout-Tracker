@@ -1,5 +1,7 @@
 package com.example.android.january2022.ui.exercises.picker
 
+import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -14,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.MuscleItem
@@ -61,11 +64,12 @@ fun MusclePickerScreen(
             )
         },
         floatingActionButton = {
-            // TODO: Animate fab entering and exiting screen when items get selected.
+            val offset = if(selectedExercises.isEmpty()) 100.dp else 0.dp
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
                 shape = RoundedCornerShape(35),
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.offset(offset)
             ) { Text("ADD ${selectedExercises.size}") }
         },
         floatingActionButtonPosition = FabPosition.End,

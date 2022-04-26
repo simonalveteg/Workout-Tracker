@@ -3,6 +3,8 @@ package com.example.android.january2022.ui.exercises.picker
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,6 +20,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
@@ -97,12 +101,14 @@ fun ExercisePickerScreen(
             )
         },
         floatingActionButton = {
-            // TODO: Animate fab entering and exiting screen when items get selected.
+            val alpha by animateFloatAsState(targetValue = if(selectedExercises.isEmpty()) 0f else 1f)
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
                 shape = RoundedCornerShape(35),
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.scale(alpha)
             ) { Text("ADD ${selectedExercises.size}") }
+
         },
         floatingActionButtonPosition = FabPosition.End,
         modifier = Modifier
