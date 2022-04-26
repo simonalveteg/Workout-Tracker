@@ -1,9 +1,6 @@
 package com.example.android.january2022.ui.session
 
-import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.utils.Event
 

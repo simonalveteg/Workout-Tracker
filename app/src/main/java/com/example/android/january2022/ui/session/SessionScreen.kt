@@ -72,7 +72,19 @@ fun SessionScreen(
                 title = { Text(text = session?.let { sessionTitle(it) } ?: "") },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    val dropdownExpanded = remember { mutableStateOf(false) }
+                    DropdownMenu(
+                        expanded = dropdownExpanded.value,
+                        onDismissRequest = { dropdownExpanded.value = false }) {
+                        DropdownMenuItem(
+                            text = { Text("Placeholder") },
+                            onClick = {
+                                dropdownExpanded.value = false
+                            }
+                        )
+
+                    }
+                    IconButton(onClick = { dropdownExpanded.value = true }) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = "Localized description"

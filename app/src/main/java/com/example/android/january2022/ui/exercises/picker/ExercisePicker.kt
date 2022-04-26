@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.exercises.picker
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
@@ -8,23 +9,29 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -41,12 +48,15 @@ fun ExercisePickerScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
     val currentMuscleGroup by viewModel.selectedMuscleGroup.collectAsState()
+    val createExerciseDialogOpen = rememberSaveable { mutableStateOf(false) }
+
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.PopBackStack -> onPopBackStack()
                 is UiEvent.Navigate -> onNavigate(event)
+                is UiEvent.OpenDialog -> createExerciseDialogOpen.value = true
                 else -> Unit
             }
         }
@@ -57,13 +67,26 @@ fun ExercisePickerScreen(
                 title = { Text(text = currentMuscleGroup) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
+                    val dropdownExpanded = remember { mutableStateOf(false) }
+                    DropdownMenu(
+                        expanded = dropdownExpanded.value,
+                        onDismissRequest = { dropdownExpanded.value = false }) {
+                        DropdownMenuItem(
+                            text = { Text("Create New Exercise") },
+                            onClick = {
+                                createExerciseDialogOpen.value = true
+                                dropdownExpanded.value = false
+                            }
+                        )
+
+                    }
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
                             imageVector = Icons.Filled.Search,
                             contentDescription = "Localized description"
                         )
                     }
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    IconButton(onClick = { dropdownExpanded.value = true }) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = "Localized description"
@@ -87,6 +110,93 @@ fun ExercisePickerScreen(
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(bottom = 60.dp)
     ) { innerPadding ->
+        AnimatedVisibility(visible = createExerciseDialogOpen.value) {
+            Dialog(onDismissRequest = { createExerciseDialogOpen.value = false }) {
+                val muscleGroups = viewModel.muscleGroups
+                val equipment = viewModel.equipment
+                val selectedEquipment = remember { mutableStateOf("") }
+                val selectedMuscleGroups = remember { mutableStateListOf("") }
+                Surface(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 48.dp)
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        var inputValue by remember { mutableStateOf("") }
+                        Text(
+                            "Create new exercise",
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                        TextField(
+                            value = inputValue,
+                            onValueChange = { newText ->
+                                inputValue = newText
+                            },
+                            placeholder = { Text(text = "Enter exercise-name") }
+                        )
+                        FlowRow(
+                            mainAxisAlignment = FlowMainAxisAlignment.SpaceAround
+                        ) {
+                            muscleGroups.forEach { muscleGroup ->
+                                val selected = selectedMuscleGroups.contains(muscleGroup)
+                                MuscleChip(title = muscleGroup, isSelected = selected) {
+                                    if (selected) {
+                                        selectedMuscleGroups.remove(it)
+                                    } else selectedMuscleGroups.add(it)
+                                    Log.d(
+                                        "EP",
+                                        "Pressed $it, selected: ${selectedMuscleGroups.filter{it.isNotEmpty()}.joinToString( ", ")}"
+                                    )
+                                }
+                            }
+                        }
+                        Divider()
+                        FlowRow(
+                            mainAxisAlignment = FlowMainAxisAlignment.SpaceAround
+                        ) {
+                            equipment.forEach { equipment ->
+                                val selected = selectedEquipment.value == equipment
+                                MuscleChip(title = equipment, isSelected = selected) {
+                                    if (selected) {
+                                        selectedEquipment.value = ""
+                                    } else selectedEquipment.value = it
+                                    Log.d("EP", "Pressed $it, selected: $selectedEquipment")
+                                }
+                            }
+                        }
+                        Row {
+                            Button(
+                                onClick = {
+                                    viewModel.onEvent(
+                                        ExerciseEvent.OnCreateExercise(
+                                            Exercise(
+                                                exerciseTitle = inputValue,
+                                                muscleGroups = selectedMuscleGroups.filter {
+                                                    it.isNotEmpty()
+                                                }.joinToString(separator = ", "),
+                                                equipment = selectedEquipment.value
+                                            )
+                                        )
+                                    )
+                                    createExerciseDialogOpen.value = false
+                                }
+                            ) {
+                                Text("Create")
+                            }
+                        }
+                    }
+                }
+            }
+        }
         Column {
             ExerciseEquipmentFilter(viewModel, viewModel::onEvent, innerPadding)
             ExercisesList(
@@ -122,7 +232,7 @@ fun ExerciseEquipmentFilter(
                 MuscleChip(
                     title = equipment,
                     isSelected = isSelected,
-                    onEvent = {
+                    onToggle = {
                         onEvent(ExerciseEvent.EquipmentSelectionChange(it))
                     }
                 )
@@ -141,7 +251,7 @@ fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) ->
             MuscleChip(
                 title = muscleGroup,
                 isSelected = isSelected,
-                onEvent = {
+                onToggle = {
                     onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
                 }
             )
@@ -153,7 +263,7 @@ fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) ->
 fun MuscleChip(
     title: String,
     isSelected: Boolean,
-    onEvent: (String) -> Unit
+    onToggle: (String) -> Unit
 ) {
     val chipColor = animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
@@ -163,7 +273,7 @@ fun MuscleChip(
         color = chipColor.value,
     ) {
         Box(modifier = Modifier.toggleable(value = isSelected, onValueChange = {
-            onEvent(title)
+            onToggle(title)
         })) {
             Text(
                 text = title,

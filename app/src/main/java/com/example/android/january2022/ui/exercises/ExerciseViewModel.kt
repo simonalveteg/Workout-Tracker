@@ -8,12 +8,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.january2022.db.Equipment
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -152,7 +154,12 @@ class ExerciseViewModel @Inject constructor(
                 onEvent(ExerciseEvent.MuscleGroupSelectionChange(event.muscleGroup))
                 // navigate to exercise picker
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER_SCREEN))
-
+            }
+            is ExerciseEvent.OnCreateExercise -> {
+                Log.d("SVM","Create Exercise: ${event.exercise}")
+                viewModelScope.launch {
+                    repository.insertExercise(event.exercise)
+                }
             }
         }
     }

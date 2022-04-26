@@ -3,6 +3,7 @@ package com.example.android.january2022.ui.exercises
 import com.example.android.january2022.db.Equipment
 import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 
 sealed class ExerciseEvent : Event {
@@ -19,4 +20,5 @@ sealed class ExerciseEvent : Event {
     object AddExercisesToSession : ExerciseEvent()
     data class MuscleGroupSelectionChange(val muscleGroup: String) : ExerciseEvent()
     data class EquipmentSelectionChange(val equipment: String) : ExerciseEvent()
+    data class OnCreateExercise(val exercise: Exercise): ExerciseEvent()
 }
