@@ -75,8 +75,8 @@ fun MusclePickerScreen(
             .padding(bottom = 60.dp)
     ) { innerPadding ->
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            userScrollEnabled = false,
+            columns = GridCells.Adaptive(150.dp),
+            userScrollEnabled = true,
             verticalArrangement = Arrangement.Top,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
