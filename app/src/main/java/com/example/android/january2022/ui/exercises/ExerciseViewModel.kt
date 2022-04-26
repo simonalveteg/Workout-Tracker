@@ -70,6 +70,9 @@ class ExerciseViewModel @Inject constructor(
     var selectedEquipment = MutableStateFlow("")
         private set
 
+    var currentQuery = MutableStateFlow("")
+        private set
+
     var allExercises: LiveData<List<Exercise>> = repository.getAllExercises()
         private set
 
@@ -92,7 +95,6 @@ class ExerciseViewModel @Inject constructor(
         }
         updateExerciseList()
     }
-
 
     fun onEvent(event: Event) {
         when (event) {
@@ -130,8 +132,14 @@ class ExerciseViewModel @Inject constructor(
                 val exerciseId = event.exercise.exerciseId
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId=${exerciseId}"))
             }
+            is ExerciseEvent.ToggleSearch -> {
+                currentQuery.value = ""
+                selectedEquipment.value = ""
+                selectedMuscleGroup.value = ""
+            }
             is ExerciseEvent.FilterExerciseList -> {
-                // TODO: remove?
+                currentQuery.value = event.searchString
+                updateExerciseList()
             }
             is ExerciseEvent.MuscleGroupSelectionChange -> {
                 val muscleGroup = event.muscleGroup
@@ -169,7 +177,8 @@ class ExerciseViewModel @Inject constructor(
             exerciseList.value = emptyList()
             repository.getExercisesByQuery(
                 muscleGroup = selectedMuscleGroup.value,
-                equipment = selectedEquipment.value
+                equipment = selectedEquipment.value,
+                query = currentQuery.value
             ).collect {
                 exerciseList.value += it
             }

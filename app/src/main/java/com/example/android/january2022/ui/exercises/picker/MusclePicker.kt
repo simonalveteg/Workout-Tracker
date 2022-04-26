@@ -35,6 +35,7 @@ import com.example.android.january2022.db.MuscleItem
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
+import com.example.android.january2022.utils.BackPressHandler
 import com.example.android.january2022.utils.UiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,12 +62,21 @@ fun MusclePickerScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
     val searchOpen = rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(searchOpen.value) {
+        viewModel.onEvent(ExerciseEvent.ToggleSearch)
+        Log.d("MP","search toggled")
+    }
 
     val inputValue = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     // used by searchfield to request focus
     val requester = FocusRequester()
 
+    BackPressHandler(onBackPressed = {
+        if(searchOpen.value) searchOpen.value = false else {
+            onPopBackStack()
+        }
+    })
     Scaffold(
         topBar = {
             val topBarBackgroundColor = Color.Transparent
@@ -74,7 +84,6 @@ fun MusclePickerScreen(
                 LaunchedEffect(Unit) {
                     requester.requestFocus()
                 }
-
                 SmallTopAppBar(
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor = topBarBackgroundColor
@@ -82,7 +91,10 @@ fun MusclePickerScreen(
                     title = {
                         TextField(
                             value = inputValue.value,
-                            onValueChange = { inputValue.value = it },
+                            onValueChange = {
+                                viewModel.onEvent(ExerciseEvent.FilterExerciseList(it))
+                                inputValue.value = it
+                            },
                             modifier = Modifier.focusRequester(requester),
                             textStyle = MaterialTheme.typography.bodyLarge,
                             colors = TextFieldDefaults.textFieldColors(

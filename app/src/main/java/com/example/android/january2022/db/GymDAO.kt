@@ -96,11 +96,12 @@ interface GymDAO {
 
     @Query(
         "SELECT * FROM exercises " +
-                "WHERE muscleGroups LIKE :string " +
+                "WHERE muscleGroups LIKE :muscle " +
                 "AND equipment LIKE :equipment " +
+                "AND title LIKE :query " +
                 "ORDER BY title ASC"
     )
-    fun getExercisesByQuery(string: String, equipment: String): Flow<List<Exercise>>
+    fun getExercisesByQuery(muscle: String, equipment: String, query: String): Flow<List<Exercise>>
 
 }
 

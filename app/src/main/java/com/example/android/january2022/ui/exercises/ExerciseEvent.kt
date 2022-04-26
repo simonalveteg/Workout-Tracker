@@ -21,4 +21,5 @@ sealed class ExerciseEvent : Event {
     data class MuscleGroupSelectionChange(val muscleGroup: String) : ExerciseEvent()
     data class EquipmentSelectionChange(val equipment: String) : ExerciseEvent()
     data class OnCreateExercise(val exercise: Exercise): ExerciseEvent()
+    object ToggleSearch: ExerciseEvent()
 }

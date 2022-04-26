@@ -21,19 +21,17 @@ class GymRepository(
         dao.getExercise(id)
 
     suspend fun getExercisesByQuery(
-        muscleGroup: String = "",
-        equipment: String = "%"
+        muscleGroup: String = "%",
+        equipment: String = "%",
+        query: String = "%",
     ): Flow<List<Exercise>> {
-        val equip = equipment.ifEmpty { "%" }
+        val muscle = "%${muscleGroup}%"
+        val equip = "%${equipment}%"
+        val que = "%${query}%"
+
         return flow {
-            if(muscleGroup.isBlank()) {
-                dao.getExercisesByQuery("%", equip).collect {
-                    emit(it)
-                }
-            } else {
-                dao.getExercisesByQuery(muscleGroup, equip).collect {
-                    emit(it)
-                }
+            dao.getExercisesByQuery(muscle, equip, que).collect {
+                emit(it)
             }
         }
     }
@@ -57,7 +55,8 @@ class GymRepository(
         dao.getSessionExercisesWithExerciseForSession(sessionId)
 
     fun getMuscleGroupsForSession(sessionId: Long): List<String> {
-        val muscleGroupsByCount = dao.getSessionMuscleGroups(sessionId).groupingBy { it }.eachCount()
+        val muscleGroupsByCount =
+            dao.getSessionMuscleGroups(sessionId).groupingBy { it }.eachCount()
         return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }.reversed()
     }
 
