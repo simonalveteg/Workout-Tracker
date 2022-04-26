@@ -12,6 +12,8 @@ class GymRepository(
     private val dao: GymDAO
 ) {
 
+    suspend fun updateSession(session: Session) = dao.updateSession(session)
+
     fun getLastExercise() =
         dao.getLastExercise()
 
