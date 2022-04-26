@@ -33,6 +33,9 @@ interface GymDAO {
     @Update
     suspend fun updateSet(item: GymSet)
 
+    @Update
+    suspend fun updateSession(session: Session)
+
     @Query("SELECT * FROM sets ORDER BY setId DESC LIMIT 1")
     fun getLastSet(): GymSet
 

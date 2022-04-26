@@ -149,6 +149,18 @@ class SessionViewModel @Inject constructor(
                     action = SessionEvent.RestoreRemovedSessionExercise
                 ))
             }
+            is SessionEvent.EndTimeChanged -> {
+                Log.d("SVM","new time: ${event.newTime}")
+                viewModelScope.launch {
+                    Log.d("SVM", "Old Session: $currentSession")
+                    val updatedSession = currentSession!!.copy(endTimeMilli = event.newTime)
+                    repository.updateSession(updatedSession)
+                    Log.d("SVM", "New Session: $updatedSession")
+                    withContext(Dispatchers.IO){
+                        currentSession = repository.getSession(updatedSession.sessionId)
+                    }
+                }
+            }
         }
     }
 

@@ -104,7 +104,7 @@ fun SessionScreen(
                     Modifier
                         .padding(16.dp)
                 ) {
-                    SessionInfoCard(session, muscleGroups)
+                    SessionInfoCard(session, muscleGroups, viewModel::onEvent)
                 }
             }
             items(
