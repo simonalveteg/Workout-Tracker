@@ -198,6 +198,7 @@ fun ExpandedSetCard(
             keyboardActions = KeyboardActions(
                 onDone = {
                     localFocusManager.moveFocus(FocusDirection.Next)
+                    localFocusManager.clearFocus()
                     onDone()
                 }
             ),
