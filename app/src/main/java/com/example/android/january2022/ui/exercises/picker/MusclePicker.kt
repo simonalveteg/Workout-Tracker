@@ -67,7 +67,7 @@ fun MusclePickerScreen(
         Log.d("MP","search toggled")
     }
 
-    val inputValue = remember { mutableStateOf("") }
+    val inputValue = rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     // used by searchfield to request focus
     val requester = FocusRequester()
