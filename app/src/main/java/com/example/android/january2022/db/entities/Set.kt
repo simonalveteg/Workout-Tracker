@@ -24,5 +24,4 @@ data class GymSet(
     val deleted: Boolean = false,
     @ColumnInfo(defaultValue = SetType.NORMAL)
     val setType: String = SetType.NORMAL
-    //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )
