@@ -67,7 +67,7 @@ class StartingExercises @Inject constructor(
     private fun loadJSONArray(context: Context): JSONArray {
 
         Log.d("StartingExercises","loading JSON array")
-        val inputStream = context.resources.openRawResource(R.raw.exercises)
+        val inputStream = context.resources.openRawResource(R.raw.unique_exercises)
 
         BufferedReader(inputStream.reader()).use {
             return JSONArray(it.readText())
