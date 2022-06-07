@@ -37,7 +37,6 @@ class GymRepository(
                         if (!it.lowercase().contains(muscleGroup.lowercase())) return@forEach
                         match = true
                     }
-                    Log.d("Repository", "exercise ${exercise.getMuscleGroup()} match $match")
                     match
                 })
             }

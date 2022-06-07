@@ -21,7 +21,7 @@ import com.google.accompanist.insets.statusBarsPadding
 fun ExerciseDetailScreen(
     viewModel: ExerciseDetailViewModel = hiltViewModel()
 ) {
-    val url = viewModel.currentExercise.url
+    val url = "https://duckduckgo.com/?q=! exrx " + viewModel.currentExercise.title
     AndroidView(factory = {
         WebView(it).apply {
             layoutParams = ViewGroup.LayoutParams(
