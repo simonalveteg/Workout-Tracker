@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.theme.Shapes
+import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
 
 @Composable
 fun MuscleItem(
@@ -23,7 +24,7 @@ fun MuscleItem(
 ) {
     // count the number of exercises that have been selected for the given muscle group
     val selectionCount = selectedExercises.count {
-        it.targets.toString().lowercase().filterNot { it.isWhitespace() }
+        it.targets.map{ turnTargetIntoMuscleGroup(it) }.toString().lowercase().filterNot { it.isWhitespace() }
             .contains(muscleGroup.lowercase().filterNot { it.isWhitespace() })
     }
     Surface(

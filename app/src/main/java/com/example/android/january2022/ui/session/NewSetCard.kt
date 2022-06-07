@@ -236,19 +236,3 @@ fun CompactSetCard(
         }
     }
 }
-
-@Preview
-@Composable
-fun PreviewCompact() {
-    CompactSetCard(reps = 12, weight = 30F)
-}
-
-@Preview
-@Composable
-fun PreviewExpanded() {
-    ExpandedSetCard(
-        set = GymSet(0, 0, 12, 30f, 2, false),
-        onEvent = {},
-        onDone = {}
-    )
-}
