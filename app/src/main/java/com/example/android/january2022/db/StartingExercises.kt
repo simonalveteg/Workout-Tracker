@@ -42,6 +42,7 @@ class StartingExercises @Inject constructor(
                 val item = notes.getJSONObject(i)
                 val title = item.getString("title")
                 val force = item.getString("force")
+                var equipment = item.getString("equip")
                 val gson = GsonBuilder().create()
                 val targets =
                     gson.fromJson(item.getString("targets"), Array<String>::class.java).toList()
@@ -51,7 +52,7 @@ class StartingExercises @Inject constructor(
                 val exercise = Exercise(
                     title = title,
                     force = force,
-                    equipment = item.getString("equip"),
+                    equipment = equipment,
                     targets = targets,
                     synergists = synergists,
                 )

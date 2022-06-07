@@ -55,8 +55,9 @@ class ExerciseViewModel @Inject constructor(
         Equipment.BARBELL,
         Equipment.MACHINE,
         Equipment.DUMBBELLS,
-        Equipment.KETTLEBELLS,
-        Equipment.STRETCHES,
+        Equipment.CABLE,
+        Equipment.LEVER,
+        Equipment.WEIGHTED,
         Equipment.BODYWEIGHT
     ).sorted()
 
