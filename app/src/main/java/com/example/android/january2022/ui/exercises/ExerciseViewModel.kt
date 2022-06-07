@@ -42,18 +42,14 @@ class ExerciseViewModel @Inject constructor(
     var muscleGroups: List<String> = listOf(
         MuscleGroup.BICEPS,
         MuscleGroup.CHEST,
-        MuscleGroup.QUADS,
-        MuscleGroup.TRAPS,
         MuscleGroup.TRICEPS,
         MuscleGroup.SHOULDERS,
-        MuscleGroup.LATS,
-        MuscleGroup.HAMSTRINGS,
-        MuscleGroup.GLUTES,
         MuscleGroup.FOREARMS,
         MuscleGroup.CALVES,
         MuscleGroup.ABDOMINALS,
-        MuscleGroup.LOWER_BACK,
-        MuscleGroup.TRAPS_MID_BACK
+        MuscleGroup.HIPS,
+        MuscleGroup.BACK,
+        MuscleGroup.THIGHS
     ).sorted()
     var equipment: List<String> = listOf(
         Equipment.BARBELL,
