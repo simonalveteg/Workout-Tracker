@@ -1,5 +1,6 @@
 package com.example.android.january2022.db
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
@@ -29,8 +30,16 @@ class GymRepository(
         val que = "%${query}%"
 
         return flow {
-            dao.getExercisesByQuery(muscle, equip, que).collect {
-                emit(it)
+            dao.getExercisesByQuery(equip, que).collect {
+                emit(it.filter { exercise ->
+                    var match = false
+                    exercise.targets.map { turnTargetIntoMuscleGroup(it) }.forEach {
+                        if (!it.lowercase().contains(muscleGroup.lowercase())) return@forEach
+                        match = true
+                    }
+                    Log.d("Repository", "exercise ${exercise.getMuscleGroup()} match $match")
+                    match
+                })
             }
         }
     }
