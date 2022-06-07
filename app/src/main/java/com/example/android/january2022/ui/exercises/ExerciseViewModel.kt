@@ -120,7 +120,7 @@ class ExerciseViewModel @Inject constructor(
                         it.forEach { exercise ->
                             val newSessionExercise = SessionExercise(
                                 parentSessionId = currentSession?.sessionId ?: -1L,
-                                parentExerciseId = exercise.exerciseId
+                                parentExerciseId = exercise.id
                             )
                             repository.insertSessionExercise(newSessionExercise)
                         }
@@ -129,7 +129,7 @@ class ExerciseViewModel @Inject constructor(
                 sendUiEvent(UiEvent.PopBackStack)
             }
             is ExerciseEvent.ExerciseInfoClicked -> {
-                val exerciseId = event.exercise.exerciseId
+                val exerciseId = event.exercise.id
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN + "?exerciseId=${exerciseId}"))
             }
             is ExerciseEvent.ToggleSearch -> {

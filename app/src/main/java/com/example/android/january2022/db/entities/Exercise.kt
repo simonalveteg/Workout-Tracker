@@ -10,14 +10,13 @@ import com.example.android.january2022.db.MuscleGroup
 @Entity(tableName = "exercises")
 data class Exercise(
     @PrimaryKey(autoGenerate = true)
-    var exerciseId: Long = 0L,
-
+    var id: Long = 0L,
     @ColumnInfo(name = "title")
-    var exerciseTitle: String = "Exercise",
-    @ColumnInfo(defaultValue = MuscleGroup.NULL)
-    var muscleGroups: String = MuscleGroup.NULL,
+    var title: String = "Exercise",
+    var force: String = "",
     @ColumnInfo(defaultValue = Equipment.NULL)
     var equipment: String = Equipment.NULL,
-    @ColumnInfo(defaultValue = "https://www.musclewiki.com")
+    var targets: List<String> = emptyList(),
+    var synergists: List<String> = emptyList(),
     var url: String = "https://www.musclewiki.com"
 )

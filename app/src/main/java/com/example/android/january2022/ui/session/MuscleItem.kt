@@ -23,7 +23,7 @@ fun MuscleItem(
 ) {
     // count the number of exercises that have been selected for the given muscle group
     val selectionCount = selectedExercises.count {
-        it.muscleGroups.lowercase().filterNot { it.isWhitespace() }
+        it.targets.toString().lowercase().filterNot { it.isWhitespace() }
             .contains(muscleGroup.lowercase().filterNot { it.isWhitespace() })
     }
     Surface(

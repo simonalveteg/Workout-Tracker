@@ -57,7 +57,7 @@ fun ExerciseCard(
                 .fillMaxWidth()
                 .clickable {
                     if (inPicker) {
-                        Log.d("EC", "Exercise clicked: ${exercise.exerciseId}")
+                        Log.d("EC", "Exercise clicked: ${exercise.id}")
                         onEvent(ExerciseEvent.ExerciseSelected(exercise))
                     }
                 },
@@ -72,13 +72,13 @@ fun ExerciseCard(
             ) {
                 Column(modifier = Modifier.weight(8f)) {
                     Text(
-                        exercise.exerciseTitle.uppercase(),
+                        exercise.title.uppercase(),
                         style = MaterialTheme.typography.headlineSmall,
                         overflow = TextOverflow.Ellipsis
 
                     )
                     Text(
-                        exercise.muscleGroups.uppercase() + ", " +
+                        exercise.targets.toString().uppercase() + ", " +
                                 exercise.equipment.uppercase(),
                         style = MaterialTheme.typography.bodySmall,
                         color = LocalContentColor.current.copy(alpha = 0.7f)
@@ -117,7 +117,7 @@ fun OldExerciseCard(
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
             .clickable {
                 if (inPicker) {
-                    Log.d("EC", "Exercise clicked: ${exercise.exerciseId}")
+                    Log.d("EC", "Exercise clicked: ${exercise.id}")
                     onEvent(ExerciseEvent.ExerciseSelected(exercise))
                 }
             },
@@ -141,11 +141,11 @@ fun OldExerciseCard(
             ) {
                 Column {
                     Text(
-                        exercise.exerciseTitle.uppercase(),
+                        exercise.title.uppercase(),
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Text(
-                        exercise.muscleGroups.uppercase() + ", " +
+                        exercise.targets.toString().uppercase() + ", " +
                                 exercise.equipment.uppercase(),
                         style = MaterialTheme.typography.bodySmall,
                         color = LocalContentColor.current.copy(alpha = 0.7f)

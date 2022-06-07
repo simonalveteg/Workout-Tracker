@@ -1,13 +1,23 @@
 package com.example.android.january2022.di
 
 import android.app.Application
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
+import com.example.android.january2022.db.StartingExercises
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 
@@ -17,15 +27,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGymDatabase(app: Application): GymDatabase {
+    fun provideGymDatabase(
+        app: Application,
+        callback: StartingExercises
+    ): GymDatabase {
         return Room
             .databaseBuilder(
                 app,
                 GymDatabase::class.java,
                 "gym_database.db"
             )
-            .createFromAsset("gym_database.db")
+            //.createFromAsset("gym_database.db")
             .fallbackToDestructiveMigration()
+            .addCallback(callback)
             .build()
     }
 
@@ -34,4 +48,15 @@ object AppModule {
     fun provideGymRepository(db: GymDatabase): GymRepository {
         return GymRepository(db.dao)
     }
+
+    @ApplicationScope
+    @Provides
+    @Singleton
+    fun provideApplicationScope() = CoroutineScope(SupervisorJob())
 }
+
+// detta används typ för att man ska kunna använda olika provideApplicationScopes
+// behövs tekniskt sätt inte då jag bara har ett scope
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+annotation class ApplicationScope
