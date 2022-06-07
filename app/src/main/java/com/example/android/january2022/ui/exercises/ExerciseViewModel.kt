@@ -58,7 +58,8 @@ class ExerciseViewModel @Inject constructor(
         Equipment.CABLE,
         Equipment.LEVER,
         Equipment.WEIGHTED,
-        Equipment.BODYWEIGHT
+        Equipment.BODYWEIGHT,
+        Equipment.STRETCH
     ).sorted()
 
     var selectedMuscleGroup = MutableStateFlow<String>("")

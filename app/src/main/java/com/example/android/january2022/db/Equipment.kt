@@ -9,5 +9,6 @@ object Equipment {
     const val CABLE = "Cable"
     const val LEVER = "Lever"
     const val WEIGHTED = "Weighted"
+    const val STRETCH = "Stretch"
     const val NULL = "not specified"
 }
