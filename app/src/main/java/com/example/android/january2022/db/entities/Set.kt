@@ -18,9 +18,10 @@ data class GymSet(
     val parentSessionExerciseId: Long,
     val reps: Int = -1,
     val weight: Float = -1f,
+    val time: Long = -1L,
+    val distance: Float = -1f,
     val mood: Int = -1,
     val deleted: Boolean = false,
     @ColumnInfo(defaultValue = SetType.NORMAL)
     val setType: String = SetType.NORMAL
-    //TODO: add Time and Distance? Maybe pace and heart-rate? In a second data-class perhaps?
 )

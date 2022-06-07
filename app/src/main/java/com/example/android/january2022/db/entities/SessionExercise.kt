@@ -12,7 +12,8 @@ data class SessionExercise(
 
     @ColumnInfo(index = true) val parentSessionId: Long,
     @ColumnInfo(index = true)
-    val parentExerciseId: Long
+    val parentExerciseId: Long,
+    val comment: String = ""
 )
 
 /**

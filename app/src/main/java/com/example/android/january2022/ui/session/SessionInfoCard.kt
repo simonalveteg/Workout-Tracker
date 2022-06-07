@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun SessionInfoCard(_session: Session?, muscleGroups: State<List<String>>?, onEvent: (SessionEvent) -> Unit) {
+fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent: (SessionEvent) -> Unit) {
     val session = _session ?: Session()
     val startTime = SimpleDateFormat("HH:mm", Locale.ENGLISH).format(session.startTimeMilli)
     val endTime = SimpleDateFormat("HH:mm", Locale.ENGLISH).format(session.endTimeMilli)

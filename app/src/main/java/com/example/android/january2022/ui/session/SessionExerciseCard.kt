@@ -77,8 +77,8 @@ fun SessionExerciseCard(
                     .padding(bottom = 0.dp)
             ) {
                 Text(
-                    text = sessionExercise.exercise.exerciseTitle.uppercase(),
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = sessionExercise.exercise.title,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
@@ -98,7 +98,7 @@ fun SessionExerciseCard(
                         onClick = {
                             onEvent(
                                 SessionEvent.OnSessionExerciseInfoClicked(
-                                    sessionExercise.exercise.exerciseId
+                                    sessionExercise.exercise.id
                                 )
                             )
                         }

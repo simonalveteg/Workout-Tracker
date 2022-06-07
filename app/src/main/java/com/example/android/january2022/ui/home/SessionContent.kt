@@ -26,7 +26,7 @@ fun SessionContent(
             .padding(vertical = 2.dp)
     ) {
         Text(
-            sessionExercise.exercise.exerciseTitle,
+            sessionExercise.exercise.title,
             modifier = Modifier.weight(4f),
             color = LocalContentColor.current.copy(alpha = 0.85f)
         )

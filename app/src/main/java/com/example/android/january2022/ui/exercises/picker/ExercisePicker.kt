@@ -185,10 +185,10 @@ fun ExercisePickerScreen(
                                     viewModel.onEvent(
                                         ExerciseEvent.OnCreateExercise(
                                             Exercise(
-                                                exerciseTitle = inputValue,
-                                                muscleGroups = selectedMuscleGroups.filter {
+                                                title = inputValue,
+                                                targets = selectedMuscleGroups.filter {
                                                     it.isNotEmpty()
-                                                }.joinToString(separator = ", "),
+                                                },
                                                 equipment = selectedEquipment.value
                                             )
                                         )

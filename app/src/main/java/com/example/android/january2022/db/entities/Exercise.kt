@@ -4,20 +4,25 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.android.january2022.db.Equipment
-import com.example.android.january2022.db.MuscleGroup
+import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
 
 
 @Entity(tableName = "exercises")
 data class Exercise(
     @PrimaryKey(autoGenerate = true)
-    var exerciseId: Long = 0L,
-
+    var id: Long = 0L,
     @ColumnInfo(name = "title")
-    var exerciseTitle: String = "Exercise",
-    @ColumnInfo(defaultValue = MuscleGroup.NULL)
-    var muscleGroups: String = MuscleGroup.NULL,
+    var title: String = "Exercise",
+    var force: String = "",
     @ColumnInfo(defaultValue = Equipment.NULL)
     var equipment: String = Equipment.NULL,
-    @ColumnInfo(defaultValue = "https://www.musclewiki.com")
+    var targets: List<String> = emptyList(),
+    var synergists: List<String> = emptyList(),
     var url: String = "https://www.musclewiki.com"
-)
+) {
+    fun getMuscleGroup(exercise: Exercise = this): String {
+        return exercise.targets.map {
+            turnTargetIntoMuscleGroup(it)
+        }.toString().removeSurrounding("[","]").uppercase()
+    }
+}
