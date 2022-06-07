@@ -2,10 +2,9 @@ package com.example.android.january2022.db
 
 import androidx.lifecycle.LiveData
 import com.example.android.january2022.db.entities.*
+import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.forEach
 
 
 class GymRepository(
@@ -57,7 +56,7 @@ class GymRepository(
     fun getMuscleGroupsForSession(sessionId: Long): List<String> {
         val muscleGroups = mutableListOf<String>()
         dao.getSessionMuscleGroups(sessionId).forEach {
-            it.split(", ").forEach { muscleGroups.add(it) }
+            turnTargetIntoMuscleGroup(it).split(", ").forEach { muscleGroups.add(it) }
         }
         val muscleGroupsByCount = muscleGroups.groupingBy { it }.eachCount()
         return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }.reversed()

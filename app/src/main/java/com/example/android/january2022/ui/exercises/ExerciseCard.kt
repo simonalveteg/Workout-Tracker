@@ -78,7 +78,7 @@ fun ExerciseCard(
 
                     )
                     Text(
-                        exercise.targets.toString().uppercase() + ", " +
+                        exercise.getMuscleGroup() + ", " +
                                 exercise.equipment.uppercase(),
                         style = MaterialTheme.typography.bodySmall,
                         color = LocalContentColor.current.copy(alpha = 0.7f)
@@ -95,69 +95,6 @@ fun ExerciseCard(
                         .padding(start = 8.dp)
                 ) {
                     Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "Show more")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun OldExerciseCard(
-    exercise: Exercise,
-    selected: Boolean,
-    inPicker: Boolean,
-    onEvent: (Event) -> Unit
-) {
-    val cornerCutDp by animateDpAsState(targetValue = if (selected) 24.dp else 0.dp)
-
-    Surface(
-        tonalElevation = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-            .clickable {
-                if (inPicker) {
-                    Log.d("EC", "Exercise clicked: ${exercise.id}")
-                    onEvent(ExerciseEvent.ExerciseSelected(exercise))
-                }
-            },
-        shape = Shapes.medium
-    ) {
-        Box {
-            // row containing the upper-right selection-indicator
-            Row(horizontalArrangement = Arrangement.End) {
-                Spacer(modifier = Modifier.weight(1f))
-                Surface(
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(cornerCutDp),
-                    shape = CutCornerShape(bottomStart = 100f)
-                ) {}
-            }
-            Row(
-                modifier = Modifier
-                    .padding(14.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        exercise.title.uppercase(),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    Text(
-                        exercise.targets.toString().uppercase() + ", " +
-                                exercise.equipment.uppercase(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LocalContentColor.current.copy(alpha = 0.7f)
-                    )
-                }
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = {
-                    onEvent(
-                        ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
-                    )
-                }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Show more")
                 }
             }
         }
