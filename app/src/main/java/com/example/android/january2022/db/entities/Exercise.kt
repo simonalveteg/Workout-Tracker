@@ -18,7 +18,9 @@ data class Exercise(
     var equipment: String = Equipment.NULL,
     var targets: List<String> = emptyList(),
     var synergists: List<String> = emptyList(),
-    var stabilizers: List<String> = emptyList()
+    var stabilizers: List<String> = emptyList(),
+    var favorite: Boolean = false,
+    var hidden: Boolean = false
 ) {
     fun getMuscleGroup(exercise: Exercise = this): String {
         return exercise.targets.map {

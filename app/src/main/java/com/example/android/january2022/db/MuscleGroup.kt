@@ -13,4 +13,20 @@ object MuscleGroup {
     const val THIGHS = "Thighs"
     const val NECK = "Neck"
     const val NULL = "not specified"
+
+    fun getAllMuscleGroups(): List<String> {
+        return listOf(
+            BICEPS,
+            CHEST,
+            TRICEPS,
+            SHOULDERS,
+            FOREARMS,
+            CALVES,
+            ABDOMINALS,
+            HIPS,
+            BACK,
+            THIGHS,
+            NECK
+        )
+    }
 }

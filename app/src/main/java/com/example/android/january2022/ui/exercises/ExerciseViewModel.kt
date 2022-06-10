@@ -39,18 +39,8 @@ class ExerciseViewModel @Inject constructor(
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var muscleGroups: List<String> = listOf(
-        MuscleGroup.BICEPS,
-        MuscleGroup.CHEST,
-        MuscleGroup.TRICEPS,
-        MuscleGroup.SHOULDERS,
-        MuscleGroup.FOREARMS,
-        MuscleGroup.CALVES,
-        MuscleGroup.ABDOMINALS,
-        MuscleGroup.HIPS,
-        MuscleGroup.BACK,
-        MuscleGroup.THIGHS
-    ).sorted()
+    var muscleGroups: List<String> = MuscleGroup.getAllMuscleGroups().sorted()
+
     var equipment: List<String> = listOf(
         Equipment.BARBELL,
         Equipment.MACHINE,
