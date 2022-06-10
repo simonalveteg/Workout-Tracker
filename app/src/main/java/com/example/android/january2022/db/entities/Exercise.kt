@@ -19,6 +19,7 @@ data class Exercise(
     var targets: List<String> = emptyList(),
     var synergists: List<String> = emptyList(),
     var stabilizers: List<String> = emptyList(),
+    var chosenTitle: String = "",
     var favorite: Boolean = false,
     var hidden: Boolean = false
 ) {
