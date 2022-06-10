@@ -11,5 +11,6 @@ object MuscleGroup {
     const val HIPS = "Hips"
     const val BACK = "Back"
     const val THIGHS = "Thighs"
+    const val NECK = "Neck"
     const val NULL = "not specified"
 }

@@ -35,7 +35,7 @@ class StartingExercises @Inject constructor(
         context: Context,
         repository: GymRepository
     ) {
-        Log.d("StartingExercises","Starting process")
+        Log.d("StartingExercises", "Starting process")
         try {
             val notes = loadJSONArray(context)
             for (i in 0 until notes.length()) {
@@ -48,6 +48,10 @@ class StartingExercises @Inject constructor(
                     gson.fromJson(item.getString("targets"), Array<String>::class.java).toList()
                 val synergists =
                     gson.fromJson(item.getString("synergists"), Array<String>::class.java).toList()
+                val stabilizers =
+                    gson.fromJson(item.getString("stabilizers"), Array<String>::class.java)
+                        .toList()
+
 
                 val exercise = Exercise(
                     title = title,
@@ -55,18 +59,21 @@ class StartingExercises @Inject constructor(
                     equipment = equipment,
                     targets = targets,
                     synergists = synergists,
+                    stabilizers = stabilizers
                 )
                 repository.insertExercise(exercise)
-                Log.d("StartingExercises","added exercise $exercise")
+                Log.d("StartingExercises", "added exercise $exercise")
             }
+
         } catch (e: JSONException) {
             Log.d("StartingExercises", "fillWithStartingExercises: $e")
+            Log.d("StartingExercises", "Error caught")
         }
     }
 
     private fun loadJSONArray(context: Context): JSONArray {
 
-        Log.d("StartingExercises","loading JSON array")
+        Log.d("StartingExercises", "loading JSON array")
         val inputStream = context.resources.openRawResource(R.raw.unique_exercises)
 
         BufferedReader(inputStream.reader()).use {
