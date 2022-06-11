@@ -51,9 +51,9 @@ fun SessionScreen(
     val mDatePickerDialog = DatePickerDialog(
         mContext,
         { _: DatePicker, year: Int, month: Int, day: Int ->
-            val newDateTime = session.end.withYear(year).withMonth(month).withDayOfMonth(day)
+            val newDateTime = session.end.withYear(year).withMonth(month+1).withDayOfMonth(day)
             viewModel.onEvent(SessionEvent.DateChanged(newDateTime))
-        }, session.start.year, session.start.monthValue, session.start.dayOfMonth
+        }, session.start.year, session.start.monthValue-1, session.start.dayOfMonth
     )
 
     LaunchedEffect(key1 = true) {

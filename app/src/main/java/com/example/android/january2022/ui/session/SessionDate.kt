@@ -10,11 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
+import java.time.format.TextStyle
+import java.util.*
 
 @Composable
 fun SessionDate(session: Session) {
 
-    val startMonth = session.start.month.toString()
+    val startMonth = session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
     val startDay = session.start.dayOfMonth.toString()
 
     Column(
