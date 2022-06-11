@@ -1,6 +1,7 @@
 package com.example.android.january2022.utils
 
 import androidx.room.TypeConverter
+import java.time.LocalDateTime
 import javax.xml.transform.Source
 
 class Converters {
@@ -13,6 +14,16 @@ class Converters {
     @TypeConverter
     fun fromList(source: List<String>): String {
         return source.joinToString("|")
+    }
+
+    @TypeConverter
+    fun fromDateTime(source: LocalDateTime): String {
+        return source.toString()
+    }
+
+    @TypeConverter
+    fun toDateTime(source: String): LocalDateTime {
+        return LocalDateTime.parse(source)
     }
 
 }

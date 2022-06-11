@@ -1,5 +1,7 @@
 package com.example.android.january2022.ui.session
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,12 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.*
-import com.example.android.january2022.ui.exercises.picker.SubTitleText
 import com.example.android.january2022.utils.UiEvent
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -35,7 +38,7 @@ fun SessionScreen(
         .observeAsState(
             listOf()
         )
-    val muscleGroups = session?.let {
+    val muscleGroups = session.let {
         viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(initial = emptyList())
     }
 
@@ -44,6 +47,14 @@ fun SessionScreen(
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
+    val mContext = LocalContext.current
+    val mDatePickerDialog = DatePickerDialog(
+        mContext,
+        { _: DatePicker, year: Int, month: Int, day: Int ->
+            val newDateTime = session.end.withYear(year).withMonth(month).withDayOfMonth(day)
+            viewModel.onEvent(SessionEvent.DateChanged(newDateTime))
+        }, session.start.year, session.start.monthValue, session.start.dayOfMonth
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -69,7 +80,7 @@ fun SessionScreen(
             .windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             LargeTopAppBar(
-                title = { Text(text = session?.let { sessionTitle(it) } ?: "") },
+                title = { Text(text = sessionTitle(session)) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(),
                 actions = {
                     val dropdownExpanded = remember { mutableStateOf(false) }
@@ -77,8 +88,9 @@ fun SessionScreen(
                         expanded = dropdownExpanded.value,
                         onDismissRequest = { dropdownExpanded.value = false }) {
                         DropdownMenuItem(
-                            text = { Text("Placeholder") },
+                            text = { Text("Change Date") },
                             onClick = {
+                                mDatePickerDialog.show()
                                 dropdownExpanded.value = false
                             }
                         )
@@ -144,35 +156,6 @@ fun SessionScreen(
 }
 
 fun sessionTitle(session: Session): String {
-    return SimpleDateFormat(
-        "MMM d yyyy",
-        Locale.ENGLISH
-    ).format(session.startTimeMilli)
-}
-
-@Composable
-fun SessionInfoThings(session: Session, muscleGroups: State<List<String>>?) {
-    val startDate = SimpleDateFormat(
-        "MMM d yyyy",
-        Locale.ENGLISH
-    ).format(session.startTimeMilli)
-    val startTime = SimpleDateFormat(
-        "HH:mm",
-        Locale.ENGLISH
-    ).format(session.startTimeMilli)
-    val endTime = SimpleDateFormat(
-        "HH:mm",
-        Locale.ENGLISH
-    ).format(session.endTimeMilli)
-
-    Column {
-        SubTitleText(text = "$startTime - $endTime", indent = 16)
-        SubTitleText(text = session.trainingType)
-        Row {
-            muscleGroups?.value?.filter { it.isNotEmpty() }?.forEach { s ->
-                Text(text = s)
-                Spacer(Modifier.width(4.dp))
-            }
-        }
-    }
+    val date = session.start
+    return DateTimeFormatter.ofPattern("MMM d yyyy").format(date)
 }

@@ -2,43 +2,28 @@ package com.example.android.january2022.ui.home
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.RestoreFromTrash
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.room.util.TableInfo
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
-import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import java.text.SimpleDateFormat
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import java.util.*
 
 @Composable
@@ -51,12 +36,9 @@ fun BigSessionCard(
     selected: Long
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val startMonth = SimpleDateFormat(
-        "MMM", Locale.ENGLISH
-    ).format(session.startTimeMilli)
-    val startDay = SimpleDateFormat(
-        "dd", Locale.ENGLISH
-    ).format(session.startTimeMilli)
+
+    val startMonth = session.start.month.toString()
+    val startDay = session.start.dayOfMonth.toString()
 
     val haptic = LocalHapticFeedback.current
 

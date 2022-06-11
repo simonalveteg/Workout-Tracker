@@ -1,6 +1,5 @@
 package com.example.android.january2022.ui.session
 
-import android.app.AlertDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,32 +17,34 @@ import com.example.android.january2022.ui.exercises.picker.SubTitleText
 import com.example.android.january2022.ui.theme.Shapes
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent: (SessionEvent) -> Unit) {
     val session = _session ?: Session()
-    val startTime = SimpleDateFormat("HH:mm", Locale.ENGLISH).format(session.startTimeMilli)
-    val endTime = SimpleDateFormat("HH:mm", Locale.ENGLISH).format(session.endTimeMilli)
+    val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
+    val endTime = DateTimeFormatter.ofPattern("HH:mm").format(session.end)
 
     // Fetching local context
     val mContext = LocalContext.current
 
-    // Declaring and initializing a calendar
-    val mCalendar = Calendar.getInstance()
-    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
-    val mMinute = mCalendar[Calendar.MINUTE]
-
     // Creating a TimePicker dialog
-    val mTimePickerDialog = TimePickerDialog(
+    val startTimePickerDialog = TimePickerDialog(
         mContext,
         { _,hour,minute ->
-            mCalendar.set(Calendar.HOUR_OF_DAY, hour)
-            mCalendar.set(Calendar.MINUTE, minute)
-            onEvent(SessionEvent.EndTimeChanged(mCalendar.timeInMillis))
-        }, mHour, mMinute, true
+            val newDateTime = session.end.withHour(hour).withMinute(minute)
+            onEvent(SessionEvent.StartTimeChanged(newDateTime))
+        }, session.start.hour, session.start.minute, true
     )
+    val endTimePickerDialog = TimePickerDialog(
+        mContext,
+        { _,hour,minute ->
+            val newDateTime = session.end.withHour(hour).withMinute(minute)
+            onEvent(SessionEvent.EndTimeChanged(newDateTime))
+        }, LocalDateTime.now().hour, LocalDateTime.now().minute, true
+    )
+
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -53,16 +54,35 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
         Column(
             modifier = Modifier.fillMaxHeight(),
         ) {
-            Text(
-                text = "$startTime - $endTime",
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .clickable {
-                        mTimePickerDialog.show()
-                    }
-            )
+            Row{
+                Text(
+                    text = startTime,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .clickable {
+                            startTimePickerDialog.show()
+                        }
+                )
+                Text(
+                    text = "-",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                )
+                Text(
+                    text = endTime,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .clickable {
+                            endTimePickerDialog.show()
+                        }
+                )
+            }
         }
         FlowRow(
             mainAxisAlignment = FlowMainAxisAlignment.Center

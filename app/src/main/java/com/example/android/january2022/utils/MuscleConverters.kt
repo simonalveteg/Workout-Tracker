@@ -28,7 +28,7 @@ fun turnTargetIntoMuscleGroup(target: String): String {
         "Gastrocnemius"-> MuscleGroup.CALVES
         "Gemellus inferior"-> MuscleGroup.HIPS
         "Gemellus superior"-> MuscleGroup.HIPS
-        "Gluteus Maximus"-> MuscleGroup.THIGHS
+        "Gluteus Maximus"-> MuscleGroup.THIGHS // butt?
         "Gluteus Maximus, Lower Fibers"-> MuscleGroup.THIGHS
         "Gluteus Maximus, lower fibers"-> MuscleGroup.THIGHS
         "Gluteus Medius"-> MuscleGroup.THIGHS
@@ -54,7 +54,7 @@ fun turnTargetIntoMuscleGroup(target: String): String {
         "Infraspinatus"-> MuscleGroup.BACK
         "Latissimus Dorsi"-> MuscleGroup.BACK
         "Latissimus dorsi"-> MuscleGroup.BACK
-        "Levator Scapulae"-> MuscleGroup.NECK
+        "Levator Scapulae"-> MuscleGroup.NECK // kanske shoulders
         "Levator scapulae"-> MuscleGroup.NECK
         "Obliques"-> MuscleGroup.ABDOMINALS
         "Obturator externus"-> MuscleGroup.HIPS
@@ -72,20 +72,19 @@ fun turnTargetIntoMuscleGroup(target: String): String {
         "Pronators"-> MuscleGroup.FOREARMS
         "Psoas Major"-> MuscleGroup.HIPS
         "Psoas major"-> MuscleGroup.HIPS
-        // osäker på quadratus!
-        "Quadratus Lumborum"-> MuscleGroup.HIPS
-        "Quadratus Femoris"-> MuscleGroup.ABDOMINALS
-        "Quadratus femoris"-> MuscleGroup.ABDOMINALS
-        "Quadratus lumborum"-> MuscleGroup.ABDOMINALS
+        "Quadratus Lumborum"-> MuscleGroup.BACK
+        "Quadratus Femoris"-> MuscleGroup.HIPS
+        "Quadratus femoris"-> MuscleGroup.HIPS
+        "Quadratus lumborum"-> MuscleGroup.BACK
         "Quadriceps"-> MuscleGroup.THIGHS
         "Rectus Abdominis"-> MuscleGroup.ABDOMINALS
         "Rectus Femoris"-> MuscleGroup.THIGHS
         "Rectus abdominis"-> MuscleGroup.ABDOMINALS
         "Rhomboids"-> MuscleGroup.BACK
         "Sartorius"-> MuscleGroup.THIGHS
-        "Serratus Anterior"-> MuscleGroup.CHEST
-        "Serratus Anterior, Inferior Digitations"-> MuscleGroup.CHEST
-        "Serratus Anterior, Lower Fibers"-> MuscleGroup.CHEST
+        "Serratus Anterior"-> MuscleGroup.SHOULDERS
+        "Serratus Anterior, Inferior Digitations"-> MuscleGroup.SHOULDERS
+        "Serratus Anterior, Lower Fibers"-> MuscleGroup.SHOULDERS
         "Soleus"-> MuscleGroup.CALVES
         "Splenius"-> MuscleGroup.NECK
         "Sternocleidomastoid"-> MuscleGroup.NECK
@@ -100,10 +99,10 @@ fun turnTargetIntoMuscleGroup(target: String): String {
         "Transverse Abdominis"-> MuscleGroup.ABDOMINALS
         "Trapezius, Lower"-> MuscleGroup.SHOULDERS
         "Trapezius, Middle"-> MuscleGroup.SHOULDERS
-        "Trapezius, Upper"-> MuscleGroup.SHOULDERS
-        "Trapezius, Upper (Part 1)"-> MuscleGroup.SHOULDERS
-        "Trapezius, Upper (part I)"-> MuscleGroup.SHOULDERS
-        "Trapezius, Upper (part II)"-> MuscleGroup.SHOULDERS
+        "Trapezius, Upper"-> MuscleGroup.NECK
+        "Trapezius, Upper (Part 1)"-> MuscleGroup.NECK
+        "Trapezius, Upper (part I)"-> MuscleGroup.NECK
+        "Trapezius, Upper (part II)"-> MuscleGroup.NECK
         "Trapezius, middle fibers"-> MuscleGroup.SHOULDERS
         "Triceps"-> MuscleGroup.TRICEPS
         "Triceps Brachii"-> MuscleGroup.TRICEPS

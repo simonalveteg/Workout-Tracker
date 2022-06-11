@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +32,7 @@ class SessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    var currentSession by mutableStateOf<Session?>(null)
+    var currentSession by mutableStateOf(Session())
         private set
 
     var selectedSessionExercise by mutableStateOf(-1L)
@@ -62,7 +63,7 @@ class SessionViewModel @Inject constructor(
     }
 
     fun getSessionExercisesForSession() : LiveData<List<SessionExerciseWithExercise>> {
-        return repository.getSessionExercisesForSession(currentSession?.sessionId ?: -1)
+        return repository.getSessionExercisesForSession(currentSession.sessionId)
     }
 
     fun getMuscleGroupsForSession(sessionId: Long): Flow<List<String>> {
@@ -126,7 +127,7 @@ class SessionViewModel @Inject constructor(
                 }
             }
             is SessionEvent.OnAddSessionExerciseClicked -> {
-                val route = Routes.MUSCLE_PICKER_SCREEN+"?sessionId=${currentSession?.sessionId}"
+                val route = Routes.MUSCLE_PICKER_SCREEN+"?sessionId=${currentSession.sessionId}"
                 Log.d("SVM",route)
                 sendUiEvent(UiEvent.Navigate(route))
             }
@@ -150,15 +151,28 @@ class SessionViewModel @Inject constructor(
                 ))
             }
             is SessionEvent.EndTimeChanged -> {
-                Log.d("SVM","new time: ${event.newTime}")
                 viewModelScope.launch {
-                    Log.d("SVM", "Old Session: $currentSession")
-                    val updatedSession = currentSession!!.copy(endTimeMilli = event.newTime)
-                    repository.updateSession(updatedSession)
-                    Log.d("SVM", "New Session: $updatedSession")
-                    withContext(Dispatchers.IO){
-                        currentSession = repository.getSession(updatedSession.sessionId)
-                    }
+                    val newSession = currentSession.copy(end = event.newTime)
+                    repository.updateSession(newSession)
+                    updateCurrentSession(newSession)
+                }
+            }
+            is SessionEvent.StartTimeChanged -> {
+                viewModelScope.launch {
+                    val newSession = currentSession.copy(start = event.newTime)
+                    repository.updateSession(newSession)
+                    updateCurrentSession(newSession)
+                }
+            }
+            is SessionEvent.DateChanged -> {
+                viewModelScope.launch {
+                    val start = currentSession.start
+                    val end = currentSession.end
+                    val newStart = event.newDate.withHour(start.hour).withMinute(start.minute)
+                    val newEnd = event.newDate.withHour(end.hour).withMinute(end.minute)
+                    val newSession = currentSession.copy(start = newStart,end = newEnd)
+                    repository.updateSession(newSession)
+                    updateCurrentSession(newSession)
                 }
             }
         }
@@ -167,6 +181,12 @@ class SessionViewModel @Inject constructor(
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
+        }
+    }
+
+    private suspend fun updateCurrentSession(newSession: Session) {
+        withContext(Dispatchers.IO){
+            currentSession = repository.getSession(newSession.sessionId)
         }
     }
 

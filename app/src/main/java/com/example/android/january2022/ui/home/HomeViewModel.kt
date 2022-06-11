@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val sessionId = MutableLiveData<Long>()
+    val sessionId = MutableLiveData<Long?>()
 
     var selectedSession by mutableStateOf(-1L)
         private set
@@ -65,7 +65,7 @@ class HomeViewModel @Inject constructor(
                 runBlocking {
                     sessionId.value = withContext(Dispatchers.IO) {
                         repository.insertSession(newSession)
-                    }!!
+                    }
                 }
                 sendUiEvent(UiEvent.Navigate(Routes.SESSION_SCREEN + "?sessionId=${sessionId.value}"))
             }

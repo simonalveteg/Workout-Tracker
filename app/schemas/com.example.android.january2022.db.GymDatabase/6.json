@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "df3df825b85dc505b92978b5731abade",
+    "identityHash": "e1f0545e68d2c9f80f6d82e267ca6341",
     "entities": [
       {
         "tableName": "sessions",
@@ -44,24 +44,55 @@
       },
       {
         "tableName": "exercises",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exerciseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `force` TEXT NOT NULL, `equipment` TEXT NOT NULL DEFAULT 'not specified', `targets` TEXT NOT NULL, `synergists` TEXT NOT NULL, `stabilizers` TEXT NOT NULL)",
         "fields": [
           {
-            "fieldPath": "exerciseId",
-            "columnName": "exerciseId",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "exerciseTitle",
+            "fieldPath": "title",
             "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "force",
+            "columnName": "force",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "equipment",
+            "columnName": "equipment",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'not specified'"
+          },
+          {
+            "fieldPath": "targets",
+            "columnName": "targets",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "synergists",
+            "columnName": "synergists",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stabilizers",
+            "columnName": "stabilizers",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "exerciseId"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -70,7 +101,7 @@
       },
       {
         "tableName": "sessionExercises",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionExerciseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionExerciseText` TEXT NOT NULL, `parentSessionId` INTEGER NOT NULL, `parentExerciseId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionExerciseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionExerciseText` TEXT NOT NULL, `parentSessionId` INTEGER NOT NULL, `parentExerciseId` INTEGER NOT NULL, `comment` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "sessionExerciseId",
@@ -94,6 +125,12 @@
             "fieldPath": "parentExerciseId",
             "columnName": "parentExerciseId",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comment",
+            "columnName": "comment",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -127,7 +164,7 @@
       },
       {
         "tableName": "sets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`setId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentSessionExerciseId` INTEGER NOT NULL, `reps` INTEGER NOT NULL, `weight` REAL NOT NULL, `mood` INTEGER NOT NULL, `deleted` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`setId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentSessionExerciseId` INTEGER NOT NULL, `reps` INTEGER NOT NULL, `weight` REAL NOT NULL, `time` INTEGER NOT NULL, `distance` REAL NOT NULL, `mood` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `setType` TEXT NOT NULL DEFAULT 'Normal')",
         "fields": [
           {
             "fieldPath": "setId",
@@ -154,6 +191,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distance",
+            "columnName": "distance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
             "fieldPath": "mood",
             "columnName": "mood",
             "affinity": "INTEGER",
@@ -164,6 +213,13 @@
             "columnName": "deleted",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "setType",
+            "columnName": "setType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Normal'"
           }
         ],
         "primaryKey": {
@@ -179,7 +235,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'df3df825b85dc505b92978b5731abade')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e1f0545e68d2c9f80f6d82e267ca6341')"
     ]
   }
 }
