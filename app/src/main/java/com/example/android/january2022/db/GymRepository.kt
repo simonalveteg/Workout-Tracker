@@ -87,7 +87,7 @@ class GymRepository(
     suspend fun insertSession(item: Session): Long =
         dao.insertSession(item)
 
-    suspend fun insertExercise(exercise: Exercise) =
+    suspend fun insertExercise(exercise: Exercise): Long =
         dao.insertExercise(exercise)
 
     suspend fun insertSessionExercise(sessionExercise: SessionExercise) =

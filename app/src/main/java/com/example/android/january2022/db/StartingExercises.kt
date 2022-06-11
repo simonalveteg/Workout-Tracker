@@ -42,7 +42,7 @@ class StartingExercises @Inject constructor(
                 val item = notes.getJSONObject(i)
                 val title = item.getString("title")
                 val force = item.getString("force")
-                var equipment = item.getString("equip")
+                val equipment = item.getString("equip")
                 val gson = GsonBuilder().create()
                 val targets =
                     gson.fromJson(item.getString("targets"), Array<String>::class.java).toList()
@@ -61,8 +61,9 @@ class StartingExercises @Inject constructor(
                     synergists = synergists,
                     stabilizers = stabilizers
                 )
-                repository.insertExercise(exercise)
-                Log.d("StartingExercises", "added exercise $exercise")
+                val result = repository.insertExercise(exercise)
+                if (result == -1L) Log.d("StartingExercises","Exercise insertion failed for $exercise")
+                //Log.d("StartingExercises", "added exercise $exercise")
             }
 
         } catch (e: JSONException) {

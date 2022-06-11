@@ -73,7 +73,7 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
                         .padding(start = 4.dp)
                 )
                 Text(
-                    text = endTime,
+                    text = if(endTime == startTime) "ongoing" else endTime,
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
