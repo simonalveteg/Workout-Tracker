@@ -6,8 +6,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -32,10 +30,9 @@ import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 @Composable
 fun SessionExerciseCard(
     sessionExercise: SessionExerciseWithExercise,
-    viewModel: SessionViewModel,
+    onEvent: (Event) -> Unit,
     selected: Long,
     sets: List<GymSet>,
-    onEvent: (Event) -> Unit,
 ) {
 
     val haptic = LocalHapticFeedback.current
@@ -151,7 +148,7 @@ fun SessionExerciseCard(
                                 )
                             )
                         ) {
-                            NewSetCard(set, isSelected, errorColor, viewModel::onEvent)
+                            NewSetCard(set, isSelected, onEvent)
                         }
                     }
                 }

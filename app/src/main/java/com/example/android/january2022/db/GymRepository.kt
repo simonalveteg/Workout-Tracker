@@ -25,7 +25,6 @@ class GymRepository(
         equipment: String = "%",
         query: String = "%",
     ): Flow<List<Exercise>> {
-        val muscle = "%${muscleGroup}%"
         val equip = "%${equipment}%"
         val que = "%${query}%"
 
@@ -69,6 +68,9 @@ class GymRepository(
         val muscleGroupsByCount = muscleGroups.groupingBy { it }.eachCount()
         return muscleGroupsByCount.entries.sortedBy { it.value }.map { it.key }.reversed()
     }
+
+    fun getSessionExercisesForExercise(id: Long) =
+        dao.getSessionExercisesForExercise(id)
 
     fun getSetsForSessionExercise(id: Long) =
         dao.getSetsForSessionExercise(id)

@@ -36,8 +36,8 @@ import com.example.android.january2022.db.SetType
 fun NewSetCard(
     set: GymSet,
     isSelected: Boolean,
-    errorColor: Color,
     onEvent: (SessionEvent) -> Unit,
+    editable: Boolean = true
 ) {
     val colors = MaterialTheme.colorScheme
     val weight = set.weight
@@ -66,10 +66,12 @@ fun NewSetCard(
         Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable {
-                expanded = !expanded
-                coroutineScope.launch {
-                    moodWidth.animateTo(if (expanded) expandedWidth else collapsedWidth)
-                    moodHeight.animateTo(if (expanded) expandedHeight else collapsedHeight)
+                if (editable) {
+                    expanded = !expanded
+                    coroutineScope.launch {
+                        moodWidth.animateTo(if (expanded) expandedWidth else collapsedWidth)
+                        moodHeight.animateTo(if (expanded) expandedHeight else collapsedHeight)
+                    }
                 }
             }
             .requiredHeight(48.dp),

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.ui.session.SessionDate
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import java.text.SimpleDateFormat
@@ -36,9 +37,6 @@ fun BigSessionCard(
     selected: Long
 ) {
     var expanded by remember { mutableStateOf(false) }
-
-    val startMonth = session.start.month.toString()
-    val startDay = session.start.dayOfMonth.toString()
 
     val haptic = LocalHapticFeedback.current
 
@@ -73,19 +71,7 @@ fun BigSessionCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(end = 16.dp)
-                ) {
-                    Text(
-                        text = startMonth,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = startDay,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                SessionDate(session)
                 Column(verticalArrangement = Arrangement.Center) {
                     Text(
                         text = if (muscleGroups.isNotEmpty()) muscleGroups[0].uppercase() else "",

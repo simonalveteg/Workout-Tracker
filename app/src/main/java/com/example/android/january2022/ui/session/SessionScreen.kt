@@ -143,7 +143,6 @@ fun SessionScreen(
                 }
                 SessionExerciseCard(
                     sessionExercise = sessionExercise,
-                    viewModel = viewModel,
                     selected = selectedSessionExercise,
                     sets = sets,
                     onEvent = viewModel::onEvent

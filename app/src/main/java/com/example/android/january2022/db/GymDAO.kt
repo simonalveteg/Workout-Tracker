@@ -40,7 +40,7 @@ interface GymDAO {
     fun getLastSet(): GymSet
 
     @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :key ORDER BY setId DESC")
-    fun getSetsForSessionExercise(key: Long): LiveData<List<GymSet>>
+    fun getSetsForSessionExercise(key: Long): Flow<List<GymSet>>
 
     @Query("SELECT * FROM sets JOIN sessionExercises ON sessionExerciseId=parentSessionExerciseId WHERE parentSessionId = :key ORDER BY setId ASC")
     fun getSetsForSession(key: Long): LiveData<List<GymSet>>
@@ -86,6 +86,13 @@ interface GymDAO {
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id")
     fun getSessionExercisesWithExercise(): LiveData<List<SessionExerciseWithExercise>>
+
+    @Query("SELECT * FROM sessionExercises " +
+            "JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
+            "JOIN exercises ON sessionExercises.parentExerciseId = exercises.id " +
+            "JOIN sessions ON sessionExercises.parentSessionId = sessions.sessionId " +
+            "WHERE parentExerciseId = :exerciseId")
+    fun getSessionExercisesForExercise(exerciseId: Long): Flow<Map<SessionWithSessionExerciseWithExercise,List<GymSet>>>
 
     /**
      * Returns a list of SessionExerciseWithExercise for the given Session

@@ -2,18 +2,22 @@ package com.example.android.january2022.ui.statistics
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
-import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +45,9 @@ class ExerciseStatisticsViewModel @Inject constructor(
             }
         }
     }
+
+    fun getSessionExercisesWithSets() = repository.getSessionExercisesForExercise(currentExercise.id)
+
 
 
     private val _uiEvent = Channel<UiEvent>()
