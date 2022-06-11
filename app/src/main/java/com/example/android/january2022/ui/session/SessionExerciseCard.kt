@@ -10,10 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -94,19 +91,35 @@ fun SessionExerciseCard(
                     }
                 }
                 AnimatedVisibility(visible = !isSelected) {
-                    IconButton(
-                        onClick = {
-                            onEvent(
-                                SessionEvent.OnSessionExerciseInfoClicked(
-                                    sessionExercise.exercise.id
+                    Row {
+                        IconButton(
+                            onClick = {
+                                onEvent(
+                                    SessionEvent.OnSessionExerciseInfoClicked(
+                                        sessionExercise.exercise.id
+                                    )
                                 )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "Show Exercise Options",
                             )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Show Exercise Options",
-                        )
+                        IconButton(
+                            onClick = {
+                                onEvent(
+                                    SessionEvent.OnSessionExerciseHistoryClicked(
+                                        sessionExercise.exercise.id
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.History,
+                                contentDescription = "Show Exercise History",
+                            )
+                        }
                     }
                 }
             }

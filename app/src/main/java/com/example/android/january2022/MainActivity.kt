@@ -1,9 +1,7 @@
 package com.example.android.january2022
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -13,34 +11,24 @@ import androidx.compose.material3.MaterialTheme.colorScheme as colors
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.*
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.android.january2022.nav.homeNavGraph
+import com.example.android.january2022.nav.statisticsNavGraph
 import com.google.accompanist.navigation.animation.composable
-import com.example.android.january2022.ui.exercises.detail.ExerciseDetailScreen
-import com.example.android.january2022.ui.exercises.ExercisesScreen
-import com.example.android.january2022.ui.exercises.picker.ExercisePickerScreen
-import com.example.android.january2022.ui.exercises.picker.MusclePickerScreen
-import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.profile.ProfileScreen
-import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.ui.statistics.StatisticsScreen
 import com.example.android.january2022.ui.theme.January2022Theme
 import com.example.android.january2022.utils.BottomBarScreen
 import com.example.android.january2022.utils.Routes
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -79,18 +67,7 @@ fun GymNavHost(navController: NavHostController) {
         popEnterTransition = { fadeIn() },
         popExitTransition = { fadeOut() }
     ) {
-        composable(
-            route = Routes.STATISTICS_SCREEN,
-            enterTransition = {
-                slideIntoContainer(AnimatedContentScope.SlideDirection.Right) + fadeIn()
-            },
-            exitTransition = {
-                slideOutOfContainer(AnimatedContentScope.SlideDirection.Left) + fadeOut()
-            }
-        ) {
-            StatisticsScreen()
-        }
-
+        statisticsNavGraph(navController)
         homeNavGraph(navController)
         composable(
             route = Routes.PROFILE_SCREEN,

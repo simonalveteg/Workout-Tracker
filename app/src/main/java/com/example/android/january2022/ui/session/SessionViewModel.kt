@@ -134,6 +134,9 @@ class SessionViewModel @Inject constructor(
             is SessionEvent.OnSessionExerciseInfoClicked -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_DETAIL_SCREEN+"?exerciseId=${event.exerciseId}"))
             }
+            is SessionEvent.OnSessionExerciseHistoryClicked -> {
+                sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_STATS_DETAIL+"?exerciseId=${event.exerciseId}"))
+            }
             is SessionEvent.SetSelectedSessionExercise -> {
                 val newId = event.sessionExercise.sessionExercise.sessionExerciseId
                 selectedSessionExercise = if(newId != selectedSessionExercise) newId else -1L

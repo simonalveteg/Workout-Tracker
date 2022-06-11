@@ -11,6 +11,9 @@ object Routes {
     const val EXERCISE_PICKER_SCREEN = "exercisePicker"
     const val EXERCISE_DETAIL_SCREEN = "exerciseDetail"
 
+    const val STATISTICS_GRAPH = "statsGraph"
     const val STATISTICS_SCREEN = "statistics"
+    const val EXERCISE_STATS_DETAIL = "exerciseStatisticsDetail"
+
     const val PROFILE_SCREEN = "profile"
 }

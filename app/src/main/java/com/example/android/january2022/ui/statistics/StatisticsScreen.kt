@@ -10,11 +10,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.ui.home.HomeViewModel
 import com.example.android.january2022.utils.BottomBarScreen
+import com.example.android.january2022.utils.UiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(
+    onNavigate: (UiEvent.Navigate) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     Scaffold() {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text("This is some statistics")

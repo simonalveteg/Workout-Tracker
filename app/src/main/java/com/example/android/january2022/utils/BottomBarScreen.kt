@@ -18,7 +18,7 @@ sealed class BottomBarScreen(
         icon = Icons.Filled.Home,
     )
     object Statistics : BottomBarScreen(
-        route = Routes.STATISTICS_SCREEN,
+        route = Routes.STATISTICS_GRAPH,
         title = "Statistics",
         icon = Icons.Filled.BarChart,
     )

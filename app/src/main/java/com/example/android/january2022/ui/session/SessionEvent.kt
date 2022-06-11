@@ -21,5 +21,6 @@ sealed class SessionEvent : Event {
     data class EndTimeChanged(val newTime: LocalDateTime): SessionEvent()
     data class StartTimeChanged(val newTime: LocalDateTime): SessionEvent()
     data class OnSessionExerciseInfoClicked(val exerciseId: Long): SessionEvent()
+    data class OnSessionExerciseHistoryClicked(val exerciseId: Long): SessionEvent()
     data class OnDeleteSessionExercise(val sessionExercise: SessionExerciseWithExercise): SessionEvent()
 }
