@@ -52,6 +52,7 @@ fun ExerciseChart(
             val strokePath = Path().apply {
                 var xvalue = 0f
                 sortedEntries.forEach { entry ->
+                    entry.value.ifEmpty { return@forEach } // if the entry has no sets, SKIP!
                     xvalue = ChronoUnit.DAYS.between(firstDay, entry.key.session.start).toFloat() * dayStep
                     val yvalue = height - entry.value.filter { !it.deleted }.map { it.weight }.maxOf{ it }*4
                     Log.d("ExerciseChart","x: $xvalue, y: $yvalue")

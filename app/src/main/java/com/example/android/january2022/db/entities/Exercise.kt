@@ -26,6 +26,6 @@ data class Exercise(
     fun getMuscleGroup(exercise: Exercise = this): String {
         return exercise.targets.map {
             turnTargetIntoMuscleGroup(it)
-        }.toString().removeSurrounding("[","]").uppercase()
+        }.distinct().filterNot { it=="" }.toString().removeSurrounding("[","]").uppercase()
     }
 }

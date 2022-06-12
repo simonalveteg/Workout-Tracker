@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.theme.Shapes
@@ -31,7 +32,7 @@ import com.example.android.january2022.utils.Event
 fun ExerciseCard(
     exercise: Exercise,
     selected: Boolean,
-    inPicker: Boolean,
+    tonalElevation: Dp = if (selected) 1.dp else 0.dp,
     onEvent: (Event) -> Unit
 ) {
 
@@ -42,59 +43,71 @@ fun ExerciseCard(
         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 6.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val indicatorHeight by animateDpAsState(targetValue = if(selected) 32.dp else 0.dp)
+        val indicatorHeight by animateDpAsState(targetValue = if (selected) 32.dp else 0.dp)
         Surface(
             color = indicatorColor.value,
             modifier = Modifier
                 .height(indicatorHeight)
                 .width(4.dp),
-            shape = Shapes.small
+            shape = Shapes.small,
         ) {}
         Spacer(Modifier.width(5.dp))
         Surface(
-            tonalElevation = if (selected) 1.dp else 0.dp,
+            tonalElevation = tonalElevation,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    if (inPicker) {
-                        Log.d("EC", "Exercise clicked: ${exercise.id}")
-                        onEvent(ExerciseEvent.ExerciseSelected(exercise))
-                    }
+                    Log.d("EC", "Exercise clicked: ${exercise.id}")
+                    onEvent(ExerciseEvent.ExerciseSelected(exercise))
                 },
             shape = Shapes.medium
         ) {
-            Row(
+            Column(
                 modifier = Modifier
                     .padding(14.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth()
             ) {
-                Column(modifier = Modifier.weight(8f)) {
-                    Text(
-                        exercise.title.uppercase(),
-                        style = MaterialTheme.typography.headlineSmall,
-                        overflow = TextOverflow.Ellipsis
-
-                    )
-                    Text(
-                        exercise.getMuscleGroup() + ", " +
-                                exercise.equipment.uppercase(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LocalContentColor.current.copy(alpha = 0.7f)
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        onEvent(
-                            ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
-                        )
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp)
+                Box(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "Show more")
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(end = 50.dp),
+                        text = exercise.title.uppercase(),
+                        style = MaterialTheme.typography.titleMedium,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    IconButton(
+                        onClick = {
+                            onEvent(
+                                ExerciseEvent.ExerciseInfoClicked(exercise = exercise)
+                            )
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreHoriz,
+                            contentDescription = "Show more"
+                        )
+                    }
+                }
+                Row {
+                    MuscleChip(
+                        modifier = Modifier.padding(4.dp),
+                        title = exercise.getMuscleGroup(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(20)
+                    )
+                    MuscleChip(
+                        modifier = Modifier.padding(4.dp),
+                        title = exercise.equipment.uppercase(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(20)
+                    )
                 }
             }
         }

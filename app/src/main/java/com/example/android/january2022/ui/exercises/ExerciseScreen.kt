@@ -39,36 +39,6 @@ fun ExercisesScreen(
                     inPicker = false
                 )
             }
-            Row(
-                Modifier
-                    .padding(vertical = 16.dp)
-                    .height(TextFieldDefaults.MinHeight)
-            ) {
-                TextField(
-                    value = inputValue,
-                    onValueChange = { newText ->
-                        inputValue = newText
-                    },
-                    placeholder = { Text(text = "Enter exercise-name") }
-                )
-                Button(
-                    onClick = {
-                        viewModel.onEvent(
-                            ExerciseEvent.NewExerciseClicked(
-                                title = inputValue,
-                                muscleGroup = MuscleGroup.NULL,
-                                equipment = Equipment.NULL
-                            )
-                        )
-                        inputValue = ""
-                    },
-                    Modifier
-                        .padding(start = 8.dp)
-                        .fillMaxHeight()
-                ) {
-                    Text(text = "Submit")
-                }
-            }
         }
     }
 }

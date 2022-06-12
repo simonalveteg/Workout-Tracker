@@ -36,6 +36,12 @@ interface GymDAO {
     @Update
     suspend fun updateSession(session: Session)
 
+    @MapInfo(valueColumn = "count")
+    @Query("SELECT COUNT(DISTINCT sessionExerciseId) as count, * FROM exercises " +
+            "LEFT JOIN sessionExercises ON id = parentExerciseId " +
+            "GROUP BY id ORDER BY count DESC, title ASC")
+    fun getExercisesWithCount(): Flow<Map<Exercise,Int>>
+
     @Query("SELECT * FROM sets ORDER BY setId DESC LIMIT 1")
     fun getLastSet(): GymSet
 
@@ -88,7 +94,7 @@ interface GymDAO {
     fun getSessionExercisesWithExercise(): LiveData<List<SessionExerciseWithExercise>>
 
     @Query("SELECT * FROM sessionExercises " +
-            "JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
+            "LEFT JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
             "JOIN exercises ON sessionExercises.parentExerciseId = exercises.id " +
             "JOIN sessions ON sessionExercises.parentSessionId = sessions.sessionId " +
             "WHERE parentExerciseId = :exerciseId")

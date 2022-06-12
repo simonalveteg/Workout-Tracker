@@ -20,6 +20,9 @@ class GymRepository(
     fun getExercise(id: Long) =
         dao.getExercise(id)
 
+    fun getExercisesWithCount() =
+        dao.getExercisesWithCount()
+
     suspend fun getExercisesByQuery(
         muscleGroup: String = "%",
         equipment: String = "%",

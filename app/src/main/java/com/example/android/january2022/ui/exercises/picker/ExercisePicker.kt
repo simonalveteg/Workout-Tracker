@@ -31,6 +31,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
+import com.example.android.january2022.ui.exercises.MuscleChip
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
@@ -251,7 +252,8 @@ fun ExerciseEquipmentFilter(
             items(equipment) { equipment ->
                 val isSelected = selectedEquipment.contains(equipment)
                 MuscleChip(
-                    title = equipment,
+                    modifier = Modifier.padding(8.dp),
+                    title = equipment.uppercase(),
                     isSelected = isSelected,
                     onToggle = {
                         onEvent(ExerciseEvent.EquipmentSelectionChange(it))
@@ -270,36 +272,12 @@ fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) ->
         items(muscleGroups) { muscleGroup ->
             val isSelected = selectedMuscleGroup.contains(muscleGroup)
             MuscleChip(
+                modifier = Modifier.padding(8.dp),
                 title = muscleGroup,
                 isSelected = isSelected,
                 onToggle = {
                     onEvent(ExerciseEvent.MuscleGroupSelectionChange(it))
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun MuscleChip(
-    title: String,
-    isSelected: Boolean,
-    onToggle: (String) -> Unit
-) {
-    val chipColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    )
-    Surface(
-        shape = RoundedCornerShape(0),
-        color = chipColor.value,
-    ) {
-        Box(modifier = Modifier.toggleable(value = isSelected, onValueChange = {
-            onToggle(title)
-        })) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(8.dp)
             )
         }
     }

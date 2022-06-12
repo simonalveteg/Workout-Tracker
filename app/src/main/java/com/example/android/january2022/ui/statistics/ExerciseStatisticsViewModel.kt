@@ -48,8 +48,6 @@ class ExerciseStatisticsViewModel @Inject constructor(
 
     fun getSessionExercisesWithSets() = repository.getSessionExercisesForExercise(currentExercise.id)
 
-
-
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 

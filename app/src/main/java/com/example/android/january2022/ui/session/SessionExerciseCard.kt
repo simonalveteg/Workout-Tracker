@@ -92,20 +92,6 @@ fun SessionExerciseCard(
                         IconButton(
                             onClick = {
                                 onEvent(
-                                    SessionEvent.OnSessionExerciseInfoClicked(
-                                        sessionExercise.exercise.id
-                                    )
-                                )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.MoreVert,
-                                contentDescription = "Show Exercise Options",
-                            )
-                        }
-                        IconButton(
-                            onClick = {
-                                onEvent(
                                     SessionEvent.OnSessionExerciseHistoryClicked(
                                         sessionExercise.exercise.id
                                     )
@@ -115,6 +101,20 @@ fun SessionExerciseCard(
                             Icon(
                                 imageVector = Icons.Filled.History,
                                 contentDescription = "Show Exercise History",
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                onEvent(
+                                    SessionEvent.OnSessionExerciseInfoClicked(
+                                        sessionExercise.exercise.id
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "Show Exercise Options",
                             )
                         }
                     }

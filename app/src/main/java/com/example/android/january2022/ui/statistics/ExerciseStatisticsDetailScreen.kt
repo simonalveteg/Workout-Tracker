@@ -60,7 +60,7 @@ fun ExerciseStatisticsDetailScreen(
                         .sortedByDescending { it.key.session.start }) { sessionExercise ->
                     SessionExerciseHistoryCard(
                         sessionExercise = sessionExercise.key,
-                        sets = sessionExercise.value,
+                        sets = sessionExercise.value.filter{!it.deleted},
                         onEvent = viewModel::onEvent
                     )
                 }
