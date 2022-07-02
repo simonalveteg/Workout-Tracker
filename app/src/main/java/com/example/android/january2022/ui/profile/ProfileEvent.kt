@@ -10,5 +10,7 @@ import com.example.android.january2022.utils.Event
 sealed class ProfileEvent : Event {
     object NavigateToExercises: ProfileEvent()
     data class ExportDatabase(val context: Context, val uri: Uri): ProfileEvent()
+    data class ImportDatabase(val context: Context, val uri: Uri): ProfileEvent()
     object CreateFile: ProfileEvent()
+    object ImportFile: ProfileEvent()
 }

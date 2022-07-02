@@ -40,10 +40,18 @@ fun ProfileScreen(
 ) {
     val mContext = LocalContext.current
     val exportLauncher = rememberLauncherForActivityResult(
-        contract = CreateDocument("text/plain"),
+        contract = CreateDocument("application/json"),
         onResult = { uri ->
             uri?.let {
                 viewModel.onEvent(ProfileEvent.ExportDatabase(mContext,it))
+            }
+        }
+    )
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let {
+                viewModel.onEvent(ProfileEvent.ImportDatabase(mContext,it))
             }
         }
     )
@@ -76,6 +84,11 @@ fun ProfileScreen(
                 viewModel.onEvent(ProfileEvent.CreateFile)
             }) {
                 Text("Export Database")
+            }
+            FilledTonalButton(onClick = {
+                importLauncher.launch("application/json")
+            }) {
+                Text("Import Database")
             }
         }
     }

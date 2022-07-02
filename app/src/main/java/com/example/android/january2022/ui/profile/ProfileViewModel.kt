@@ -8,6 +8,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
+import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.GymSet
+import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -22,10 +26,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.DateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -58,6 +64,35 @@ class ProfileViewModel @Inject constructor(
         saveToFile(uri, context.contentResolver, json)
     }
 
+    data class DatabaseModel(
+        val sessions: List<Session>,
+        val exercises: List<Exercise>,
+        val sessionExercises: List<SessionExercise>,
+        val sets: List<GymSet>
+    )
+
+    private fun importDatabase(uri: Uri,context: Context) {
+        viewModelScope.launch {
+            val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
+            loadFromFile(uri, context.contentResolver)?.let {
+                val importedDatabase = gson.fromJson(it, DatabaseModel::class.java)
+                importedDatabase.sessions.forEach { session ->
+                    repository.insertSession(session)
+                }
+                importedDatabase.exercises.forEach { exercise ->
+                    repository.insertExercise(exercise)
+                }
+                importedDatabase.sessionExercises.forEach { sessionExercise ->
+                    repository.insertSessionExercise(sessionExercise)
+                }
+                importedDatabase.sets.forEach { set->
+                    repository.insertSet(set)
+                }
+
+            }
+        }
+    }
+
     fun onEvent(event: Event) {
         when (event) {
             is ProfileEvent.NavigateToExercises -> {
@@ -65,8 +100,12 @@ class ProfileViewModel @Inject constructor(
             }
             is ProfileEvent.ExportDatabase -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    Log.d("PVM", "export database button pressed")
                     exportDatabase(event.uri, event.context)
+                }
+            }
+            is ProfileEvent.ImportDatabase -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    importDatabase(event.uri, event.context)
                 }
             }
             is ProfileEvent.CreateFile -> {
@@ -88,6 +127,21 @@ class ProfileViewModel @Inject constructor(
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    fun loadFromFile(uri: Uri, contentResolver: ContentResolver): String? {
+        try {
+            contentResolver.openFileDescriptor(uri, "r")?.use { parcelFileDescriptor ->
+                FileInputStream(parcelFileDescriptor.fileDescriptor).use {
+                    return it.readBytes().decodeToString()
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     private fun sendUiEvent(event: UiEvent) {
