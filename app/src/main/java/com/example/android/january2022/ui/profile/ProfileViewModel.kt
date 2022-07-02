@@ -1,5 +1,8 @@
 package com.example.android.january2022.ui.profile
 
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
@@ -18,6 +21,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,28 +37,45 @@ class ProfileViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
 
-    private suspend fun getDatabaseAsJson(): String {
-        val jsonString = withContext(Dispatchers.IO){
-            "[\n ${repository.getSessionList()},\n" +
+    private fun exportDatabase(uri: Uri, context: Context) {
+        val jsonString = "[\n ${repository.getSessionList()},\n" +
                     "${repository.getExerciseList()},\n" +
                     "${repository.getSessionExerciseList()},\n" +
                     "${repository.getSetList()}\n]"
-        }
-        Log.d("PVM","database converted to jsonString")
-        return jsonString
+        Log.d("PVM", "database converted to jsonString")
+        saveToFile(uri, context.contentResolver, jsonString)
+
     }
 
     fun onEvent(event: Event) {
-        when(event) {
+        when (event) {
             is ProfileEvent.NavigateToExercises -> {
                 sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_SCREEN))
             }
             is ProfileEvent.ExportDatabase -> {
-                viewModelScope.launch {
-                    Log.d("PVM","export database button pressed")
-                    sendUiEvent(UiEvent.ShareIntent(getDatabaseAsJson()))
+                viewModelScope.launch(Dispatchers.IO) {
+                    Log.d("PVM", "export database button pressed")
+                    exportDatabase(event.uri, event.context)
                 }
             }
+            is ProfileEvent.CreateFile -> {
+                val date = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
+                sendUiEvent(UiEvent.FileCreated("workout_db_$date.json"))
+            }
+        }
+    }
+
+    private fun saveToFile(uri: Uri, contentResolver: ContentResolver, content: String) {
+        try {
+            contentResolver.openFileDescriptor(uri, "w")?.use { parcelFileDescriptor ->
+                FileOutputStream(parcelFileDescriptor.fileDescriptor).use {
+                    it.write(content.toByteArray())
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

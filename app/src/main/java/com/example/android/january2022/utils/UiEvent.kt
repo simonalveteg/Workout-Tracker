@@ -11,5 +11,5 @@ sealed class UiEvent {
         val actionLabel: String? = null,
         val action: Event? = null
     ): UiEvent()
-    data class ShareIntent(val file: String): UiEvent()
+    data class FileCreated(val fileName: String): UiEvent()
 }

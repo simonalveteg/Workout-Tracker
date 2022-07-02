@@ -7,6 +7,7 @@ import android.widget.EditText
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,33 +38,23 @@ fun ProfileScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val launch = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {  }
+    val mContext = LocalContext.current
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = CreateDocument("text/plain"),
+        onResult = { uri ->
+            uri?.let {
+                viewModel.onEvent(ProfileEvent.ExportDatabase(mContext,it))
+            }
+        }
     )
 
-    val mContext = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> onNavigate(event)
-                is UiEvent.ShareIntent -> {
-                    val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_CREATE_DOCUMENT
-                        putExtra(
-                            Intent.EXTRA_TITLE,
-                            "workout_db_${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)}.txt"
-                        )
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            event.file
-                        )
-                        type = "text/plain"
-                    }
-                    val shareIntent = Intent.createChooser(sendIntent, "hej")
-                    Log.d("PS", "share intent received")
-                    launch.launch(shareIntent)
+                is UiEvent.FileCreated -> {
+                    exportLauncher.launch(event.fileName)
                 }
                 else -> Unit // do nothing
             }
@@ -82,7 +73,7 @@ fun ProfileScreen(
                 Text("Exercises")
             }
             FilledTonalButton(onClick = {
-                viewModel.onEvent(ProfileEvent.ExportDatabase)
+                viewModel.onEvent(ProfileEvent.CreateFile)
             }) {
 
             }
