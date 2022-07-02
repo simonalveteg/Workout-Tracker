@@ -106,4 +106,8 @@ class GymRepository(
     suspend fun removeSessionExercise(sessionExercise: SessionExercise) =
         dao.removeSessionExercise(sessionExercise)
 
+    fun getSessionList() = dao.getSessionList()
+    fun getExerciseList() = dao.getExerciseList()
+    fun getSessionExerciseList() = dao.getSessionExerciseList()
+    fun getSetList() = dao.getSetList()
 }

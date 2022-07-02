@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONArray
 
 
 @Dao
@@ -37,10 +38,12 @@ interface GymDAO {
     suspend fun updateSession(session: Session)
 
     @MapInfo(valueColumn = "count")
-    @Query("SELECT COUNT(DISTINCT sessionExerciseId) as count, * FROM exercises " +
-            "LEFT JOIN sessionExercises ON id = parentExerciseId " +
-            "GROUP BY id ORDER BY count DESC, title ASC")
-    fun getExercisesWithCount(): Flow<Map<Exercise,Int>>
+    @Query(
+        "SELECT COUNT(DISTINCT sessionExerciseId) as count, * FROM exercises " +
+                "LEFT JOIN sessionExercises ON id = parentExerciseId " +
+                "GROUP BY id ORDER BY count DESC, title ASC"
+    )
+    fun getExercisesWithCount(): Flow<Map<Exercise, Int>>
 
     @Query("SELECT * FROM sets ORDER BY setId DESC LIMIT 1")
     fun getLastSet(): GymSet
@@ -78,6 +81,19 @@ interface GymDAO {
     @Query("SELECT * FROM sets")
     fun getAllSets(): LiveData<List<GymSet>>
 
+    @Query("SELECT * FROM sessions")
+    fun getSessionList(): List<Session>
+
+    @Query("SELECT * FROM exercises")
+    fun getExerciseList(): List<Exercise>
+
+    @Query("SELECT * FROM sessionExercises")
+    fun getSessionExerciseList(): List<SessionExercise>
+
+    @Query("SELECT * FROM sets")
+    fun getSetList(): List<GymSet>
+
+
     @Query(
         "SELECT targets FROM exercises AS e " +
                 "JOIN sessionExercises AS se ON e.id = se.parentExerciseId " +
@@ -93,12 +109,14 @@ interface GymDAO {
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id")
     fun getSessionExercisesWithExercise(): LiveData<List<SessionExerciseWithExercise>>
 
-    @Query("SELECT * FROM sessionExercises " +
-            "LEFT JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
-            "JOIN exercises ON sessionExercises.parentExerciseId = exercises.id " +
-            "JOIN sessions ON sessionExercises.parentSessionId = sessions.sessionId " +
-            "WHERE parentExerciseId = :exerciseId")
-    fun getSessionExercisesForExercise(exerciseId: Long): Flow<Map<SessionWithSessionExerciseWithExercise,List<GymSet>>>
+    @Query(
+        "SELECT * FROM sessionExercises " +
+                "LEFT JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
+                "JOIN exercises ON sessionExercises.parentExerciseId = exercises.id " +
+                "JOIN sessions ON sessionExercises.parentSessionId = sessions.sessionId " +
+                "WHERE parentExerciseId = :exerciseId"
+    )
+    fun getSessionExercisesForExercise(exerciseId: Long): Flow<Map<SessionWithSessionExerciseWithExercise, List<GymSet>>>
 
     /**
      * Returns a list of SessionExerciseWithExercise for the given Session
