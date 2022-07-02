@@ -75,7 +75,7 @@ fun ProfileScreen(
             FilledTonalButton(onClick = {
                 viewModel.onEvent(ProfileEvent.CreateFile)
             }) {
-
+                Text("Export Database")
             }
         }
     }

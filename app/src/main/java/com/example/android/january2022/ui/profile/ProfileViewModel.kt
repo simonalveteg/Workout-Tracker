@@ -5,28 +5,31 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
+import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
+import org.json.JSONObject
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.DateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -38,13 +41,21 @@ class ProfileViewModel @Inject constructor(
 
 
     private fun exportDatabase(uri: Uri, context: Context) {
-        val jsonString = "[\n ${repository.getSessionList()},\n" +
-                    "${repository.getExerciseList()},\n" +
-                    "${repository.getSessionExerciseList()},\n" +
-                    "${repository.getSetList()}\n]"
-        Log.d("PVM", "database converted to jsonString")
-        saveToFile(uri, context.contentResolver, jsonString)
-
+        val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
+        val map = mapOf(
+            "sessions" to gson.toJson(repository.getSessionList()),
+            "exercises" to gson.toJson(repository.getExerciseList()),
+            "sessionExercises" to gson.toJson(repository.getSessionExerciseList()),
+            "sets" to gson.toJson(repository.getSetList())
+        )
+        // ugly hack to convert the map into json
+        var json = "{" // open json object
+        map.entries.forEachIndexed { index, it ->
+            json += "\"${it.key}\": ${it.value}"
+            if(index+1 < map.entries.size) json += ","
+        }
+        json += "}" // close json object
+        saveToFile(uri, context.contentResolver, json)
     }
 
     fun onEvent(event: Event) {

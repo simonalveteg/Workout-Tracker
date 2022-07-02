@@ -90,6 +90,7 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
 
 
     //Dagger - Hilt
