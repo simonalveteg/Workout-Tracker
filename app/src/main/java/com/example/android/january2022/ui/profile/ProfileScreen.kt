@@ -28,6 +28,8 @@ import com.example.android.january2022.ui.home.HomeViewModel
 import com.example.android.january2022.utils.BottomBarScreen
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.collect
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +39,7 @@ fun ProfileScreen(
 ) {
     val launch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = { Log.d("PS", "on result") }
+        onResult = {  }
     )
 
     val mContext = LocalContext.current
@@ -48,8 +50,15 @@ fun ProfileScreen(
                 is UiEvent.Navigate -> onNavigate(event)
                 is UiEvent.ShareIntent -> {
                     val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "HEJ TEST TEST")
+                        action = Intent.ACTION_CREATE_DOCUMENT
+                        putExtra(
+                            Intent.EXTRA_TITLE,
+                            "workout_db_${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)}.txt"
+                        )
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            event.file
+                        )
                         type = "text/plain"
                     }
                     val shareIntent = Intent.createChooser(sendIntent, "hej")
