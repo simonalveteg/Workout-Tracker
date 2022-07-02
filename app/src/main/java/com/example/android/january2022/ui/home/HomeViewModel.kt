@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.*
-import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -36,7 +35,7 @@ class HomeViewModel @Inject constructor(
         get() = _removedSession
 
 
-    val sessionList: LiveData<List<Session>> = repository.getSessions()
+    val sessionList: LiveData<List<Session>> = repository.getAllSessions()
     val exerciseList: LiveData<List<Exercise>> = repository.getAllExercises()
     val sessionExerciseList: LiveData<List<SessionExerciseWithExercise>> =
         repository.getSessionExercises()

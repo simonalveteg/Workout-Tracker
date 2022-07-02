@@ -7,4 +7,5 @@ import com.example.android.january2022.utils.Event
 
 sealed class ProfileEvent : Event {
     object NavigateToExercises: ProfileEvent()
+    object ExportDatabase: ProfileEvent()
 }

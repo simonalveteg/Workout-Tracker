@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -48,7 +49,7 @@ class GymRepository(
     fun getSession(id: Long) =
         dao.getSession(id)
 
-    fun getSessions() =
+    fun getAllSessions() =
         dao.getAllSessions()
 
     fun getAllExercises() =

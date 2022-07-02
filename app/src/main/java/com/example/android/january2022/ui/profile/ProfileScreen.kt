@@ -41,6 +41,7 @@ fun ProfileScreen(
                 Text("Exercises")
             }
             FilledTonalButton(onClick = {
+                viewModel.onEvent(ProfileEvent.ExportDatabase)
             }) {
 
             }
