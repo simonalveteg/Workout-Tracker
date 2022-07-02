@@ -90,6 +90,11 @@ fun ProfileScreen(
             }) {
                 Text("Import Database")
             }
+            FilledTonalButton(onClick = {
+                viewModel.onEvent(ProfileEvent.ClearDatabase)
+            }) {
+                Text("Delete Database")
+            }
         }
     }
 }

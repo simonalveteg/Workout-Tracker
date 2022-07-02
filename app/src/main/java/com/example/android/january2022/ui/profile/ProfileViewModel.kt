@@ -46,30 +46,24 @@ class ProfileViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
 
-    private fun exportDatabase(uri: Uri, context: Context) {
-        val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
-        val map = mapOf(
-            "sessions" to gson.toJson(repository.getSessionList()),
-            "exercises" to gson.toJson(repository.getExerciseList()),
-            "sessionExercises" to gson.toJson(repository.getSessionExerciseList()),
-            "sets" to gson.toJson(repository.getSetList())
-        )
-        // ugly hack to convert the map into json
-        var json = "{" // open json object
-        map.entries.forEachIndexed { index, it ->
-            json += "\"${it.key}\": ${it.value}"
-            if(index+1 < map.entries.size) json += ","
-        }
-        json += "}" // close json object
-        saveToFile(uri, context.contentResolver, json)
-    }
-
     data class DatabaseModel(
         val sessions: List<Session>,
         val exercises: List<Exercise>,
         val sessionExercises: List<SessionExercise>,
         val sets: List<GymSet>
     )
+
+    private fun exportDatabase(uri: Uri, context: Context) {
+        val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
+        val databaseModel = DatabaseModel(
+            sessions = repository.getSessionList(),
+            exercises = repository.getExerciseList(),
+            sessionExercises = repository.getSessionExerciseList(),
+            sets = repository.getSetList()
+        )
+        val ob = gson.toJson(databaseModel)
+        saveToFile(uri, context.contentResolver, ob)
+    }
 
     private fun importDatabase(uri: Uri,context: Context) {
         viewModelScope.launch {
@@ -111,6 +105,11 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.CreateFile -> {
                 val date = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
                 sendUiEvent(UiEvent.FileCreated("workout_db_$date.json"))
+            }
+            is ProfileEvent.ClearDatabase -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.clearDatabase()
+                }
             }
         }
     }

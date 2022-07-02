@@ -12,5 +12,5 @@ sealed class ProfileEvent : Event {
     data class ExportDatabase(val context: Context, val uri: Uri): ProfileEvent()
     data class ImportDatabase(val context: Context, val uri: Uri): ProfileEvent()
     object CreateFile: ProfileEvent()
-    object ImportFile: ProfileEvent()
+    object ClearDatabase: ProfileEvent()
 }

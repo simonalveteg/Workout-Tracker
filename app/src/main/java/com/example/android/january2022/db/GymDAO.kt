@@ -66,6 +66,15 @@ interface GymDAO {
     @Query("DELETE FROM sessions")
     suspend fun clearSessions()
 
+    @Query("DELETE FROM sessionExercises")
+    suspend fun clearSessionExercises()
+
+    @Query("DELETE FROM sets")
+    suspend fun clearSets()
+
+    @Query("DELETE FROM exercises")
+    suspend fun clearExercises()
+
     @Query("SELECT * FROM sessions WHERE sessionId = :key")
     fun getSession(key: Long): Session
 

@@ -110,4 +110,11 @@ class GymRepository(
     fun getExerciseList() = dao.getExerciseList()
     fun getSessionExerciseList() = dao.getSessionExerciseList()
     fun getSetList() = dao.getSetList()
+
+    suspend fun clearDatabase() {
+        dao.clearSessions()
+        dao.clearSessionExercises()
+        dao.clearExercises()
+        dao.clearSets()
+    }
 }
