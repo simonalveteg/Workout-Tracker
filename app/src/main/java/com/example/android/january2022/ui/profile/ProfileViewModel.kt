@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +36,7 @@ class ProfileViewModel @Inject constructor(
                     "${repository.getSessionExerciseList()},\n" +
                     "${repository.getSetList()}\n]"
         }
+        Log.d("PVM","database converted to jsonString")
         return jsonString
     }
 
@@ -45,7 +47,8 @@ class ProfileViewModel @Inject constructor(
             }
             is ProfileEvent.ExportDatabase -> {
                 viewModelScope.launch {
-                    getDatabaseAsJson()
+                    Log.d("PVM","export database button pressed")
+                    sendUiEvent(UiEvent.ShareIntent(getDatabaseAsJson()))
                 }
             }
         }

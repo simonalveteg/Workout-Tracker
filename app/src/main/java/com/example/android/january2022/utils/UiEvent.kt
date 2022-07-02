@@ -1,5 +1,7 @@
 package com.example.android.january2022.utils
 
+import java.io.File
+
 sealed class UiEvent {
     object PopBackStack: UiEvent()
     object OpenDialog: UiEvent()
@@ -9,4 +11,5 @@ sealed class UiEvent {
         val actionLabel: String? = null,
         val action: Event? = null
     ): UiEvent()
+    data class ShareIntent(val file: String): UiEvent()
 }
