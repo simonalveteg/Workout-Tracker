@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import com.example.android.january2022.db.SetType
 
 @Composable
-fun NewSetCard(
+fun SetCard(
     set: GymSet,
     isSelected: Boolean,
     onEvent: (SessionEvent) -> Unit,

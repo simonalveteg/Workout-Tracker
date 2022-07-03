@@ -148,7 +148,7 @@ fun SessionExerciseCard(
                                 )
                             )
                         ) {
-                            NewSetCard(set, isSelected, onEvent)
+                            SetCard(set, isSelected, onEvent)
                         }
                     }
                 }

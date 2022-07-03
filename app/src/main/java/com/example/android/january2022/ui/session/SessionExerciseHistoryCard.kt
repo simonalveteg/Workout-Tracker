@@ -1,27 +1,18 @@
 package com.example.android.january2022.ui.session
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.db.entities.SessionWithSessionExerciseWithExercise
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
@@ -63,7 +54,7 @@ fun SessionExerciseHistoryCard(
             ) {
                 sets.forEach { set ->
                     key(set.setId) {
-                        NewSetCard(
+                        SetCard(
                             set = set,
                             isSelected = false,
                             onEvent = onEvent,
