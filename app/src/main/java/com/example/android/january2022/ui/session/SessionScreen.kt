@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -33,6 +34,7 @@ import com.example.android.january2022.utils.UiEvent
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +91,10 @@ fun SessionScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
+            val timerRunning by viewModel.timerIsRunning.observeAsState(false)
             val timerVisible = rememberSaveable { mutableStateOf(false) }
+            val timerColor by animateColorAsState(targetValue =
+                if(timerRunning && !timerVisible.value) MaterialTheme.colorScheme.primary else LocalContentColor.current)
             Column {
                 LargeTopAppBar(
                     title = { Text(text = sessionTitle(session)) },
@@ -99,7 +104,8 @@ fun SessionScreen(
                         IconButton(onClick = { timerVisible.value = !timerVisible.value }) {
                             Icon(
                                 imageVector = Icons.Outlined.Timer,
-                                contentDescription = "Timer"
+                                contentDescription = "Timer",
+                                tint = timerColor
                             )
                         }
                         DropdownMenu(
@@ -124,48 +130,84 @@ fun SessionScreen(
                     scrollBehavior = scrollBehavior
                 )
                 AnimatedVisibility(visible = timerVisible.value) {
+                    val timerBackground by animateColorAsState(
+                        targetValue =
+                        if (timerRunning) MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    )
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(58.dp),
-                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        color = timerBackground,
                     ) {
                         val currentWidth = LocalConfiguration.current.screenWidthDp
-                        val timerTime = viewModel.timerTime.observeAsState()
-                        val timerMaxTime = viewModel.timerMaxTime
-                        Log.d("SS","currentWidth: $currentWidth")
-                        val width = timerTime.value?.toFloat()?.div(timerMaxTime)
-                            ?.let { currentWidth.times(it) }?.toInt()?.dp ?: 40.dp
-                        Log.d("SS","width: $width")
+                        val timerTime = viewModel.timerTime.observeAsState(0)
+                        val timerMaxTime = viewModel.timerMaxTime.observeAsState(60000L)
+                        val timerText = if(timerRunning) {
+                            viewModel.timerTime.observeAsState(0L).value.toTimerString()
+                        } else timerMaxTime.value.toTimerString()
+                        val width = currentWidth.times(timerTime.value.toFloat().div(timerMaxTime.value))
+                            .toInt().dp
                         val animatedWidth by animateDpAsState(
                             targetValue = width,
-                            animationSpec = tween(1000,0, LinearEasing)
+                            animationSpec = tween(50, 0, LinearEasing)
                         )
-
 
                         Box(Modifier.fillMaxSize()) {
                             Surface(
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .width(animatedWidth),
-                                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f)
+                            ) {}
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-
-                            }
-                            Text(
-                                text = viewModel.timerTime.observeAsState().value.toString(),
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                            IconButton(
-                                onClick = { viewModel.onEvent(SessionEvent.TimerToggled) },
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(end = 12.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Pause,
-                                    contentDescription = "Start or stop timer"
-                                )
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    IconButton(onClick = { viewModel.onEvent(SessionEvent.TimerChanged(false)) }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Remove,
+                                            contentDescription = "Decrease length of timer"
+                                        )
+                                    }
+                                    Text(
+                                        text = timerText,
+                                        modifier = Modifier.padding(horizontal = 16.dp)
+                                    )
+                                    IconButton(onClick = { viewModel.onEvent(SessionEvent.TimerChanged(true)) }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Add,
+                                            contentDescription = "Increase length of timer"
+                                        )
+                                    }
+                                }
+                                Row {
+                                    IconButton(
+                                        onClick = { viewModel.onEvent(SessionEvent.TimerReset) },
+                                        modifier = Modifier
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Replay,
+                                            contentDescription = "Reset timer"
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { viewModel.onEvent(SessionEvent.TimerToggled) },
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Pause,
+                                            contentDescription = "Start or stop timer"
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -223,4 +265,12 @@ fun SessionScreen(
 fun sessionTitle(session: Session): String {
     val date = session.start
     return DateTimeFormatter.ofPattern("MMM d yyyy").format(date)
+}
+
+fun Long.toTimerString(): String {
+    val totalSeconds = this.toFloat().div(1000).roundToInt()
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    val displayedSeconds = if(seconds < 10) "0$seconds" else seconds
+    return "$minutes:$displayedSeconds"
 }
