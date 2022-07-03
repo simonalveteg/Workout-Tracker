@@ -138,7 +138,7 @@ interface GymDAO {
         "SELECT * FROM exercises " +
                 "WHERE equipment LIKE :equipment " +
                 "AND title LIKE :query " +
-                "ORDER BY title ASC"
+                "ORDER BY (CASE WHEN :query = '%%' THEN title ELSE length(title) END) ASC, title ASC"
     )
     fun getExercisesByQuery(equipment: String, query: String): Flow<List<Exercise>>
 

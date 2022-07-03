@@ -31,8 +31,8 @@ class GymRepository(
         equipment: String = "%",
         query: String = "%",
     ): Flow<List<Exercise>> {
-        val equip = "%${equipment}%"
-        val que = "%${query}%"
+        val equip = "%${equipment.replace(" ","%")}%"
+        val que = "%${query.replace(" ","%")}%"
 
         return flow {
             dao.getExercisesByQuery(equip, que).collect {
