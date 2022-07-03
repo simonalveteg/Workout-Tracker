@@ -1,7 +1,12 @@
 package com.example.android.january2022.ui.session
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,11 +15,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.SnackbarResult.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,9 +61,9 @@ fun SessionScreen(
     val mDatePickerDialog = DatePickerDialog(
         mContext,
         { _: DatePicker, year: Int, month: Int, day: Int ->
-            val newDateTime = session.end.withYear(year).withMonth(month+1).withDayOfMonth(day)
+            val newDateTime = session.end.withYear(year).withMonth(month + 1).withDayOfMonth(day)
             viewModel.onEvent(SessionEvent.DateChanged(newDateTime))
-        }, session.start.year, session.start.monthValue-1, session.start.dayOfMonth
+        }, session.start.year, session.start.monthValue - 1, session.start.dayOfMonth
     )
 
     LaunchedEffect(key1 = true) {
@@ -79,32 +89,88 @@ fun SessionScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
-            LargeTopAppBar(
-                title = { Text(text = sessionTitle(session)) },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(),
-                actions = {
-                    val dropdownExpanded = remember { mutableStateOf(false) }
-                    DropdownMenu(
-                        expanded = dropdownExpanded.value,
-                        onDismissRequest = { dropdownExpanded.value = false }) {
-                        DropdownMenuItem(
-                            text = { Text("Change Date") },
-                            onClick = {
-                                mDatePickerDialog.show()
-                                dropdownExpanded.value = false
-                            }
+            val timerVisible = rememberSaveable { mutableStateOf(false) }
+            Column {
+                LargeTopAppBar(
+                    title = { Text(text = sessionTitle(session)) },
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(),
+                    actions = {
+                        val dropdownExpanded = remember { mutableStateOf(false) }
+                        IconButton(onClick = { timerVisible.value = !timerVisible.value }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Timer,
+                                contentDescription = "Timer"
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = dropdownExpanded.value,
+                            onDismissRequest = { dropdownExpanded.value = false }) {
+                            DropdownMenuItem(
+                                text = { Text("Change Date") },
+                                onClick = {
+                                    mDatePickerDialog.show()
+                                    dropdownExpanded.value = false
+                                }
+                            )
+
+                        }
+                        IconButton(onClick = { dropdownExpanded.value = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior
+                )
+                AnimatedVisibility(visible = timerVisible.value) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(58.dp),
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                    ) {
+                        val currentWidth = LocalConfiguration.current.screenWidthDp
+                        val timerTime = viewModel.timerTime.observeAsState()
+                        val timerMaxTime = viewModel.timerMaxTime
+                        Log.d("SS","currentWidth: $currentWidth")
+                        val width = timerTime.value?.toFloat()?.div(timerMaxTime)
+                            ?.let { currentWidth.times(it) }?.toInt()?.dp ?: 40.dp
+                        Log.d("SS","width: $width")
+                        val animatedWidth by animateDpAsState(
+                            targetValue = width,
+                            animationSpec = tween(1000,0, LinearEasing)
                         )
 
+
+                        Box(Modifier.fillMaxSize()) {
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(animatedWidth),
+                                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f)
+                            ) {
+
+                            }
+                            Text(
+                                text = viewModel.timerTime.observeAsState().value.toString(),
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                            IconButton(
+                                onClick = { viewModel.onEvent(SessionEvent.TimerToggled) },
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Pause,
+                                    contentDescription = "Start or stop timer"
+                                )
+                            }
+                        }
                     }
-                    IconButton(onClick = { dropdownExpanded.value = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
+                }
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
@@ -121,7 +187,7 @@ fun SessionScreen(
             modifier = Modifier
                 .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxSize()
-                //.statusBarsPadding()
+            //.statusBarsPadding()
         ) {
             item {
                 Surface(

@@ -23,4 +23,5 @@ sealed class SessionEvent : Event {
     data class OnSessionExerciseInfoClicked(val exerciseId: Long): SessionEvent()
     data class OnSessionExerciseHistoryClicked(val exerciseId: Long): SessionEvent()
     data class OnDeleteSessionExercise(val sessionExercise: SessionExerciseWithExercise): SessionEvent()
+    object TimerToggled: SessionEvent()
 }

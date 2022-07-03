@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,21 @@ class SessionViewModel @Inject constructor(
     private val _removedSessionExercise = MutableLiveData<SessionExercise>()
     val removedSessionExercise: LiveData<SessionExercise>
         get() = _removedSessionExercise
+
+    val timerIsRunning = MutableLiveData(false)
+    val timerTime = MutableLiveData(0L)
+    val timerMaxTime = 20000L
+    private val timer = object: CountDownTimer(timerMaxTime, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            timerTime.value = millisUntilFinished
+            Log.d("SVM",millisUntilFinished.toString())
+        }
+
+        override fun onFinish() {
+            timerIsRunning.value = false
+            timerTime.value = 0
+        }
+    }
 
     init {
         // did we get here from an existing session?
@@ -177,6 +193,16 @@ class SessionViewModel @Inject constructor(
                     repository.updateSession(newSession)
                     updateCurrentSession(newSession)
                 }
+            }
+            is SessionEvent.TimerToggled -> {
+                if (timerIsRunning.value != true) {
+                    timer.start()
+                    timerIsRunning.value = true
+                } else {
+                    timer.cancel()
+                    timerIsRunning.value = false
+                }
+
             }
         }
     }
