@@ -56,8 +56,9 @@ fun SessionScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec,topAppBarScrollState)
     }
     val mContext = LocalContext.current
     val mDatePickerDialog = DatePickerDialog(

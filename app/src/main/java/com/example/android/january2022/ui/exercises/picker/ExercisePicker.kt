@@ -49,8 +49,9 @@ fun ExercisePickerScreen(
     val exercises: List<Exercise> by viewModel.exerciseList.collectAsState(listOf())
     val selectedExercises by viewModel.selectedExercises.collectAsState(initial = emptySet())
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec, topAppBarScrollState)
     }
     val currentMuscleGroup by viewModel.selectedMuscleGroup.collectAsState()
     val createExerciseDialogOpen = rememberSaveable { mutableStateOf(false) }
