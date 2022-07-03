@@ -1,8 +1,8 @@
 package com.example.android.january2022.ui.session
 
-import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
@@ -17,7 +17,6 @@ import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable.start
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SessionViewModel @Inject constructor(
-    private val repository: GymRepository,
+    private val repo: GymRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -40,7 +39,7 @@ class SessionViewModel @Inject constructor(
     var selectedSessionExercise by mutableStateOf(-1L)
         private set
 
-    val setsList: LiveData<List<GymSet>> = repository.getSets()
+    val setsList: LiveData<List<GymSet>> = repo.getSets()
 
     private val _removedSet = MutableLiveData<GymSet>()
     val removedSet: LiveData<GymSet>
@@ -50,6 +49,11 @@ class SessionViewModel @Inject constructor(
     val removedSessionExercise: LiveData<SessionExercise>
         get() = _removedSessionExercise
 
+    val timerIsRunning = repo.timerIsRunning
+    val timerTime = repo.timerTime
+    val timerMaxTime = repo.timerMaxTime
+    private var timer = repo.timer
+
 
     init {
         // did we get here from an existing session?
@@ -58,7 +62,7 @@ class SessionViewModel @Inject constructor(
         if (sessionId != -1L) {
             viewModelScope.launch {
                 currentSession = withContext(Dispatchers.IO) {
-                    repository.getSession(sessionId)
+                    repo.getSession(sessionId)
                 }
             }
 
@@ -66,12 +70,12 @@ class SessionViewModel @Inject constructor(
     }
 
     fun getSessionExercisesForSession(): LiveData<List<SessionExerciseWithExercise>> {
-        return repository.getSessionExercisesForSession(currentSession.sessionId)
+        return repo.getSessionExercisesForSession(currentSession.sessionId)
     }
 
     fun getMuscleGroupsForSession(sessionId: Long): Flow<List<String>> {
         return flow {
-            val muscleGroups = repository.getMuscleGroupsForSession(sessionId)
+            val muscleGroups = repo.getMuscleGroupsForSession(sessionId)
             emit(muscleGroups)
         }.flowOn(Dispatchers.IO)
     }
@@ -83,34 +87,34 @@ class SessionViewModel @Inject constructor(
         when (event) {
             is SessionEvent.MoodChanged -> {
                 viewModelScope.launch {
-                    repository.updateSet(event.set.copy(mood = event.newMood))
+                    repo.updateSet(event.set.copy(mood = event.newMood))
                 }
             }
             is SessionEvent.WeightChanged -> {
                 viewModelScope.launch {
-                    repository.updateSet(event.set.copy(weight = event.newWeight))
+                    repo.updateSet(event.set.copy(weight = event.newWeight))
                 }
             }
             is SessionEvent.RepsChanged -> {
                 viewModelScope.launch {
-                    repository.updateSet(event.set.copy(reps = event.newReps))
+                    repo.updateSet(event.set.copy(reps = event.newReps))
                 }
             }
             is SessionEvent.SetTypeChanged -> {
                 viewModelScope.launch {
-                    repository.updateSet(event.set.copy(setType = SetType.next(event.set.setType)))
+                    repo.updateSet(event.set.copy(setType = SetType.next(event.set.setType)))
                 }
             }
             is SessionEvent.OnAddSet -> {
                 viewModelScope.launch {
-                    repository.insertSet(
+                    repo.insertSet(
                         GymSet(parentSessionExerciseId = event.sessionExercise.sessionExercise.sessionExerciseId)
                     )
                 }
             }
             is SessionEvent.RemoveSelectedSet -> {
                 viewModelScope.launch {
-                    repository.updateSet(event.set.copy(deleted = true))
+                    repo.updateSet(event.set.copy(deleted = true))
                 }
                 _removedSet.value = event.set
                 sendUiEvent(
@@ -123,12 +127,12 @@ class SessionViewModel @Inject constructor(
             }
             is SessionEvent.RestoreRemovedSet -> {
                 viewModelScope.launch {
-                    repository.updateSet(removedSet.value!!.copy(deleted = false))
+                    repo.updateSet(removedSet.value!!.copy(deleted = false))
                 }
             }
             is SessionEvent.RestoreRemovedSessionExercise -> {
                 viewModelScope.launch {
-                    removedSessionExercise.value?.let { repository.insertSessionExercise(it) }
+                    removedSessionExercise.value?.let { repo.insertSessionExercise(it) }
                 }
             }
             is SessionEvent.OnAddSessionExerciseClicked -> {
@@ -150,7 +154,7 @@ class SessionViewModel @Inject constructor(
                 _removedSessionExercise.value = event.sessionExercise.sessionExercise
                 selectedSessionExercise = -1L
                 viewModelScope.launch {
-                    repository.removeSessionExercise(event.sessionExercise.sessionExercise)
+                    repo.removeSessionExercise(event.sessionExercise.sessionExercise)
                 }
                 sendUiEvent(
                     UiEvent.ShowSnackbar(
@@ -163,14 +167,14 @@ class SessionViewModel @Inject constructor(
             is SessionEvent.EndTimeChanged -> {
                 viewModelScope.launch {
                     val newSession = currentSession.copy(end = event.newTime)
-                    repository.updateSession(newSession)
+                    repo.updateSession(newSession)
                     updateCurrentSession(newSession)
                 }
             }
             is SessionEvent.StartTimeChanged -> {
                 viewModelScope.launch {
                     val newSession = currentSession.copy(start = event.newTime)
-                    repository.updateSession(newSession)
+                    repo.updateSession(newSession)
                     updateCurrentSession(newSession)
                 }
             }
@@ -181,14 +185,14 @@ class SessionViewModel @Inject constructor(
                     val newStart = event.newDate.withHour(start.hour).withMinute(start.minute)
                     val newEnd = event.newDate.withHour(end.hour).withMinute(end.minute)
                     val newSession = currentSession.copy(start = newStart, end = newEnd)
-                    repository.updateSession(newSession)
+                    repo.updateSession(newSession)
                     updateCurrentSession(newSession)
                 }
             }
             is SessionEvent.TimerToggled -> {
                 if (timerIsRunning.value == false) {
-                    if (timer == null) startTimer() else resumeTimer()
-                } else stopTimer()
+                    if (timer == null) repo.startTimer() else repo.resumeTimer()
+                } else repo.stopTimer()
             }
             is SessionEvent.TimerChanged -> {
                 Log.d("SVM", "Timer changed")
@@ -204,12 +208,12 @@ class SessionViewModel @Inject constructor(
                     if (newTime!! > timerMaxTime.value!!) {
                         timerMaxTime.value = newMaxTime
                     }
-                    if (newTime > 0L) resumeTimer() else resetTimer()
+                    if (newTime > 0L) repo.resumeTimer() else repo.resetTimer()
                 } else {
                     timerMaxTime.value = newMaxTime
                 }
             }
-            is SessionEvent.TimerReset -> resetTimer()
+            is SessionEvent.TimerReset -> repo.resetTimer()
         }
     }
 
@@ -221,61 +225,7 @@ class SessionViewModel @Inject constructor(
 
     private suspend fun updateCurrentSession(newSession: Session) {
         withContext(Dispatchers.IO) {
-            currentSession = repository.getSession(newSession.sessionId)
+            currentSession = repo.getSession(newSession.sessionId)
         }
     }
-
-
-    val timerIsRunning = MutableLiveData(false)
-    val timerTime = MutableLiveData(0L)
-    val timerMaxTime = MutableLiveData(60000L)
-    private var timer: WorkoutTimer? = null
-
-    private fun startTimer() {
-        timer?.cancel()
-        timer = WorkoutTimer(timerMaxTime.value ?: 0).apply { start() }
-        timerIsRunning.value = true
-    }
-    private fun resumeTimer() {
-        timer?.cancel()
-        timer = WorkoutTimer(timerTime.value ?: 0).apply { start() }
-        timerIsRunning.value = true
-    }
-    private fun stopTimer() {
-        timer?.cancel()
-        timerIsRunning.value = false
-        Log.d("SVM","Workout Timer stopped")
-    }
-    private fun resetTimer() {
-        timer?.cancel()
-        timer = null
-        timerTime.value = 0L
-        timerIsRunning.value = false
-    }
-
-    inner class WorkoutTimer(
-        time: Long,
-        interval: Long = 1000L
-    ) : CountDownTimer(time, interval) {
-
-        init {
-            Log.d("SVM","Workout Timer created")
-        }
-
-
-
-        override fun onTick(millisUntilFinished: Long) {
-            timerTime.value = millisUntilFinished
-            Log.d("SVM", millisUntilFinished.toString())
-            if (timerTime.value == 0L) onFinish()
-        }
-
-        override fun onFinish() {
-            timerIsRunning.value = false
-            timer = null
-            timerTime.value = 0
-        }
-    }
-
-
 }
