@@ -2,14 +2,11 @@ package com.example.android.january2022.ui.exercises.picker
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -20,9 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,8 +26,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
 import com.example.android.january2022.ui.exercises.ExercisesList
-import com.example.android.january2022.ui.exercises.MuscleChip
-import com.example.android.january2022.ui.session.SessionEvent
+import com.example.android.january2022.ui.exercises.SmallChip
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.UiEvent
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -156,7 +150,7 @@ fun ExercisePickerScreen(
                         ) {
                             muscleGroups.forEach { muscleGroup ->
                                 val selected = selectedMuscleGroups.contains(muscleGroup)
-                                MuscleChip(title = muscleGroup, isSelected = selected) {
+                                SmallChip(title = muscleGroup, isSelected = selected) {
                                     if (selected) {
                                         selectedMuscleGroups.remove(it)
                                     } else selectedMuscleGroups.add(it)
@@ -173,7 +167,7 @@ fun ExercisePickerScreen(
                         ) {
                             equipment.forEach { equipment ->
                                 val selected = selectedEquipment.value == equipment
-                                MuscleChip(title = equipment, isSelected = selected) {
+                                SmallChip(title = equipment, isSelected = selected) {
                                     if (selected) {
                                         selectedEquipment.value = ""
                                     } else selectedEquipment.value = it
@@ -226,9 +220,7 @@ fun ExerciseListWithFilter(
         ExercisesList(
             viewModel,
             exercises,
-            selectedExercises,
-            viewModel::onEvent,
-            true
+            selectedExercises
         )
     }
 }
@@ -252,7 +244,7 @@ fun ExerciseEquipmentFilter(
         ) {
             items(equipment) { equipment ->
                 val isSelected = selectedEquipment.contains(equipment)
-                MuscleChip(
+                SmallChip(
                     modifier = Modifier.padding(8.dp),
                     title = equipment.uppercase(),
                     isSelected = isSelected,
@@ -272,7 +264,7 @@ fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) ->
     LazyRow(contentPadding = PaddingValues(4.dp)) {
         items(muscleGroups) { muscleGroup ->
             val isSelected = selectedMuscleGroup.contains(muscleGroup)
-            MuscleChip(
+            SmallChip(
                 modifier = Modifier.padding(8.dp),
                 title = muscleGroup,
                 isSelected = isSelected,
@@ -282,16 +274,6 @@ fun ExerciseMuscleGroupFilters(viewModel: ExerciseViewModel, onEvent: (Event) ->
             )
         }
     }
-}
-
-@Composable
-fun TitleText(text: String, bottomPadding: Int = 0, startPadding: Int = 0) {
-    Text(
-        text = text,
-        color = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.displayMedium,
-        modifier = Modifier.padding(bottom = bottomPadding.dp, start = startPadding.dp)
-    )
 }
 
 @Composable

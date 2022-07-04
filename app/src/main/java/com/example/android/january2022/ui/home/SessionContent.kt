@@ -7,6 +7,8 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -20,11 +22,7 @@ fun SessionContent(
     sessionExercise: SessionExerciseWithExercise,
     sets: List<GymSet>
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(vertical = 2.dp)
-    ) {
+    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
         Text(
             sessionExercise.exercise.title,
             modifier = Modifier.weight(4f),
@@ -34,9 +32,7 @@ fun SessionContent(
         sets.forEach { set ->
             val reps = set.reps
             val weight = set.weight
-
-
-            val isInt = set.weight - set.weight.toInt() <= 0
+            val isInt by derivedStateOf { set.weight - set.weight.toInt() <= 0 }
 
             if (set.parentSessionExerciseId == sessionExercise.sessionExercise.sessionExerciseId) {
                 if (reps > -1 && weight > -1) {

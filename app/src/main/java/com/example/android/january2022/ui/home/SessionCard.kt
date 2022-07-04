@@ -24,11 +24,9 @@ import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.ui.session.SessionDate
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
-fun BigSessionCard(
+fun SessionCard(
     session: Session,
     sessionContent: List<SessionExerciseWithExercise>,
     sets: List<GymSet>,
@@ -44,7 +42,7 @@ fun BigSessionCard(
     viewModel.getMuscleGroupsForSession(session.sessionId).collectAsState(initial = emptyList())
 
     val iconRotation = animateFloatAsState(targetValue = if (expanded) 180f else 0f)
-    val isSelected = session.sessionId == selected
+    val isSelected by derivedStateOf { session.sessionId == selected }
 
     Log.d("BSC", "selected session: $selected")
 
@@ -79,9 +77,9 @@ fun BigSessionCard(
                     )
                     Row {
                         muscleGroups.forEachIndexed { index, string ->
-                            if(index in 1..3) {
+                            if (index in 1..3) {
                                 var newString = string
-                                if(index in 1..2 && muscleGroups.size >= index+2) {
+                                if (index in 1..2 && muscleGroups.size >= index + 2) {
                                     newString = "$string, "
                                 }
                                 Text(
@@ -89,9 +87,7 @@ fun BigSessionCard(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = LocalContentColor.current.copy(alpha = 0.7f)
                                 )
-
                             }
-
                         }
                     }
                 }
@@ -116,16 +112,15 @@ fun BigSessionCard(
                     }
                 }
             }
-
-
             AnimatedVisibility(visible = expanded) {
                 Divider(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
             }
             sessionContent.forEach {
+                val setsForSession by derivedStateOf {
+                    sets.filter { set -> set.parentSessionExerciseId == it.sessionExercise.sessionExerciseId }
+                }
                 AnimatedVisibility(visible = expanded) {
-                    SessionContent(
-                        it, sets.filter { set -> set.parentSessionExerciseId == it.sessionExercise.sessionExerciseId  }
-                    )
+                    SessionContent(it, setsForSession)
                 }
             }
         }

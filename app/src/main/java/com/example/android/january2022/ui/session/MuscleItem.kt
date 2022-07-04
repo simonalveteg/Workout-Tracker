@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -23,9 +25,12 @@ fun MuscleItem(
     onSelection: () -> Unit
 ) {
     // count the number of exercises that have been selected for the given muscle group
-    val selectionCount = selectedExercises.count {
-        it.targets.map{ turnTargetIntoMuscleGroup(it) }.toString().lowercase().filterNot { it.isWhitespace() }
-            .contains(muscleGroup.lowercase().filterNot { it.isWhitespace() })
+    val selectionCount by derivedStateOf {
+        selectedExercises.count {
+            it.targets.map { turnTargetIntoMuscleGroup(it) }.toString().lowercase()
+                .filterNot { it.isWhitespace() }
+                .contains(muscleGroup.lowercase().filterNot { it.isWhitespace() })
+        }
     }
     Surface(
         shape = Shapes.large,
@@ -35,7 +40,6 @@ fun MuscleItem(
             .padding(horizontal = 4.dp, vertical = 4.dp)
             .clickable { onSelection() }
     ) {
-
         Box {
             Text(
                 text = muscleGroup,
@@ -47,7 +51,9 @@ fun MuscleItem(
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.TopEnd).padding(top = 8.dp, end = 10.dp)
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 10.dp)
             )
         }
 

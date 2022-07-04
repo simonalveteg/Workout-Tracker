@@ -1,15 +1,12 @@
 package com.example.android.january2022.ui.exercises
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.db.Equipment
-import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 
 
@@ -34,9 +31,7 @@ fun ExercisesScreen(
             Box(Modifier.weight(1f)) {
                 ExercisesList(
                     viewModel = viewModel,
-                    exercises = exercises,
-                    onEvent = viewModel::onEvent,
-                    inPicker = false
+                    exercises = exercises
                 )
             }
         }

@@ -68,9 +68,9 @@ fun ProfileScreen(
             }
         }
     }
-    Scaffold() {
+    Scaffold() { padding ->
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxSize().padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,21 +17,15 @@ import java.util.*
 
 @Composable
 fun SessionDate(session: Session) {
-
-    val startMonth = session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
-    val startDay = session.start.dayOfMonth.toString()
+    val startMonth by derivedStateOf{
+        session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH) }
+    val startDay by derivedStateOf{ session.start.dayOfMonth.toString() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(end = 16.dp)
     ) {
-        Text(
-            text = startMonth,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            text = startDay,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Text(text = startMonth, style = MaterialTheme.typography.bodyMedium)
+        Text(text = startDay, style = MaterialTheme.typography.bodyMedium)
     }
 }

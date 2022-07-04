@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,10 +22,9 @@ import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.UiEvent
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
-import kotlinx.coroutines.flow.collect
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
@@ -41,7 +41,8 @@ fun HomeScreen(
                 is UiEvent.ShowSnackbar -> {
                     val result = snackbarHostState.showSnackbar(
                         message = event.message,
-                        actionLabel = event.actionLabel
+                        actionLabel = event.actionLabel,
+                        withDismissAction = true
                     )
                     if(result == SnackbarResult.ActionPerformed) {
                         if(event.action != null) viewModel.onEvent(event.action)
@@ -60,42 +61,31 @@ fun HomeScreen(
                 shape = RoundedCornerShape(35),
                 containerColor = colors.primary,
             ) {
-                Icon(
-                    Icons.Filled.Add,
-                    "Start new session",
-                    tint = colors.onPrimary
-                )
+                Icon(Icons.Filled.Add, "Start new session", tint = colors.onPrimary)
             }
         },
         floatingActionButtonPosition = FabPosition.End,
-    ) {
-        Column {
-            Box(
-                Modifier
-                    .weight(1f)
-                    .statusBarsPadding()
-            ) {
-                SessionCardList(sessions = sessions, viewModel)
-            }
-        }
+    ) { padding ->
+        SessionCardList(Modifier.padding(padding).statusBarsPadding(), sessions, viewModel)
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun SessionCardList(
+    modifier: Modifier = Modifier,
     sessions: List<Session>,
     viewModel: HomeViewModel
 ) {
     val sessionContent by viewModel.sessionExerciseList.observeAsState(listOf())
     val sets by viewModel.sets.observeAsState(listOf())
-    LazyColumn {
+    val selectedSession by derivedStateOf { viewModel.selectedSession }
+    LazyColumn(modifier = modifier) {
         items(sessions, key = { it.sessionId }) { session ->
-            BigSessionCard(
+            SessionCard(
                 session = session,
                 sessionContent = sessionContent.filter { it.sessionExercise.parentSessionId == session.sessionId },
                 sets = sets,
-                selected = viewModel.selectedSession,
+                selected = selectedSession,
                 viewModel = viewModel,
                 onEvent = viewModel::onEvent
             )

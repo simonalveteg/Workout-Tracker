@@ -8,6 +8,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,8 +46,6 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
             onEvent(SessionEvent.EndTimeChanged(newDateTime))
         }, LocalDateTime.now().hour, LocalDateTime.now().minute, true
     )
-
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -61,16 +61,13 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
                         .padding(start = 4.dp)
-                        .clickable {
-                            startTimePickerDialog.show()
-                        }
+                        .clickable { startTimePickerDialog.show() }
                 )
                 Text(
                     text = "-",
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .padding(start = 4.dp)
+                    modifier = Modifier.padding(start = 4.dp)
                 )
                 Text(
                     text = if(endTime == startTime) "ongoing" else endTime,
@@ -78,16 +75,15 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
                         .padding(start = 4.dp)
-                        .clickable {
-                            endTimePickerDialog.show()
-                        }
+                        .clickable { endTimePickerDialog.show() }
                 )
             }
         }
         FlowRow(
             mainAxisAlignment = FlowMainAxisAlignment.Center
         ) {
-            muscleGroups?.value?.filter { it.isNotEmpty() }?.forEach { s ->
+            val filteredMuscleGroups by derivedStateOf{muscleGroups?.value?.filter { it.isNotEmpty() } }
+            filteredMuscleGroups?.forEach { s ->
                 Surface(
                     shape = Shapes.small,
                     tonalElevation = 1.dp,
@@ -102,13 +98,4 @@ fun SessionInfo(_session: Session?, muscleGroups: State<List<String>>?, onEvent:
             }
         }
     }
-
-    Column {
-        SubTitleText(text = session.trainingType)
-        Row {
-
-        }
-    }
-
-
 }

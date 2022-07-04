@@ -121,7 +121,6 @@ fun SetCard(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ExpandedSetCard(
     set: GymSet,
@@ -221,9 +220,11 @@ fun CompactSetCard(
     reps: Int,
     weight: Float
 ) {
+    val repsText by derivedStateOf { if (reps > -1) reps.toString() else "0" }
+    val weightText by derivedStateOf { if (weight > -1) weight.toString() else "0" }
     Column(Modifier.padding(start = 4.dp)) {
         Row() {
-            Text(text = if (reps > -1) reps.toString() else "0", fontWeight = FontWeight.Bold)
+            Text(text = repsText, fontWeight = FontWeight.Bold)
             Text(
                 text = "reps",
                 fontSize = 10.sp,
@@ -231,7 +232,7 @@ fun CompactSetCard(
             )
         }
         Row() {
-            Text(text = if (weight > -1) weight.toString() else "0", fontWeight = FontWeight.Bold)
+            Text(text = weightText, fontWeight = FontWeight.Bold)
             Text(
                 text = "kg", fontSize = 10.sp, color = LocalContentColor.current.copy(alpha = 0.85f)
             )

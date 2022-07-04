@@ -1,23 +1,17 @@
 package com.example.android.january2022.ui.exercises
 
 import android.util.Log
-import android.view.RoundedCorner
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +31,7 @@ fun ExerciseCard(
 ) {
 
     val indicatorColor =
-        animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+        animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
 
     Row(
         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 6.dp, end = 8.dp),
@@ -94,14 +88,14 @@ fun ExerciseCard(
                     }
                 }
                 Row {
-                    MuscleChip(
+                    SmallChip(
                         modifier = Modifier.padding(4.dp),
                         title = exercise.getMuscleGroup(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(20)
                     )
-                    MuscleChip(
+                    SmallChip(
                         modifier = Modifier.padding(4.dp),
                         title = exercise.equipment.uppercase(),
                         style = MaterialTheme.typography.bodySmall,

@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import com.google.accompanist.flowlayout.FlowRow
@@ -34,14 +35,12 @@ fun SessionExerciseCard(
     selected: Long,
     sets: List<GymSet>,
 ) {
-
     val haptic = LocalHapticFeedback.current
-    val isSelected = sessionExercise.sessionExercise.sessionExerciseId == selected
+    val isSelected by derivedStateOf { sessionExercise.sessionExercise.sessionExerciseId == selected }
     val errorColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     )
     Log.d("SEC", "selected sessionExercise: $selected")
-
 
     Surface(
         shape = Shapes.medium,
@@ -67,8 +66,7 @@ fun SessionExerciseCard(
     ) {
         Column(Modifier.padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 8.dp)) {
             Row(
-                modifier = Modifier
-                    .padding(bottom = 0.dp)
+                modifier = Modifier.padding(bottom = 0.dp)
             ) {
                 Text(
                     text = sessionExercise.exercise.title,
@@ -103,8 +101,7 @@ fun SessionExerciseCard(
                                 contentDescription = "Show Exercise History",
                             )
                         }
-                        IconButton(
-                            onClick = {
+                        IconButton(onClick = {
                                 onEvent(
                                     SessionEvent.OnSessionExerciseInfoClicked(
                                         sessionExercise.exercise.id
@@ -129,7 +126,6 @@ fun SessionExerciseCard(
                 mainAxisAlignment = FlowMainAxisAlignment.Start
             ) {
                 sets.forEach { set ->
-
                     key(set.setId) {
                         AnimatedVisibility(
                             visible = !set.deleted,

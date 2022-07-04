@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,23 +19,22 @@ fun ExerciseStatisticsDetailScreen(
     viewModel: ExerciseStatisticsViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val currentExercise = viewModel.currentExercise
+    val currentExercise by derivedStateOf { viewModel.currentExercise }
     val sessionExercises by viewModel.getSessionExercisesWithSets()
         .collectAsState(initial = emptyMap())
 
     Log.d("ESDS", sessionExercises.entries.toString())
     Scaffold(
-        modifier = Modifier
-            .windowInsetsPadding(WindowInsets.statusBars),
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             SmallTopAppBar(
                 title = { Text(currentExercise.title) },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) {
+    ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

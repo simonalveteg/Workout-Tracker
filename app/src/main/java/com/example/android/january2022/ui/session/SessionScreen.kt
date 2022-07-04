@@ -43,8 +43,8 @@ fun SessionScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: SessionViewModel = hiltViewModel()
 ) {
-    val selectedSessionExercise = viewModel.selectedSessionExercise
-    val session = viewModel.currentSession
+    val selectedSessionExercise by derivedStateOf { viewModel.selectedSessionExercise }
+    val session by derivedStateOf { viewModel.currentSession }
     val allSets by viewModel.setsList.observeAsState(listOf())
     val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession()
         .observeAsState(
@@ -53,7 +53,6 @@ fun SessionScreen(
     val muscleGroups = session.let {
         viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(initial = emptyList())
     }
-
     val snackbarHostState = remember { SnackbarHostState() }
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val topAppBarScrollState = rememberTopAppBarScrollState()
@@ -76,7 +75,8 @@ fun SessionScreen(
                 is UiEvent.ShowSnackbar -> {
                     val result = snackbarHostState.showSnackbar(
                         message = event.message,
-                        actionLabel = event.actionLabel
+                        actionLabel = event.actionLabel,
+                        withDismissAction = true
                     )
                     if (result == ActionPerformed) {
                         if (event.action != null) viewModel.onEvent(event.action)
@@ -119,7 +119,6 @@ fun SessionScreen(
                                     dropdownExpanded.value = false
                                 }
                             )
-
                         }
                         IconButton(onClick = { dropdownExpanded.value = true }) {
                             Icon(
@@ -148,8 +147,10 @@ fun SessionScreen(
                         val timerText = if(timerRunning) {
                             viewModel.timerTime.observeAsState(0L).value.toTimerString()
                         } else timerMaxTime.value.toTimerString()
-                        val width = currentWidth.times(timerTime.value.toFloat().div(timerMaxTime.value))
-                            .toInt().dp
+                        val width by derivedStateOf {
+                            currentWidth.times(timerTime.value.toFloat().div(timerMaxTime.value))
+                                .toInt().dp
+                        }
                         val animatedWidth by animateDpAsState(
                             targetValue = width,
                             animationSpec = tween(50, 0, LinearEasing)
@@ -233,10 +234,7 @@ fun SessionScreen(
             //.statusBarsPadding()
         ) {
             item {
-                Surface(
-                    Modifier
-                        .padding(16.dp)
-                ) {
+                Surface(Modifier.padding(16.dp)) {
                     SessionInfo(session, muscleGroups, viewModel::onEvent)
                 }
             }

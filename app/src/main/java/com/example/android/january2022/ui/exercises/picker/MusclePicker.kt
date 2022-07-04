@@ -144,7 +144,6 @@ fun MusclePickerScreen(
                 )
             } else {
                 SmallTopAppBar(
-
                     title = { Text(text = "Exercises") },
                     colors = TopAppBarDefaults.mediumTopAppBarColors(),
                     actions = {
@@ -162,7 +161,7 @@ fun MusclePickerScreen(
             }
         },
         floatingActionButton = {
-            val offset = if (selectedExercises.isEmpty()) 100.dp else 0.dp
+            val offset by derivedStateOf{ if (selectedExercises.isEmpty()) 100.dp else 0.dp }
             ExtendedFloatingActionButton(
                 onClick = { viewModel.onEvent(ExerciseEvent.AddExercisesToSession) },
                 shape = RoundedCornerShape(35),
@@ -176,7 +175,6 @@ fun MusclePickerScreen(
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(bottom = 60.dp)
     ) { innerPadding ->
-
         AnimatedVisibility(
             visible = searchOpen.value,
             enter = fadeIn() + slideInVertically { it },
@@ -201,14 +199,12 @@ fun MusclePickerScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.statusBars)
-                    .padding(
-                        top = innerPadding.calculateTopPadding()
-                    )
+                    .padding(top = innerPadding.calculateTopPadding())
             ) {
                 items(
                     count = muscleGroups.size,
                 ) { index ->
-                    val muscleGroup = muscleGroups[index]
+                    val muscleGroup by derivedStateOf{ muscleGroups[index] }
                     MuscleItem(
                         muscleGroup = muscleGroup,
                         selectedExercises = selectedExercises

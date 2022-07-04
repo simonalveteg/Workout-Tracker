@@ -1,7 +1,6 @@
 package com.example.android.january2022.ui.exercises
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,17 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.utils.Event
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExercisesList(
     viewModel: ExerciseViewModel,
     exercises: List<Exercise>,
     selectedExercises: Set<Exercise> = emptySet(),
-    onEvent: (Event) -> Unit,
-    inPicker: Boolean,
 ) {
 
     LazyColumn(
@@ -31,7 +26,7 @@ fun ExercisesList(
         }
         items(items = exercises) { exercise ->
             AnimatedVisibility(visible = true) {
-                val selected = selectedExercises.contains(exercise)
+                val selected by derivedStateOf{ selectedExercises.contains(exercise)}
                 ExerciseCard(
                     exercise = exercise,
                     selected = selected,

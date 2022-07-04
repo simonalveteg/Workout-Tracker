@@ -22,7 +22,6 @@ fun StatisticsScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: StatisticsViewModel = hiltViewModel()
 ) {
-
     val exercisesWithCount by viewModel.getExercisesWithCount().collectAsState(emptyMap())
 
     LaunchedEffect(key1 = true) {
@@ -35,11 +34,10 @@ fun StatisticsScreen(
     }
 
     Scaffold(
-        modifier = Modifier
-            .windowInsetsPadding(WindowInsets.statusBars)
-    ) {
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+    ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
