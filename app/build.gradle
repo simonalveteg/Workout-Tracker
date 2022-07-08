@@ -5,11 +5,24 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+def propsFile = file('signing/signing.properties')
+def keyFile = file('signing/workout-keystore.jks')
+def props = new Properties()
+props.load(new FileInputStream(propsFile))
+
 android {
+    signingConfigs {
+        release {
+            storeFile keyFile
+            storePassword props['storePassword']
+            keyAlias props['keyAlias']
+            keyPassword props['keyPassword']
+        }
+    }
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.android.january2022"
+        applicationId "com.alveteg.simon.january2022"
         minSdk 28
         targetSdk 32
         versionCode 1
@@ -29,8 +42,15 @@ android {
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
+            debuggable false
+            resValue "string", "app_name", "Workouts"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue "string", "app_name", "Workouts Debug"
         }
     }
     compileOptions {
