@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import android.util.Log
 import androidx.compose.animation.*
@@ -16,12 +16,11 @@ import androidx.compose.runtime.key
 import com.google.accompanist.flowlayout.FlowRow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
@@ -35,7 +34,7 @@ fun SessionExerciseCard(
     selected: Long,
     sets: List<GymSet>,
 ) {
-    val haptic = LocalHapticFeedback.current
+    //val haptic = LocalHapticFeedback.current
     val isSelected by derivedStateOf { sessionExercise.sessionExercise.sessionExerciseId == selected }
     val errorColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
@@ -47,6 +46,7 @@ fun SessionExerciseCard(
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 100.dp)
             .padding(4.dp)
             .animateContentSize(
                 animationSpec = tween(
@@ -58,7 +58,7 @@ fun SessionExerciseCard(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onEvent(SessionEvent.SetSelectedSessionExercise(sessionExercise))
                     }
                 )

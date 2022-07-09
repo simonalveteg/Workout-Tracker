@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
-import com.example.android.january2022.ui.session.SessionDate
+import com.example.android.january2022.ui.session.components.SessionDate
 import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 

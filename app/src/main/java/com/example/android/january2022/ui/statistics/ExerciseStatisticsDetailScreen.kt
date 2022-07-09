@@ -10,8 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.session.SessionExerciseCard
-import com.example.android.january2022.ui.session.SessionExerciseHistoryCard
+import com.example.android.january2022.ui.session.components.SessionExerciseHistoryCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

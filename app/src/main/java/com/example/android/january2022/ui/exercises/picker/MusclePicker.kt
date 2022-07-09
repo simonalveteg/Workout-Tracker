@@ -31,10 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.session.MuscleItem
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.exercises.ExerciseEvent
 import com.example.android.january2022.ui.exercises.ExerciseViewModel
+import com.example.android.january2022.ui.session.components.MuscleItem
 import com.example.android.january2022.utils.BackPressHandler
 import com.example.android.january2022.utils.UiEvent
 

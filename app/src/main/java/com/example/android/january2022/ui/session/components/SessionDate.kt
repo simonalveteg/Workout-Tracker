@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,9 +17,10 @@ import java.util.*
 
 @Composable
 fun SessionDate(session: Session) {
-    val startMonth by derivedStateOf{
-        session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH) }
-    val startDay by derivedStateOf{ session.start.dayOfMonth.toString() }
+    val startMonth by derivedStateOf {
+        session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+    }
+    val startDay by derivedStateOf { session.start.dayOfMonth.toString() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

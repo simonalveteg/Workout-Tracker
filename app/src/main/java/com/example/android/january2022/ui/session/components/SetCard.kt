@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.android.january2022.db.entities.GymSet
 import kotlinx.coroutines.launch
 import com.example.android.january2022.db.SetType
+import com.example.android.january2022.ui.session.SessionEvent
 
 @Composable
 fun SetCard(

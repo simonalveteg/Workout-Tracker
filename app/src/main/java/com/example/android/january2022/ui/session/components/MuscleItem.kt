@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
