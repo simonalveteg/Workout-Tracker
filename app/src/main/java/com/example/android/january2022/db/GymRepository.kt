@@ -1,12 +1,10 @@
 package com.example.android.january2022.db
 
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

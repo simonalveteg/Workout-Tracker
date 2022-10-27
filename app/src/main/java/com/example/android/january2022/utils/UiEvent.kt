@@ -1,7 +1,5 @@
 package com.example.android.january2022.utils
 
-import java.io.File
-
 sealed class UiEvent {
     object PopBackStack: UiEvent()
     object OpenDialog: UiEvent()

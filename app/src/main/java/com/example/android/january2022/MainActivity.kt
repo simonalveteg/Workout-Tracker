@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme.colorScheme as colors
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +22,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.android.january2022.nav.homeNavGraph
 import com.example.android.january2022.nav.statisticsNavGraph
+import com.example.android.january2022.rework.NavHost
 import com.google.accompanist.navigation.animation.composable
 import com.example.android.january2022.ui.profile.ProfileScreen
 import com.example.android.january2022.ui.statistics.StatisticsScreen
@@ -48,7 +51,11 @@ class MainActivity : ComponentActivity() {
                             BottomBar(navController)
                         }
                     ) {
-                        GymNavHost(navController)
+                        Box(
+                            modifier = Modifier.padding(it)
+                        ) {
+                            NavHost(navController)
+                        }
                     }
                 }
             }

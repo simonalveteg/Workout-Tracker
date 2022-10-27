@@ -1,11 +1,7 @@
 package com.example.android.january2022.di
 
 import android.app.Application
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.StartingExercises
@@ -14,9 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
