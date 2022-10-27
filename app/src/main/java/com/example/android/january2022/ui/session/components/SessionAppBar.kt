@@ -18,6 +18,7 @@ import com.example.android.january2022.ui.session.sessionTitle
 import com.example.android.january2022.utils.Event
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionAppBar(
     session: Session,

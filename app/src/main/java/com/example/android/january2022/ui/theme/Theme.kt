@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -72,7 +73,7 @@ private val DarkThemeColors = darkColorScheme(
 @Composable
 fun January2022Theme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
         LightThemeColors
@@ -81,8 +82,13 @@ fun January2022Theme(
     }
 
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = !useDarkTheme)
-
+    DisposableEffect(systemUiController, useDarkTheme) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = !useDarkTheme
+        )
+        onDispose {}
+    }
 
     MaterialTheme(
         colorScheme = colors,

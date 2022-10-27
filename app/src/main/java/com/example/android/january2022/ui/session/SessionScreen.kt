@@ -43,148 +43,150 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionScreen(
-    onNavigate: (UiEvent.Navigate) -> Unit,
-    viewModel: SessionViewModel = hiltViewModel()
+  onNavigate: (UiEvent.Navigate) -> Unit,
+  viewModel: SessionViewModel = hiltViewModel()
 ) {
-    val selectedSessionExercise by derivedStateOf { viewModel.selectedSessionExercise }
+  val selectedSessionExercise by remember { derivedStateOf { viewModel.selectedSessionExercise } }
 
-    val session by derivedStateOf { viewModel.currentSession }
-    val allSets by viewModel.setsList.observeAsState(listOf())
-    val setsMap by derivedStateOf { allSets.groupBy { it.parentSessionExerciseId } }
+  val session by remember { derivedStateOf { viewModel.currentSession } }
+  val allSets by viewModel.setsList.observeAsState(listOf())
+  val setsMap by remember { derivedStateOf { allSets.groupBy { it.parentSessionExerciseId } } }
 
-    val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession()
-        .observeAsState(listOf())
-    val muscleGroups by session.let {
-        viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(emptyList())
+  val sessionExercises: List<SessionExerciseWithExercise> by viewModel.getSessionExercisesForSession()
+    .observeAsState(listOf())
+  val muscleGroups by session.let {
+    viewModel.getMuscleGroupsForSession(it.sessionId).collectAsState(emptyList())
+  }
+
+  val snackbarHostState = remember { SnackbarHostState() }
+  val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+  val topAppBarScrollState = rememberTopAppBarState()
+  val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarScrollState)
+
+  val mContext = LocalContext.current
+  val mDatePickerDialog = DatePickerDialog(
+    mContext,
+    { _: DatePicker, year: Int, month: Int, day: Int ->
+      val newDateTime = session.end.withYear(year).withMonth(month + 1).withDayOfMonth(day)
+      viewModel.onEvent(SessionEvent.DateChanged(newDateTime))
+    }, session.start.year, session.start.monthValue - 1, session.start.dayOfMonth
+  )
+
+  val timerRunning by viewModel.timerIsRunning.observeAsState(false)
+  val timerVisible = rememberSaveable { mutableStateOf(false) }
+  val timerColor by animateColorAsState(
+    targetValue = if (timerRunning && !timerVisible.value)
+      MaterialTheme.colorScheme.primary else LocalContentColor.current
+  )
+  val timerBackground by animateColorAsState(
+    if (timerRunning) MaterialTheme.colorScheme.primaryContainer
+    else MaterialTheme.colorScheme.surfaceVariant
+  )
+  val currentTimerWidth = LocalConfiguration.current.screenWidthDp
+  val timerTime = viewModel.timerTime.observeAsState(0)
+  val timerMaxTime = viewModel.timerMaxTime.observeAsState(60000L)
+  val timerText = if (timerRunning) {
+    viewModel.timerTime.observeAsState(0L).value.toTimerString()
+  } else timerMaxTime.value.toTimerString()
+  val timerWidth by remember {
+    derivedStateOf {
+      currentTimerWidth.times(timerTime.value.toFloat().div(timerMaxTime.value))
+        .toInt().dp
     }
+  }
+  val animatedTimerWidth by animateDpAsState(
+    targetValue = timerWidth,
+    animationSpec = tween(50, 0, LinearEasing)
+  )
 
-    val snackbarHostState = remember { SnackbarHostState() }
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec, topAppBarScrollState)
-    }
-    val mContext = LocalContext.current
-    val mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, year: Int, month: Int, day: Int ->
-            val newDateTime = session.end.withYear(year).withMonth(month + 1).withDayOfMonth(day)
-            viewModel.onEvent(SessionEvent.DateChanged(newDateTime))
-        }, session.start.year, session.start.monthValue - 1, session.start.dayOfMonth
-    )
-
-    val timerRunning by viewModel.timerIsRunning.observeAsState(false)
-    val timerVisible = rememberSaveable { mutableStateOf(false) }
-    val timerColor by animateColorAsState(targetValue = if (timerRunning && !timerVisible.value)
-        MaterialTheme.colorScheme.primary else LocalContentColor.current)
-    val timerBackground by animateColorAsState(
-        if (timerRunning) MaterialTheme.colorScheme.primaryContainer
-        else MaterialTheme.colorScheme.surfaceVariant
-    )
-    val currentTimerWidth = LocalConfiguration.current.screenWidthDp
-    val timerTime = viewModel.timerTime.observeAsState(0)
-    val timerMaxTime = viewModel.timerMaxTime.observeAsState(60000L)
-    val timerText = if (timerRunning) {
-        viewModel.timerTime.observeAsState(0L).value.toTimerString()
-    } else timerMaxTime.value.toTimerString()
-    val timerWidth by derivedStateOf {
-        currentTimerWidth.times(timerTime.value.toFloat().div(timerMaxTime.value))
-            .toInt().dp
-    }
-    val animatedTimerWidth by animateDpAsState(
-        targetValue = timerWidth,
-        animationSpec = tween(50, 0, LinearEasing)
-    )
-
-    LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collect { event ->
-            when (event) {
-                is UiEvent.Navigate -> onNavigate(event)
-                is UiEvent.ShowSnackbar -> {
-                    val result = snackbarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = event.actionLabel,
-                        withDismissAction = true
-                    )
-                    if (result == ActionPerformed) {
-                        if (event.action != null) viewModel.onEvent(event.action)
-                    }
-                }
-                else -> Unit
-            }
+  LaunchedEffect(key1 = true) {
+    viewModel.uiEvent.collect { event ->
+      when (event) {
+        is UiEvent.Navigate -> onNavigate(event)
+        is UiEvent.ShowSnackbar -> {
+          val result = snackbarHostState.showSnackbar(
+            message = event.message,
+            actionLabel = event.actionLabel,
+            withDismissAction = true
+          )
+          if (result == ActionPerformed) {
+            if (event.action != null) viewModel.onEvent(event.action)
+          }
         }
+        else -> Unit
+      }
     }
-    Scaffold(
-        modifier = Modifier
-            .padding(bottom = 60.dp)
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .windowInsetsPadding(WindowInsets.statusBars),
-        topBar = {
-            SessionAppBar(
-                session = session,
-                timerVisible = timerVisible,
-                timerColor = timerColor,
-                mDatePickerDialog = mDatePickerDialog,
-                scrollBehavior = scrollBehavior,
-                timerBackground = timerBackground,
-                animatedWidth = animatedTimerWidth,
-                onEvent = viewModel::onEvent,
-                timerText = timerText
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { viewModel.onEvent(SessionEvent.OnAddSessionExerciseClicked) },
-                shape = RoundedCornerShape(35),
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(Icons.Filled.Add, "")
-            }
-        },
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .fillMaxSize()
-        ) {
-            item {
-                SessionInfo(
-                    startTime = session.start,
-                    endTime = session.end,
-                    muscleGroups = muscleGroups,
-                    onEvent = viewModel::onEvent
-                )
-            }
+  }
+  Scaffold(
+    modifier = Modifier
+        .padding(bottom = 60.dp)
+        .nestedScroll(scrollBehavior.nestedScrollConnection)
+        .windowInsetsPadding(WindowInsets.statusBars),
+    topBar = {
+      SessionAppBar(
+        session = session,
+        timerVisible = timerVisible,
+        timerColor = timerColor,
+        mDatePickerDialog = mDatePickerDialog,
+        scrollBehavior = scrollBehavior,
+        timerBackground = timerBackground,
+        animatedWidth = animatedTimerWidth,
+        onEvent = viewModel::onEvent,
+        timerText = timerText
+      )
+    },
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    floatingActionButton = {
+      FloatingActionButton(
+        onClick = { viewModel.onEvent(SessionEvent.OnAddSessionExerciseClicked) },
+        shape = RoundedCornerShape(35),
+        containerColor = MaterialTheme.colorScheme.primary
+      ) {
+        Icon(Icons.Filled.Add, "")
+      }
+    },
+  ) { innerPadding ->
+    LazyColumn(
+      modifier = Modifier
+          .padding(top = innerPadding.calculateTopPadding())
+          .fillMaxSize()
+    ) {
+      item {
+        SessionInfo(
+          startTime = session.start,
+          endTime = session.end,
+          muscleGroups = muscleGroups,
+          onEvent = viewModel::onEvent
+        )
+      }
 
-            items(
-                items = sessionExercises,
-                key = { it.sessionExercise.sessionExerciseId }) { sessionExercise ->
-                val sets = setsMap[sessionExercise.sessionExercise.sessionExerciseId].orEmpty()
-                SessionExerciseCard(
-                    sessionExercise = sessionExercise,
-                    selected = selectedSessionExercise,
-                    sets = sets,
-                    onEvent = viewModel::onEvent
-                )
-            }
-            item { Spacer(Modifier.height(100.dp)) }
-        }
+      items(
+        items = sessionExercises,
+        key = { it.sessionExercise.sessionExerciseId }) { sessionExercise ->
+        val sets = setsMap[sessionExercise.sessionExercise.sessionExerciseId].orEmpty()
+        SessionExerciseCard(
+          sessionExercise = sessionExercise,
+          selected = selectedSessionExercise,
+          sets = sets,
+          onEvent = viewModel::onEvent
+        )
+      }
+      item { Spacer(Modifier.height(100.dp)) }
     }
+  }
 
 }
-
 
 
 fun sessionTitle(session: Session): String {
-    val date = session.start
-    return DateTimeFormatter.ofPattern("MMM d yyyy").format(date)
+  val date = session.start
+  return DateTimeFormatter.ofPattern("MMM d yyyy").format(date)
 }
 
 fun Long.toTimerString(): String {
-    val totalSeconds = this.toFloat().div(1000).roundToInt()
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    val displayedSeconds = if (seconds < 10) "0$seconds" else seconds
-    return "$minutes:$displayedSeconds"
+  val totalSeconds = this.toFloat().div(1000).roundToInt()
+  val minutes = totalSeconds / 60
+  val seconds = totalSeconds % 60
+  val displayedSeconds = if (seconds < 10) "0$seconds" else seconds
+  return "$minutes:$displayedSeconds"
 }
