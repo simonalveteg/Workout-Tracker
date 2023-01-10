@@ -1,16 +1,13 @@
-package com.example.android.january2022.ui.theme
+package com.example.compose
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.Color
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val LightThemeColors = lightColorScheme(
 
+private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -38,9 +35,12 @@ private val LightThemeColors = lightColorScheme(
     inverseSurface = md_theme_light_inverseSurface,
     inversePrimary = md_theme_light_inversePrimary,
     surfaceTint = md_theme_light_surfaceTint,
+    outlineVariant = md_theme_light_outlineVariant,
+    scrim = md_theme_light_scrim,
 )
-private val DarkThemeColors = darkColorScheme(
 
+
+private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -68,31 +68,23 @@ private val DarkThemeColors = darkColorScheme(
     inverseSurface = md_theme_dark_inverseSurface,
     inversePrimary = md_theme_dark_inversePrimary,
     surfaceTint = md_theme_dark_surfaceTint,
+    outlineVariant = md_theme_dark_outlineVariant,
+    scrim = md_theme_dark_scrim,
 )
 
 @Composable
-fun January2022Theme(
+fun WorkoutTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable() () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
-        LightThemeColors
+        LightColors
     } else {
-        DarkThemeColors
-    }
-
-    val systemUiController = rememberSystemUiController()
-    DisposableEffect(systemUiController, useDarkTheme) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
-            darkIcons = !useDarkTheme
-        )
-        onDispose {}
+        DarkColors
     }
 
     MaterialTheme(
         colorScheme = colors,
-        typography = AppTypography,
         content = content
     )
 }

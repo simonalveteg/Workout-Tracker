@@ -61,7 +61,7 @@ class GymRepository(
     fun getSessionExercises() =
         dao.getSessionExercisesWithExercise()
 
-    fun getSessionExercisesForSession(sessionId: Long): LiveData<List<SessionExerciseWithExercise>> =
+    fun getSessionExercisesForSession(sessionId: Long) =
         dao.getSessionExercisesWithExerciseForSession(sessionId)
 
     fun getMuscleGroupsForSession(sessionId: Long): List<String> {

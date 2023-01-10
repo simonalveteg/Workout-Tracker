@@ -75,7 +75,7 @@ interface GymDAO {
     suspend fun clearExercises()
 
     @Query("SELECT * FROM sessions WHERE sessionId = :key")
-    fun getSession(key: Long): Session
+    fun getSession(key: Long): Flow<Session>
 
     @Query("SELECT DISTINCT targets FROM exercises ORDER BY targets ASC")
     fun getAllMuscleGroups(): LiveData<List<String>>
@@ -131,7 +131,7 @@ interface GymDAO {
      */
     @Transaction
     @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :key")
-    fun getSessionExercisesWithExerciseForSession(key: Long): LiveData<List<SessionExerciseWithExercise>>
+    fun getSessionExercisesWithExerciseForSession(key: Long): Flow<List<SessionExerciseWithExercise>>
 
     @Query(
         "SELECT * FROM exercises " +
