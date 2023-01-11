@@ -8,12 +8,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android.january2022.ui.rework.NavHost
 import com.example.android.january2022.ui.theme.WorkoutTheme
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import timber.log.Timber.DebugTree
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (BuildConfig.DEBUG) {
+      Timber.plant(DebugTree())
+    }
     setContent {
       WorkoutTheme {
         val navController = rememberNavController()

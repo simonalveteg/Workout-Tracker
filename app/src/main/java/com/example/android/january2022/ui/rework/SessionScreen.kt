@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.UiEvent
+import timber.log.Timber
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -32,7 +33,7 @@ fun SessionScreen(
   val selectedExercise = uiState.value.selectedExercise
 
   LaunchedEffect(true) {
-    Log.d("SessionScreen", session.toString())
+    Timber.d(session.toString())
   }
 
   val scrollState = rememberLazyListState()
