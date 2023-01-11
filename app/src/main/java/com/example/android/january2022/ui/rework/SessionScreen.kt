@@ -58,8 +58,8 @@ fun SessionScreen(
         Box(
           modifier = Modifier
             .padding(
-              start = paddingValues.calculateTopPadding() + 12.dp,
-              top = 120.dp,
+              start = 12.dp,
+              top = paddingValues.calculateTopPadding() + 120.dp,
               bottom = 40.dp
             )
             .fillMaxWidth()
