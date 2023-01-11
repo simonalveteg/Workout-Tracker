@@ -2,10 +2,10 @@ package com.example.android.january2022.ui.rework
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -65,12 +65,23 @@ fun SessionScreen(
         Surface(
           modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-          tonalElevation = 1.dp,
+            .height(120.dp)
+            .padding(vertical = 8.dp, horizontal = 8.dp),
+          tonalElevation = 2.dp,
           shape = MaterialTheme.shapes.medium
         ) {
-          Text(text = "This is an exercise")
+          Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
+            Text(
+              text = "Lever Front Pulldown",
+              style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(Modifier.height(4.dp))
+            LazyRow {
+              items(3) {
+                CompactSetCard(reps = 12, weight = 45f)
+              }
+            }
+          }
         }
       }
     }
