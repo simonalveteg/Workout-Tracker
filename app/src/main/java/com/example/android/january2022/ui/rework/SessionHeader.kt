@@ -22,6 +22,7 @@ fun SessionHeader(
   session: Session,
   muscleGroups: List<String>,
   scrollState: LazyListState,
+  height: Dp,
   topPadding: Dp
 ) {
   val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
@@ -31,9 +32,9 @@ fun SessionHeader(
     modifier = Modifier
       .padding(
         start = 12.dp,
-        top = topPadding + 120.dp,
-        bottom = 40.dp
+        top = topPadding,
       )
+      .height(height)
       .fillMaxWidth()
       .graphicsLayer {
         val scroll = scrollState.firstVisibleItemScrollOffset.toFloat()
@@ -43,7 +44,10 @@ fun SessionHeader(
         scaleY = 1 - scroll / 3000f
       }
   ) {
-    Column() {
+    Column(
+      modifier = Modifier.fillMaxSize(),
+      verticalArrangement = Arrangement.Bottom
+    ) {
       Text(
         text = session.toSessionTitle(),
         style = MaterialTheme.typography.headlineLarge
@@ -61,7 +65,7 @@ fun SessionHeader(
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
-              .padding(start = 4.dp, bottom = 8.dp)
+              .padding(start = 4.dp)
           )
           Text(
             text = "-",
@@ -70,7 +74,7 @@ fun SessionHeader(
             modifier = Modifier.padding(start = 4.dp)
           )
           Text(
-            text = if (endTime == startTime) "ongoing" else endTime,
+            text = if (endTime <= startTime) "ongoing" else endTime,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier

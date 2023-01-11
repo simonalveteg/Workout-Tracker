@@ -1,13 +1,9 @@
 package com.example.android.january2022.ui.rework
 
-import android.util.Half.toFloat
 import android.util.Log
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
@@ -15,7 +11,6 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
@@ -37,6 +32,7 @@ fun SessionScreen(
   }
 
   val scrollState = rememberLazyListState()
+  val headerHeight = 240.dp
 
   // TODO: Change to be dependent on SessionExerciseId
   val expanded = remember {
@@ -72,6 +68,7 @@ fun SessionScreen(
         session = session.value,
         muscleGroups = listOf("One", "Two", "Three"),
         scrollState = scrollState,
+        height = headerHeight,
         topPadding = paddingValues.calculateTopPadding()
       )
       LazyColumn(
@@ -80,9 +77,9 @@ fun SessionScreen(
         state = scrollState
       ) {
         item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 240.dp))
+          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
         }
-        items(2) {
+        items(5) {
           ExerciseCard(
             expanded = expanded.value
           ) {
