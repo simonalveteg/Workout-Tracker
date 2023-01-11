@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.UiEvent
+import kotlinx.coroutines.flow.emptyFlow
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -26,7 +27,9 @@ fun SessionScreen(
 ) {
 
   val uiState = viewModel.uiState.collectAsState()
-  val session = uiState.value.currentSession.collectAsState(initial = Session(10))
+  val session = uiState.value.currentSession.collectAsState(
+    initial = SessionWrapper(Session(), emptyFlow())
+  )
   LaunchedEffect(true) {
     Log.d("SessionScreen", session.value.toString())
   }
@@ -65,7 +68,7 @@ fun SessionScreen(
   ) { paddingValues ->
     Box {
       SessionHeader(
-        session = session.value,
+        sessionWrapper = session.value,
         muscleGroups = listOf("One", "Two", "Three"),
         scrollState = scrollState,
         height = headerHeight,

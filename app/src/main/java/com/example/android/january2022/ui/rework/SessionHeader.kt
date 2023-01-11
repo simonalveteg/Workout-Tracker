@@ -19,12 +19,13 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun SessionHeader(
-  session: Session,
+  sessionWrapper: SessionWrapper,
   muscleGroups: List<String>,
   scrollState: LazyListState,
   height: Dp,
   topPadding: Dp
 ) {
+  val session = sessionWrapper.session
   val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
   val endTime = DateTimeFormatter.ofPattern("HH:mm").format(session.end)
 
