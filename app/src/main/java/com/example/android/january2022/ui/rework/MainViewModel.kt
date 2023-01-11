@@ -6,6 +6,7 @@ import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -22,6 +23,12 @@ class MainViewModel @Inject constructor(
     UiState(
       sessions = repo.getAllSessions(),
       currentSession = MutableStateFlow(SessionWrapper(Session(), emptyFlow())),
+      selectedExercise = MutableStateFlow(
+        SessionExercise(
+          parentExerciseId = 0,
+          parentSessionId = 0
+        )
+      )
     )
   )
   val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -48,7 +55,8 @@ class MainViewModel @Inject constructor(
 
   data class UiState(
     val sessions: Flow<List<Session>>,
-    val currentSession: Flow<SessionWrapper>
+    val currentSession: Flow<SessionWrapper>,
+    val selectedExercise: Flow<SessionExercise>
   )
 }
 
@@ -58,6 +66,7 @@ data class SessionWrapper(
 )
 
 data class ExerciseWrapper(
+  val sessionExercise: SessionExercise,
   val exercise: Exercise,
   val sets: Flow<List<GymSet>>
 )

@@ -19,6 +19,7 @@ class GymRepository(
     return dao.getExercisesForSession(session.sessionId).mapLatest { list ->
       list.map {
         ExerciseWrapper(
+          sessionExercise = it.sessionExercise,
           exercise = it.exercise,
           sets = dao.getSetsForExercise(it.sessionExercise.sessionExerciseId)
         )

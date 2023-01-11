@@ -14,7 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.flow.emptyFlow
 import java.time.format.DateTimeFormatter
@@ -32,6 +34,9 @@ fun SessionScreen(
     initial = SessionWrapper(Session(), emptyFlow())
   )
   val exercises = session.value.exercises.collectAsState(initial = emptyList())
+  val selectedExercise = uiState.value.selectedExercise.collectAsState(
+    initial = SessionExercise(parentExerciseId = 0, parentSessionId = 0)
+  )
 
   LaunchedEffect(true) {
     Log.d("SessionScreen", session.value.toString())
@@ -39,11 +44,6 @@ fun SessionScreen(
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
-
-  // TODO: Change to be dependent on SessionExerciseId
-  val expanded = remember {
-    mutableStateOf(true)
-  }
 
   Scaffold(
     bottomBar = {
@@ -88,9 +88,9 @@ fun SessionScreen(
         items(exercises.value) { exercise ->
           ExerciseCard(
             exerciseWrapper = exercise,
-            expanded = expanded.value
+            expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.value.sessionExerciseId
           ) {
-            expanded.value = !expanded.value
+            
           }
         }
         item {
