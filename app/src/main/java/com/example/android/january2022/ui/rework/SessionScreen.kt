@@ -1,9 +1,6 @@
 package com.example.android.january2022.ui.rework
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -39,6 +36,16 @@ fun SessionScreen(
         .padding(paddingValues = paddingValues)
         .fillMaxSize()
     ) {
+      item {
+        Box(
+          modifier = Modifier.padding(start = 12.dp, top = 120.dp, bottom = 40.dp).fillMaxWidth()
+        ) {
+          Text(
+            text = "Jan 9 2023",
+            style = MaterialTheme.typography.headlineLarge
+          )
+        }
+      }
       items(2) {
         Surface(
           modifier = Modifier
@@ -53,5 +60,4 @@ fun SessionScreen(
       }
     }
   }
-
 }
