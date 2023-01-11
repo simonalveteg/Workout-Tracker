@@ -68,27 +68,11 @@ fun SessionScreen(
     }
   ) { paddingValues ->
     Box {
-      Box(
-        modifier = Modifier
-          .padding(
-            start = 12.dp,
-            top = paddingValues.calculateTopPadding() + 120.dp,
-            bottom = 40.dp
-          )
-          .fillMaxWidth()
-          .graphicsLayer {
-            val scroll = scrollState.firstVisibleItemScrollOffset.toFloat()
-            translationY = -scroll / 2f // Parallax effect
-            alpha = 1 - scroll / 250f // Fade out text
-            scaleX = 1 - scroll / 3000f
-            scaleY = 1 - scroll / 3000f
-          }
-      ) {
-        Text(
-          text = session.value.toSessionTitle(),
-          style = MaterialTheme.typography.headlineLarge
-        )
-      }
+      SessionHeader(
+        session = session.value,
+        scrollState = scrollState,
+        topPadding = paddingValues.calculateTopPadding()
+      )
       LazyColumn(
         modifier = Modifier
           .fillMaxSize(),
