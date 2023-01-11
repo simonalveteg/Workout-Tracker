@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.utils.UiEvent
 import java.util.*
 
@@ -19,6 +20,7 @@ import java.util.*
 @Composable
 fun SessionScreen(
   onNavigate: (UiEvent.Navigate) -> Unit,
+  viewModel: MainViewModel = hiltViewModel()
 ) {
 
   // TODO: Change to be dependent on SessionExerciseId
