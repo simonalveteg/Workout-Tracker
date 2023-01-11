@@ -24,7 +24,10 @@ fun SessionScreen(
       BottomAppBar(
         actions = {},
         floatingActionButton = {
-          FloatingActionButton(onClick = { /*TODO*/ }) {
+          FloatingActionButton(
+            onClick = { /*TODO*/ },
+            containerColor = MaterialTheme.colorScheme.primary
+          ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add Exercise")
           }
         }
@@ -36,7 +39,7 @@ fun SessionScreen(
         .padding(paddingValues = paddingValues)
         .fillMaxSize()
     ) {
-      items(10) {
+      items(2) {
         Surface(
           modifier = Modifier
             .fillMaxWidth()
