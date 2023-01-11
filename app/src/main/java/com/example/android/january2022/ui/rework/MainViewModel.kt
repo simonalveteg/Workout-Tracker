@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,9 +35,11 @@ class MainViewModel @Inject constructor(
   val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
   init {
+    Timber.d("Initializing ViewModel")
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
         _uiState.value.sessions.collectLatest { sessions ->
+          Timber.d("Updating uiState")
           _uiState.update { state ->
             val session = sessions.last()
             state.copy(
@@ -52,6 +55,7 @@ class MainViewModel @Inject constructor(
   }
 
   fun onEvent(event: Event) {
+    Timber.d("Received event: $event")
     when (event) {
       is SessionEvent.ExerciseSelection -> {
         _uiState.update {

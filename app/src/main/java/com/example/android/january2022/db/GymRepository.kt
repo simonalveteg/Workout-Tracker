@@ -6,6 +6,7 @@ import com.example.android.january2022.ui.rework.ExerciseWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
+import timber.log.Timber
 
 
 class GymRepository(
@@ -16,7 +17,9 @@ class GymRepository(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   fun getExercisesForSession(session: Session): Flow<List<ExerciseWrapper>> {
+    Timber.d("Retrieving exercises for session: $session")
     return dao.getExercisesForSession(session.sessionId).mapLatest { list ->
+      Timber.d("Wrapping latest available list")
       list.map {
         ExerciseWrapper(
           sessionExercise = it.sessionExercise,
@@ -25,7 +28,6 @@ class GymRepository(
         )
       }
     }
-
   }
 
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
