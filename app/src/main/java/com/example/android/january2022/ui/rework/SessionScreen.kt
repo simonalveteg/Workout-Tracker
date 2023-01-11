@@ -67,7 +67,7 @@ fun SessionScreen(
       )
     }
   ) { paddingValues ->
-    Box() {
+    Box {
       Box(
         modifier = Modifier
           .padding(
@@ -95,7 +95,7 @@ fun SessionScreen(
         state = scrollState
       ) {
         item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 180.dp))
+          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 240.dp))
         }
         items(2) {
           ExerciseCard(
