@@ -3,11 +3,13 @@ package com.example.android.january2022.ui.rework
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,9 +17,12 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseCard(
+  exerciseWrapper: ExerciseWrapper,
   expanded: Boolean = false,
   onClick: () -> Unit
 ) {
+  val exercise = exerciseWrapper.exercise
+  val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
   val height by animateDpAsState(targetValue = if(expanded) 500.dp else 120.dp)
 
   Surface(
@@ -33,13 +38,13 @@ fun ExerciseCard(
   ) {
     Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
       Text(
-        text = "Lever Front Pulldown",
+        text = exercise.title,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(Modifier.height(4.dp))
       LazyRow {
-        items(3) {
-          CompactSetCard(reps = 12, weight = 45f)
+        items(sets.value) { set ->
+          CompactSetCard(set)
         }
       }
     }

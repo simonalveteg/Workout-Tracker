@@ -16,13 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android.january2022.db.entities.GymSet
 
 
 @Composable
 fun CompactSetCard(
-  reps: Int,
-  weight: Float
+  set: GymSet
 ) {
+  val reps = set.reps
+  val weight = set.weight
   val repsText by remember { derivedStateOf { if (reps > -1) reps.toString() else "0" } }
   val weightText by remember { derivedStateOf { if (weight > -1) weight.toString() else "0" } }
   Row(

@@ -3,6 +3,7 @@ package com.example.android.january2022.ui.rework
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,6 +31,8 @@ fun SessionScreen(
   val session = uiState.value.currentSession.collectAsState(
     initial = SessionWrapper(Session(), emptyFlow())
   )
+  val exercises = session.value.exercises.collectAsState(initial = emptyList())
+
   LaunchedEffect(true) {
     Log.d("SessionScreen", session.value.toString())
   }
@@ -82,8 +85,9 @@ fun SessionScreen(
         item {
           Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
         }
-        items(5) {
+        items(exercises.value) { exercise ->
           ExerciseCard(
+            exerciseWrapper = exercise,
             expanded = expanded.value
           ) {
             expanded.value = !expanded.value
