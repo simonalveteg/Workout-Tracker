@@ -59,35 +59,38 @@ fun SessionScreen(
       )
     }
   ) { paddingValues ->
-    LazyColumn(
-      modifier = Modifier
-        .fillMaxSize()
-    ) {
-      item {
-        Box(
-          modifier = Modifier
-            .padding(
-              start = 12.dp,
-              top = paddingValues.calculateTopPadding() + 120.dp,
-              bottom = 40.dp
-            )
-            .fillMaxWidth()
-        ) {
-          Text(
-            text = session.value.toSessionTitle(),
-            style = MaterialTheme.typography.headlineLarge
+    Box() {
+      Box(
+        modifier = Modifier
+          .padding(
+            start = 12.dp,
+            top = paddingValues.calculateTopPadding() + 120.dp,
+            bottom = 40.dp
           )
-        }
+          .fillMaxWidth()
+      ) {
+        Text(
+          text = session.value.toSessionTitle(),
+          style = MaterialTheme.typography.headlineLarge
+        )
       }
-      items(2) {
-        ExerciseCard(
-          expanded = expanded.value
-        ) {
-          expanded.value = !expanded.value
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxSize()
+      ) {
+        item {
+          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 180.dp))
         }
-      }
-      item {
-        Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        items(2) {
+          ExerciseCard(
+            expanded = expanded.value
+          ) {
+            expanded.value = !expanded.value
+          }
+        }
+        item {
+          Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        }
       }
     }
   }

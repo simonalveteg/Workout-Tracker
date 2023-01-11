@@ -38,10 +38,8 @@ class MainViewModel @Inject constructor(
     }
   }
 
-
   data class UiState(
     val sessions: Flow<List<Session>>,
     val currentSession: Flow<Session>
   )
-
 }
