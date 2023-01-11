@@ -70,6 +70,7 @@ fun SessionScreen(
     Box {
       SessionHeader(
         session = session.value,
+        muscleGroups = listOf("One", "Two", "Three"),
         scrollState = scrollState,
         topPadding = paddingValues.calculateTopPadding()
       )
