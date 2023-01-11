@@ -1,11 +1,10 @@
-package com.example.compose
+package com.example.android.january2022.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import com.example.android.january2022.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 

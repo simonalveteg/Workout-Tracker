@@ -52,13 +52,16 @@ fun SessionScreen(
   ) { paddingValues ->
     LazyColumn(
       modifier = Modifier
-        .padding(paddingValues = paddingValues)
         .fillMaxSize()
     ) {
       item {
         Box(
           modifier = Modifier
-            .padding(start = 12.dp, top = 120.dp, bottom = 40.dp)
+            .padding(
+              start = paddingValues.calculateTopPadding() + 12.dp,
+              top = 120.dp,
+              bottom = 40.dp
+            )
             .fillMaxWidth()
         ) {
           Text(
@@ -73,6 +76,9 @@ fun SessionScreen(
         ) {
           expanded.value = !expanded.value
         }
+      }
+      item {
+        Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
       }
     }
   }

@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.android.january2022.ui.rework.NavHost
-import com.example.compose.WorkoutTheme
+import com.example.android.january2022.ui.theme.WorkoutTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
