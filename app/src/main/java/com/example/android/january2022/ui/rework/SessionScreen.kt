@@ -14,11 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.utils.UiEvent
-import kotlinx.coroutines.flow.emptyFlow
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -30,16 +27,12 @@ fun SessionScreen(
 ) {
 
   val uiState = viewModel.uiState.collectAsState()
-  val session = uiState.value.currentSession.collectAsState(
-    initial = SessionWrapper(Session(), emptyFlow())
-  )
-  val exercises = session.value.exercises.collectAsState(initial = emptyList())
-  val selectedExercise = uiState.value.selectedExercise.collectAsState(
-    initial = SessionExercise(parentExerciseId = 0, parentSessionId = 0)
-  )
+  val session = uiState.value.currentSession
+  val exercises = session.exercises.collectAsState(initial = emptyList())
+  val selectedExercise = uiState.value.selectedExercise
 
   LaunchedEffect(true) {
-    Log.d("SessionScreen", session.value.toString())
+    Log.d("SessionScreen", session.toString())
   }
 
   val scrollState = rememberLazyListState()
@@ -71,7 +64,7 @@ fun SessionScreen(
   ) { paddingValues ->
     Box {
       SessionHeader(
-        sessionWrapper = session.value,
+        sessionWrapper = session,
         muscleGroups = listOf("One", "Two", "Three"),
         scrollState = scrollState,
         height = headerHeight,
@@ -88,7 +81,7 @@ fun SessionScreen(
         items(exercises.value) { exercise ->
           ExerciseCard(
             exerciseWrapper = exercise,
-            expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.value.sessionExerciseId
+            expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.sessionExerciseId
           ) {
             viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
           }

@@ -23,15 +23,14 @@ class MainViewModel @Inject constructor(
   private val _uiState = MutableStateFlow(
     UiState(
       sessions = repo.getAllSessions(),
-      currentSession = MutableStateFlow(SessionWrapper(Session(), emptyFlow())),
-      selectedExercise = MutableStateFlow(
-        SessionExercise(
-          parentExerciseId = 0,
-          parentSessionId = 0
-        )
+      currentSession = SessionWrapper(Session(), emptyFlow()),
+      selectedExercise = SessionExercise(
+        parentExerciseId = 0,
+        parentSessionId = 0
       )
     )
   )
+
   val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
   init {
@@ -41,11 +40,9 @@ class MainViewModel @Inject constructor(
           _uiState.update { state ->
             val session = sessions.last()
             state.copy(
-              currentSession = flowOf(
-                SessionWrapper(
-                  session = session,
-                  exercises = repo.getExercisesForSession(session)
-                )
+              currentSession = SessionWrapper(
+                session = session,
+                exercises = repo.getExercisesForSession(session)
               )
             )
           }
@@ -59,7 +56,7 @@ class MainViewModel @Inject constructor(
       is SessionEvent.ExerciseSelection -> {
         _uiState.update {
           it.copy(
-            selectedExercise = flowOf(event.exercise.sessionExercise)
+            selectedExercise = event.exercise.sessionExercise
           )
         }
       }
@@ -68,8 +65,8 @@ class MainViewModel @Inject constructor(
 
   data class UiState(
     val sessions: Flow<List<Session>>,
-    val currentSession: Flow<SessionWrapper>,
-    val selectedExercise: Flow<SessionExercise>
+    val currentSession: SessionWrapper,
+    val selectedExercise: SessionExercise
   )
 }
 
