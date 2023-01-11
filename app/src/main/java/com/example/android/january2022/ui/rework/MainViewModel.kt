@@ -7,6 +7,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
+import com.example.android.january2022.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -48,6 +49,18 @@ class MainViewModel @Inject constructor(
               )
             )
           }
+        }
+      }
+    }
+  }
+
+  fun onEvent(event: Event) {
+    when (event) {
+      is SessionEvent.ExerciseSelection -> {
+        _uiState.update {
+          it.copy(
+            selectedExercise = flowOf(event.exercise.sessionExercise)
+          )
         }
       }
     }

@@ -90,7 +90,7 @@ fun SessionScreen(
             exerciseWrapper = exercise,
             expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.value.sessionExerciseId
           ) {
-            
+            viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
           }
         }
         item {
