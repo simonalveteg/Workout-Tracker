@@ -77,7 +77,11 @@ fun SessionScreen(
           )
           .fillMaxWidth()
           .graphicsLayer {
-            translationY = -scrollState.firstVisibleItemScrollOffset.toFloat() / 2f // Parallax effect
+            val scroll = scrollState.firstVisibleItemScrollOffset.toFloat()
+            translationY = -scroll / 2f // Parallax effect
+            alpha = 1 - scroll / 250f // Fade out text
+            scaleX = 1 - scroll / 3000f
+            scaleY = 1 - scroll / 3000f
           }
       ) {
         Text(
