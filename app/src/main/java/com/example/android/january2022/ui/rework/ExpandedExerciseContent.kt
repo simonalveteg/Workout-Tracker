@@ -130,15 +130,6 @@ fun ExpandedExerciseContent(
   }
 }
 
-@Composable
-fun ColumnHeader(text: String) {
-  Text(
-    text = text,
-    style = MaterialTheme.typography.labelMedium,
-    textAlign = TextAlign.Center,
-  )
-}
-
 fun setTypeColor(setType: String, colorScheme: ColorScheme): Color {
   return when (setType) {
     SetType.WARMUP -> Color.Gray
