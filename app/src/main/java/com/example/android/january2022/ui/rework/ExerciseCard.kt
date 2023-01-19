@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.rework
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,17 +35,21 @@ fun ExerciseCard(
     tonalElevation = 2.dp,
     shape = MaterialTheme.shapes.medium
   ) {
-    Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp).fillMaxWidth()) {
+    Column(
+      Modifier
+        .padding(vertical = 12.dp, horizontal = 12.dp)
+        .fillMaxWidth()) {
       Text(
         text = exercise.title,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(Modifier.height(4.dp))
-      if (expanded) {
+      AnimatedVisibility (expanded) {
         ExpandedExerciseContent(
           sets = sets.value
         )
-      } else {
+      } 
+      AnimatedVisibility(!expanded){
         LazyRow {
           items(sets.value) { set ->
             CompactSetCard(set)
