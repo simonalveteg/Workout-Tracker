@@ -20,7 +20,7 @@ interface GymDAO {
   @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :sessionId")
   fun getExercisesForSession(sessionId: Long): Flow<List<SessionExerciseWithExercise>>
 
-  @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId DESC")
+  @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId ASC")
   fun getSetsForExercise(id: Long): Flow<List<GymSet>>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
