@@ -49,7 +49,10 @@ fun ExerciseCard(
       AnimatedVisibility (expanded) {
         ExpandedExerciseContent(
           sets = sets.value,
-          onEvent = onEvent
+          onEvent = onEvent,
+          onSetCreated = {
+            onEvent(SessionEvent.SetCreated(exerciseWrapper.sessionExercise))
+          }
         )
       } 
       AnimatedVisibility(!expanded){

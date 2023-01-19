@@ -3,6 +3,7 @@ package com.example.android.january2022.db
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -34,4 +35,7 @@ class GymRepository(
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
 
   suspend fun updateSet(set: GymSet) = dao.updateSet(set)
+
+  suspend fun createSet(sessionExercise: SessionExercise) =
+    dao.insertSet(GymSet(parentSessionExerciseId = sessionExercise.sessionExerciseId))
 }

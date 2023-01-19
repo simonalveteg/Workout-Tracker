@@ -23,6 +23,9 @@ interface GymDAO {
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertExercise(exercise: Exercise): Long
 
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertSet(set: GymSet): Long
+
   @Update
   suspend fun updateSet(set: GymSet)
 }

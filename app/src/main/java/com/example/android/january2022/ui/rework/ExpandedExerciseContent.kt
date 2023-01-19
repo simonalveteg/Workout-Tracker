@@ -32,7 +32,8 @@ import com.example.android.january2022.utils.Event
 @Composable
 fun ExpandedExerciseContent(
   sets: List<GymSet>,
-  onEvent: (Event) -> Unit
+  onEvent: (Event) -> Unit,
+  onSetCreated: () -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxWidth(),
@@ -150,7 +151,7 @@ fun ExpandedExerciseContent(
       }
     }
     IconButton(
-      onClick = { /*TODO*/ }
+      onClick = { onSetCreated() }
     ) {
       Icon(imageVector = Icons.Default.Add, contentDescription = "Add new set")
     }
