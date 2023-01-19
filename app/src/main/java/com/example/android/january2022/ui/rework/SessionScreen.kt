@@ -93,7 +93,7 @@ fun SessionScreen(
             viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
             if (!expanded) {
               coroutineScope.launch {
-                scrollState.animateScrollToItem(index = index.coerceAtLeast(0))
+                scrollState.animateScrollToItem(index = (index-2).coerceAtLeast(0))
               }
             }
           }
