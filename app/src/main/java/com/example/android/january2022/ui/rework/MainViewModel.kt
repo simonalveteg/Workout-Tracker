@@ -25,10 +25,7 @@ class MainViewModel @Inject constructor(
     UiState(
       sessions = repo.getAllSessions(),
       currentSession = SessionWrapper(Session(), emptyFlow()),
-      selectedExercise = SessionExercise(
-        parentExerciseId = 0,
-        parentSessionId = 0
-      )
+      selectedExercise = null
     )
   )
 
@@ -63,12 +60,7 @@ class MainViewModel @Inject constructor(
         event.exercise.sessionExercise.let { se ->
           _uiState.update {
             it.copy(
-              selectedExercise = if (se != it.selectedExercise) se else {
-                SessionExercise(
-                  parentExerciseId = 0,
-                  parentSessionId = 0
-                )
-              }
+              selectedExercise = if (se != it.selectedExercise) se else null
             )
           }
         }
@@ -79,7 +71,7 @@ class MainViewModel @Inject constructor(
   data class UiState(
     val sessions: Flow<List<Session>>,
     val currentSession: SessionWrapper,
-    val selectedExercise: SessionExercise
+    val selectedExercise: SessionExercise?
   )
 }
 
