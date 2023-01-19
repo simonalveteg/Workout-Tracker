@@ -74,6 +74,7 @@ fun ExpandedExerciseContent(
             shape = MaterialTheme.shapes.small,
             modifier = Modifier
               .defaultMinSize(minWidth = 100.dp)
+              .padding(start = 12.dp)
           ) {
             Text(
               text = set.setType,
@@ -91,7 +92,7 @@ fun ExpandedExerciseContent(
               },
               textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 22.sp,
+                fontSize = 21.sp,
                 fontWeight = FontWeight.Bold
               ),
               keyboardOptions = KeyboardOptions(
@@ -105,14 +106,9 @@ fun ExpandedExerciseContent(
               modifier = Modifier
                 .width(IntrinsicSize.Min)
                 .padding(start = 6.dp)
-                .padding(horizontal = 8.dp)
                 .focusRequester(requester)
             )
-            Text(
-              text = "reps",
-              fontSize = 14.sp,
-              color = LocalContentColor.current.copy(alpha = 0.9f)
-            )
+            SetInputLabel(text = "reps")
           }
           Row {
             BasicTextField(
@@ -122,7 +118,7 @@ fun ExpandedExerciseContent(
               },
               textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 22.sp,
+                fontSize = 21.sp,
                 fontWeight = FontWeight.Bold
               ),
               keyboardOptions = KeyboardOptions(
@@ -139,12 +135,9 @@ fun ExpandedExerciseContent(
               cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
               modifier = Modifier
                 .width(IntrinsicSize.Min)
-                .padding(start = 6.dp)
-                .padding(horizontal = 8.dp)
+                .padding(start = 8.dp)
             )
-            Text(
-              text = "kg", fontSize = 14.sp, color = LocalContentColor.current.copy(alpha = 0.9f)
-            )
+            SetInputLabel(text = "kg")
           }
         }
       }
@@ -162,6 +155,15 @@ fun ColumnHeader(text: String) {
       modifier = Modifier.alpha(0f)
     )
   }
+}
+
+@Composable
+fun SetInputLabel(text: String) {
+  Text(
+    text = text,
+    color = LocalContentColor.current.copy(alpha = 0.8f),
+    style = MaterialTheme.typography.labelSmall
+  )
 }
 
 fun setTypeColor(setType: String, colorScheme: ColorScheme): Color {
