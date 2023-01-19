@@ -60,10 +60,17 @@ class MainViewModel @Inject constructor(
     Timber.d("Received event: $event")
     when (event) {
       is SessionEvent.ExerciseSelection -> {
-        _uiState.update {
-          it.copy(
-            selectedExercise = event.exercise.sessionExercise
-          )
+        event.exercise.sessionExercise.let { se ->
+          _uiState.update {
+            it.copy(
+              selectedExercise = if (se != it.selectedExercise) se else {
+                SessionExercise(
+                  parentExerciseId = 0,
+                  parentSessionId = 0
+                )
+              }
+            )
+          }
         }
       }
     }
