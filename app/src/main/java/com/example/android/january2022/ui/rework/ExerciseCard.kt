@@ -36,15 +36,21 @@ fun ExerciseCard(
     tonalElevation = 2.dp,
     shape = MaterialTheme.shapes.medium
   ) {
-    Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
+    Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp).fillMaxWidth()) {
       Text(
         text = exercise.title,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(Modifier.height(4.dp))
-      LazyRow {
-        items(sets.value) { set ->
-          CompactSetCard(set)
+      if (expanded) {
+        ExpandedExerciseContent(
+          sets = sets.value
+        )
+      } else {
+        LazyRow {
+          items(sets.value) { set ->
+            CompactSetCard(set)
+          }
         }
       }
     }
