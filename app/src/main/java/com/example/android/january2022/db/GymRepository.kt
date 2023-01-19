@@ -33,6 +33,5 @@ class GymRepository(
 
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
 
-  suspend fun changeSetType(set: GymSet, setType: String) =
-    dao.updateSet(set.copy(setType = setType))
+  suspend fun updateSet(set: GymSet) = dao.updateSet(set)
 }

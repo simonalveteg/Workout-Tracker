@@ -46,14 +46,14 @@ fun ExpandedExerciseContent(
       LaunchedEffect(weightText) {
         try {
           val newWeight = weightText.trim().toFloat()
-          //onEvent(SessionEvent.WeightChanged(set, newWeight))
+          onEvent(SessionEvent.SetChanged(set.copy(weight = newWeight)))
         } catch (_: Exception) {
         }
       }
       LaunchedEffect(repsText) {
         try {
           val newReps = repsText.trim().toInt()
-          //onEvent(SessionEvent.RepsChanged(set, newReps))
+          onEvent(SessionEvent.SetChanged(set.copy(reps = newReps)))
         } catch (_: Exception) {
         }
       }
@@ -72,7 +72,7 @@ fun ExpandedExerciseContent(
           ColumnHeader(text = "SET${index + 1}")
           Surface(
             onClick = {
-              onEvent(SessionEvent.SetTypeChanged(set, SetType.next(set.setType)))
+              onEvent(SessionEvent.SetChanged(set.copy(setType = SetType.next(set.setType))))
             },
             color = setTypeColor(set.setType, MaterialTheme.colorScheme),
             shape = MaterialTheme.shapes.small,

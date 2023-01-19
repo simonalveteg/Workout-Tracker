@@ -6,5 +6,5 @@ import com.example.android.january2022.utils.Event
 
 sealed class SessionEvent : Event {
   data class ExerciseSelection(val exercise: ExerciseWrapper) : SessionEvent()
-  data class SetTypeChanged(val set: GymSet, val setType: String) : SessionEvent()
+  data class SetChanged(val updatedSet: GymSet) : SessionEvent()
 }
