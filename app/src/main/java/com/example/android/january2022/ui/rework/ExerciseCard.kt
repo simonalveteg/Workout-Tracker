@@ -22,7 +22,6 @@ fun ExerciseCard(
 ) {
   val exercise = exerciseWrapper.exercise
   val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
-  val height by animateDpAsState(targetValue = if (expanded) 500.dp else 120.dp)
   LaunchedEffect(key1 = exercise) {
     Timber.d("ExerciseCard received new exercise")
   }
@@ -31,20 +30,25 @@ fun ExerciseCard(
     onClick = { onClick() },
     modifier = Modifier
       .fillMaxWidth()
-      .height(height)
       .padding(vertical = 8.dp, horizontal = 8.dp),
     tonalElevation = 2.dp,
     shape = MaterialTheme.shapes.medium
   ) {
-    Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
+    Column(Modifier.padding(vertical = 12.dp, horizontal = 12.dp).fillMaxWidth()) {
       Text(
         text = exercise.title,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(Modifier.height(4.dp))
-      LazyRow {
-        items(sets.value) { set ->
-          CompactSetCard(set)
+      if (expanded) {
+        ExpandedExerciseContent(
+          sets = sets.value
+        )
+      } else {
+        LazyRow {
+          items(sets.value) { set ->
+            CompactSetCard(set)
+          }
         }
       }
     }

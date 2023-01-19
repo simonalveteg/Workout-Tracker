@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.utils.UiEvent
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -38,6 +40,7 @@ fun SessionScreen(
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
+  val coroutineScope = rememberCoroutineScope()
 
   Scaffold(
     bottomBar = {
@@ -79,17 +82,23 @@ fun SessionScreen(
         item {
           Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
         }
-        items(
+        itemsIndexed(
           items = exercises.value,
-          key = {
-            it.sessionExercise.sessionExerciseId
+          key = { _, exercise ->
+            exercise.sessionExercise.sessionExerciseId
           }
-        ) { exercise ->
+        ) { index, exercise ->
+          val expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.sessionExerciseId
           ExerciseCard(
             exerciseWrapper = exercise,
-            expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.sessionExerciseId
+            expanded = expanded
           ) {
             viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
+            if (!expanded) {
+              coroutineScope.launch {
+                scrollState.animateScrollToItem(index = index.coerceAtLeast(0))
+              }
+            }
           }
         }
         item {

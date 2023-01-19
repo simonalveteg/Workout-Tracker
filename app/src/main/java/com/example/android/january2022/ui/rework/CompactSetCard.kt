@@ -37,7 +37,7 @@ fun CompactSetCard(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center
   ) {
-    Surface(color = MaterialTheme.colorScheme.primary) {
+    Surface(color = setTypeColor(set.setType, MaterialTheme.colorScheme)) {
       Box(
         Modifier
           .height(34.dp)
