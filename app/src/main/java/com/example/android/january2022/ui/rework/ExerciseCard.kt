@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.utils.Event
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,6 +20,7 @@ import timber.log.Timber
 fun ExerciseCard(
   exerciseWrapper: ExerciseWrapper,
   expanded: Boolean = false,
+  onEvent: (Event) -> Unit,
   onClick: () -> Unit
 ) {
   val exercise = exerciseWrapper.exercise
@@ -46,7 +48,8 @@ fun ExerciseCard(
       Spacer(Modifier.height(4.dp))
       AnimatedVisibility (expanded) {
         ExpandedExerciseContent(
-          sets = sets.value
+          sets = sets.value,
+          onEvent = onEvent
         )
       } 
       AnimatedVisibility(!expanded){

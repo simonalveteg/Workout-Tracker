@@ -1,6 +1,7 @@
 package com.example.android.january2022.db
 
 import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,4 +32,7 @@ class GymRepository(
   }
 
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
+
+  suspend fun changeSetType(set: GymSet, setType: String) =
+    dao.updateSet(set.copy(setType = setType))
 }

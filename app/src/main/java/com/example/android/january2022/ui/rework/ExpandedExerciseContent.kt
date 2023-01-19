@@ -24,11 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.january2022.db.SetType
 import com.example.android.january2022.db.entities.GymSet
+import com.example.android.january2022.utils.Event
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedExerciseContent(
-  sets: List<GymSet>
+  sets: List<GymSet>,
+  onEvent: (Event) -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxWidth(),
@@ -69,7 +71,9 @@ fun ExpandedExerciseContent(
         ) {
           ColumnHeader(text = "SET${index + 1}")
           Surface(
-            onClick = { /*TODO*/ },
+            onClick = {
+              onEvent(SessionEvent.SetTypeChanged(set, SetType.next(set.setType)))
+            },
             color = setTypeColor(set.setType, MaterialTheme.colorScheme),
             shape = MaterialTheme.shapes.small,
             modifier = Modifier

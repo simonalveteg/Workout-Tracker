@@ -65,6 +65,13 @@ class MainViewModel @Inject constructor(
           }
         }
       }
+      is SessionEvent.SetTypeChanged -> {
+        viewModelScope.launch {
+          withContext(Dispatchers.IO) {
+            repo.changeSetType(event.set, event.setType)
+          }
+        }
+      }
     }
   }
 

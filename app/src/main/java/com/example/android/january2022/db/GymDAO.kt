@@ -1,9 +1,6 @@
 package com.example.android.january2022.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
@@ -25,5 +22,8 @@ interface GymDAO {
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertExercise(exercise: Exercise): Long
+
+  @Update
+  suspend fun updateSet(set: GymSet)
 }
 

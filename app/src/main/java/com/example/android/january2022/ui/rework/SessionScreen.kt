@@ -88,7 +88,8 @@ fun SessionScreen(
             exercise.sessionExercise.sessionExerciseId == selectedExercise?.sessionExerciseId
           ExerciseCard(
             exerciseWrapper = exercise,
-            expanded = expanded
+            expanded = expanded,
+            onEvent = viewModel::onEvent
           ) {
             viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
             if (!expanded) {
