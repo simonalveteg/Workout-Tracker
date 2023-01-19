@@ -40,14 +40,16 @@ class MainViewModel @Inject constructor(
       withContext(Dispatchers.IO) {
         _uiState.value.sessions.collectLatest { sessions ->
           Timber.d("Updating uiState")
-          _uiState.update { state ->
-            val session = sessions.last()
-            state.copy(
-              currentSession = SessionWrapper(
-                session = session,
-                exercises = repo.getExercisesForSession(session)
+          val session = sessions.lastOrNull()
+          session?.let {
+            _uiState.update { state ->
+              state.copy(
+                currentSession = SessionWrapper(
+                  session = it,
+                  exercises = repo.getExercisesForSession(it)
+                )
               )
-            )
+            }
           }
         }
       }

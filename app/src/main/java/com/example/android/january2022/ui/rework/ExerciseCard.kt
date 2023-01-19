@@ -8,11 +8,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,12 +22,13 @@ fun ExerciseCard(
 ) {
   val exercise = exerciseWrapper.exercise
   val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
-  val height by animateDpAsState(targetValue = if(expanded) 500.dp else 120.dp)
+  val height by animateDpAsState(targetValue = if (expanded) 500.dp else 120.dp)
+  LaunchedEffect(key1 = exercise) {
+    Timber.d("ExerciseCard received new exercise")
+  }
 
   Surface(
-    onClick = {
-      onClick()
-    },
+    onClick = { onClick() },
     modifier = Modifier
       .fillMaxWidth()
       .height(height)

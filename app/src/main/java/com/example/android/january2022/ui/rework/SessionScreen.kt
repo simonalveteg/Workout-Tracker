@@ -79,7 +79,12 @@ fun SessionScreen(
         item {
           Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
         }
-        items(exercises.value) { exercise ->
+        items(
+          items = exercises.value,
+          key = {
+            it.sessionExercise.sessionExerciseId
+          }
+        ) { exercise ->
           ExerciseCard(
             exerciseWrapper = exercise,
             expanded = exercise.sessionExercise.sessionExerciseId == selectedExercise.sessionExerciseId

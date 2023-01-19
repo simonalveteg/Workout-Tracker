@@ -7,16 +7,14 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.january2022.db.entities.GymSet
+import timber.log.Timber
 
 
 @Composable
@@ -27,6 +25,11 @@ fun CompactSetCard(
   val weight = set.weight
   val repsText by remember { derivedStateOf { if (reps > -1) reps.toString() else "0" } }
   val weightText by remember { derivedStateOf { if (weight > -1) weight.toString() else "0" } }
+
+  LaunchedEffect(key1 = set) {
+    Timber.d("Received new sets")
+  }
+
   Row(
     Modifier
       .padding(horizontal = 8.dp, vertical = 4.dp)

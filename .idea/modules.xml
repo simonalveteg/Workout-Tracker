@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/January_2022.iml" filepath="$PROJECT_DIR$/.idea/modules/January_2022.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/January_2022.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/January_2022.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/January_2022.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/January_2022.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/January_2022.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/January_2022.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/January_2022.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/January_2022.app.unitTest.iml" />
     </modules>
