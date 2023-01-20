@@ -36,7 +36,7 @@ fun ExpandedExerciseContent(
   onSetCreated: () -> Unit
 ) {
   Column(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     sets.forEachIndexed { index, set ->

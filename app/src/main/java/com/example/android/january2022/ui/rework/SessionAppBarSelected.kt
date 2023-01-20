@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.FileCopy
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.BottomAppBar
@@ -28,7 +29,7 @@ fun SessionAppBarSelected() {
       }
       Spacer(modifier = Modifier.width(8.dp))
       IconButton(onClick = { /*TODO*/ }) {
-        Icon(imageVector = Icons.Outlined.ContentCopy, contentDescription = "Copy Exercise")
+        Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
     }
   )
