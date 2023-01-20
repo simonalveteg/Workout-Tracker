@@ -37,7 +37,11 @@ fun SessionHeader(
       .height(height)
       .fillMaxWidth()
       .graphicsLayer {
-        val scroll = scrollState.firstVisibleItemScrollOffset.toFloat()
+        val scroll = if(scrollState.layoutInfo.visibleItemsInfo.firstOrNull()?.index == 0) {
+          scrollState.firstVisibleItemScrollOffset.toFloat()
+        } else {
+          10000f
+        }
         translationY = -scroll / 2f // Parallax effect
         alpha = 1 - scroll / 250f // Fade out text
         scaleX = 1 - scroll / 3000f
