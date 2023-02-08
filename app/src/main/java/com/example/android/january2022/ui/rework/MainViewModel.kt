@@ -3,10 +3,7 @@ package com.example.android.january2022.ui.rework
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -83,14 +80,3 @@ class MainViewModel @Inject constructor(
     }
   }
 }
-
-data class SessionWrapper(
-  val session: Session,
-  val exercises: Flow<List<ExerciseWrapper>>
-)
-
-data class ExerciseWrapper(
-  val sessionExercise: SessionExercise,
-  val exercise: Exercise,
-  val sets: Flow<List<GymSet>>
-)

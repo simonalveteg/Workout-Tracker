@@ -16,9 +16,13 @@ data class SessionState(
   val selectedExercise: SessionExercise?
 )
 
-data class SessionExerciseModel(
-  val exercise: Exercise,
-  val session: Flow<Session>,
+data class SessionWrapper(
+  val session: Session,
+  val exercises: Flow<List<ExerciseWrapper>>
+)
+
+data class ExerciseWrapper(
   val sessionExercise: SessionExercise,
+  val exercise: Exercise,
   val sets: Flow<List<GymSet>>
 )
