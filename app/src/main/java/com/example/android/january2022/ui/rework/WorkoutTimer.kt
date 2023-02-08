@@ -27,6 +27,7 @@ class WorkoutTimer {
       resume()
     } else {
       maxTime.value += increment
+      if (time.value > 0L) time.value += increment
     }
   }
 
