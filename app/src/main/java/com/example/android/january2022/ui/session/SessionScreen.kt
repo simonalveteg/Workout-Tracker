@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -64,11 +69,7 @@ fun SessionScreen(
           )
         ) {
           Column {
-            Surface(
-              modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
-              Text(text = "TEST")
-            }
+            TimerBar(timerState, viewModel::onEvent)
             BottomAppBar {}
           }
         }

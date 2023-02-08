@@ -31,5 +31,6 @@ data class ExerciseWrapper(
 
 data class TimerState(
   val time: MutableStateFlow<Long>,
-  val isRunning: MutableStateFlow<Boolean>
+  val isRunning: MutableStateFlow<Boolean>,
+  val maxTime: MutableStateFlow<Long>
 )
