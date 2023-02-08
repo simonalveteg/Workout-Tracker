@@ -1,7 +1,5 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui.session
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme

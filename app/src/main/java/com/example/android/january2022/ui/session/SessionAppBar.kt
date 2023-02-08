@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui.session
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width

@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui.session
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.ui.rework.SessionWrapper
 import com.example.android.january2022.ui.theme.Shapes
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow

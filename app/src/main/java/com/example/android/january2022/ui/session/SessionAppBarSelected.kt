@@ -1,12 +1,10 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui.session
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.FileCopy
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
