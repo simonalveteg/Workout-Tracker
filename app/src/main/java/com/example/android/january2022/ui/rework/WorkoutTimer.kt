@@ -1,7 +1,11 @@
 package com.example.android.january2022.ui.rework
 
 import android.os.CountDownTimer
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.coroutineContext
 import kotlin.math.roundToInt
 
 class WorkoutTimer {
@@ -9,6 +13,7 @@ class WorkoutTimer {
   val isRunning = MutableStateFlow(false)
   val time = MutableStateFlow(0L)
   val maxTime = MutableStateFlow(60000L)
+  val finished = Channel<Boolean>()
   private val increment = 30 * 1000L
   private var timer: WorkoutTimer? = null
 
@@ -77,6 +82,9 @@ class WorkoutTimer {
     }
 
     override fun onFinish() {
+      runBlocking {
+        finished.send(true)
+      }
       reset()
     }
   }

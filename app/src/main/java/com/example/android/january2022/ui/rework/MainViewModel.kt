@@ -33,7 +33,8 @@ class MainViewModel @Inject constructor(
     TimerState(
       time = workoutTimer.time,
       isRunning = workoutTimer.isRunning,
-      maxTime = workoutTimer.maxTime
+      maxTime = workoutTimer.maxTime,
+      finishedEvent = workoutTimer.finished
     )
   )
   val timerState = _timerState.asStateFlow()

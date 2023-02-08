@@ -20,10 +20,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.android.january2022.ui.rework.TimerState
 import com.example.android.january2022.ui.rework.toTimerString
 import com.example.android.january2022.utils.Event
+import kotlinx.coroutines.channels.consumeEach
 
 @Composable
 fun TimerBar(
@@ -45,10 +45,21 @@ fun TimerBar(
   val timerTonalElevation by animateDpAsState(targetValue = if (timerRunning) 140.dp else 14.dp)
 
   val context = LocalContext.current
-  val vibrator = if (Build.VERSION.SDK_INT>=31) {
+  val vibrator = if (Build.VERSION.SDK_INT >= 31) {
     (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator;
   } else {
     context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+  }
+
+  LaunchedEffect(key1 = true) {
+    timerState.finishedEvent.consumeEach {
+      if (it) {
+        val v = 160L
+        val vibrationArray = longArrayOf(0, v, 120, v, 120, v)
+        val vibrationEffect = VibrationEffect.createWaveform(vibrationArray, -1)
+        vibrator.vibrate(vibrationEffect)
+      }
+    }
   }
 
   Surface(
@@ -92,13 +103,7 @@ fun TimerBar(
           IconButton(onClick = { onEvent(SessionEvent.TimerReset) }) {
             Icon(Icons.Default.Refresh, "Reset Timer")
           }
-          IconButton(onClick = {
-            onEvent(SessionEvent.TimerToggled)
-            val v = 160L
-            val vibrationArray = longArrayOf(0, v, 120, v, 120, v)
-            val vibrationEffect = VibrationEffect.createWaveform(vibrationArray,-1)
-            vibrator.vibrate(vibrationEffect)
-          }) {
+          IconButton(onClick = { onEvent(SessionEvent.TimerToggled) }) {
             Icon(timerToggleIcon, "Toggle Timer")
           }
         }
