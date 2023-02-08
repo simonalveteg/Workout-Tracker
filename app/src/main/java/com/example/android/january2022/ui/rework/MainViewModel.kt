@@ -31,9 +31,9 @@ class MainViewModel @Inject constructor(
 
   private val _timerState = MutableStateFlow(
     TimerState(
-      time = workoutTimer.timerTime,
-      isRunning = workoutTimer.timerIsRunning,
-      maxTime = workoutTimer.timerMaxTime
+      time = workoutTimer.time,
+      isRunning = workoutTimer.isRunning,
+      maxTime = workoutTimer.maxTime
     )
   )
   val timerState = _timerState.asStateFlow()
@@ -86,9 +86,10 @@ class MainViewModel @Inject constructor(
           }
         }
       }
-      is SessionEvent.TimerToggled -> {
-        workoutTimer.toggle()
-      }
+      is SessionEvent.TimerToggled -> workoutTimer.toggle()
+      is SessionEvent.TimerReset -> workoutTimer.reset()
+      is SessionEvent.TimerIncreased -> workoutTimer.increment()
+      is SessionEvent.TimerDecreased -> workoutTimer.decrement()
     }
   }
 }

@@ -14,7 +14,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.ui.rework.TimerState
+import com.example.android.january2022.ui.rework.toTimerString
 import com.example.android.january2022.utils.Event
+import timber.log.Timber
 
 @Composable
 fun TimerBar(
@@ -28,10 +30,14 @@ fun TimerBar(
   val timerWidth by remember {
     derivedStateOf {
       maxWidth.times(timerTime.toFloat().div(timerMaxTime)).toInt().dp
-      //maxWidth.times(0.5).toInt().dp
     }
   }
   val timerToggleIcon = if (timerRunning) Icons.Default.Pause else Icons.Default.PlayArrow
+  val timerTimeText = if(timerRunning) timerTime.toTimerString() else timerMaxTime.toTimerString()
+
+  LaunchedEffect(key1 = timerState) {
+    Timber.d("timerState: ${timerState.maxTime.value}, ${timerState.time.value}, ${timerState.isRunning.value}")
+  }
 
   Surface(
     modifier = Modifier
@@ -60,7 +66,7 @@ fun TimerBar(
             Icon(Icons.Default.Remove, "Decrease time")
           }
           Text(
-            text = "$timerTime",
+            text = timerTimeText,
             textAlign = TextAlign.Center,
             modifier = Modifier.width(50.dp)
           )
