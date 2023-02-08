@@ -37,7 +37,6 @@ fun SessionScreen(
   val exercises = session.exercises.collectAsState(initial = emptyList())
   val selectedExercise = uiState.value.selectedExercise
   val timerState by viewModel.timerState.collectAsState()
-  val timerRunning by timerState.isRunning.collectAsState()
 
   LaunchedEffect(true) {
     Timber.d(session.toString())
