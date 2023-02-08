@@ -4,7 +4,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,12 +34,9 @@ fun TimerBar(
     }
   }
   val timerToggleIcon = if (timerRunning) Icons.Default.Pause else Icons.Default.PlayArrow
-  val timerTimeText = if(timerTime > 0L) timerTime.toTimerString() else timerMaxTime.toTimerString()
-  val timerTonalElevation by animateDpAsState(targetValue = if(timerRunning) 140.dp else 14.dp)
-
-  LaunchedEffect(key1 = timerState) {
-    Timber.d("timerState: ${timerState.maxTime.value}, ${timerState.time.value}, ${timerState.isRunning.value}")
-  }
+  val timerTimeText =
+    if (timerTime > 0L) timerTime.toTimerString() else timerMaxTime.toTimerString()
+  val timerTonalElevation by animateDpAsState(targetValue = if (timerRunning) 140.dp else 14.dp)
 
   Surface(
     modifier = Modifier

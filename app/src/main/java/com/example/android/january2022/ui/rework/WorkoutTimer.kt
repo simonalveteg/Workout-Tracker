@@ -1,9 +1,7 @@
 package com.example.android.january2022.ui.rework
 
 import android.os.CountDownTimer
-import kotlinx.coroutines.NonCancellable.start
 import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class WorkoutTimer {
@@ -11,7 +9,7 @@ class WorkoutTimer {
   val isRunning = MutableStateFlow(false)
   val time = MutableStateFlow(0L)
   val maxTime = MutableStateFlow(60000L)
-  private val increment = 30*1000L
+  private val increment = 30 * 1000L
   private var timer: WorkoutTimer? = null
 
   fun toggle() {
@@ -75,12 +73,10 @@ class WorkoutTimer {
 
     override fun onTick(millisUntilFinished: Long) {
       time.value = millisUntilFinished
-      Timber.d("onTick: ${time.value}")
       if (time.value <= 0L) onFinish()
     }
 
     override fun onFinish() {
-      Timber.d("onFinish")
       reset()
     }
   }
