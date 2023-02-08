@@ -23,14 +23,14 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(
-    UiState(
+    SessionState(
       sessions = repo.getAllSessions(),
       currentSession = SessionWrapper(Session(), emptyFlow()),
       selectedExercise = null
     )
   )
 
-  val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+  val uiState: StateFlow<SessionState> = _uiState.asStateFlow()
 
   init {
     Timber.d("Initializing ViewModel")
@@ -82,12 +82,6 @@ class MainViewModel @Inject constructor(
       }
     }
   }
-
-  data class UiState(
-    val sessions: Flow<List<Session>>,
-    val currentSession: SessionWrapper,
-    val selectedExercise: SessionExercise?
-  )
 }
 
 data class SessionWrapper(

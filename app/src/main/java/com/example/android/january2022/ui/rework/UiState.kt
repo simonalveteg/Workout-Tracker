@@ -11,8 +11,9 @@ data class HomeState(
 )
 
 data class SessionState(
-  val session: Flow<Session>,
-  val sessionExercises: Flow<List<SessionExerciseModel>>
+  val sessions: Flow<List<Session>>,
+  val currentSession: SessionWrapper,
+  val selectedExercise: SessionExercise?
 )
 
 data class SessionExerciseModel(
