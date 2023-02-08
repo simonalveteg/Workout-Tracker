@@ -181,11 +181,11 @@ fun SetInputLabel(text: String) {
 
 fun setTypeColor(setType: String, colorScheme: ColorScheme): Color {
   return when (setType) {
-    SetType.WARMUP -> Color.Gray
-    SetType.EASY -> Color.Green
+    SetType.WARMUP -> Color(0xFF7A7272)
+    SetType.EASY -> Color(0xFF6A9E44)
     SetType.NORMAL -> colorScheme.primary
-    SetType.HARD -> Color.Red
-    SetType.DROP -> Color.Magenta
+    SetType.HARD -> Color(0xFFB84733)
+    SetType.DROP -> Color(0xFFAD49A8)
     else -> Color.White
   }
 }
