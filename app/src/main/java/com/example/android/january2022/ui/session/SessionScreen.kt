@@ -46,6 +46,7 @@ fun SessionScreen(
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
   val coroutineScope = rememberCoroutineScope()
+  val timerVisible = remember { mutableStateOf(false) }
 
   Scaffold(
     bottomBar = {
@@ -54,7 +55,7 @@ fun SessionScreen(
       ) {
         BottomAppBar {}
         AnimatedVisibility(
-          visible = timerRunning,
+          visible = timerVisible.value,
           exit = slideOutVertically(
             animationSpec = tween(250),
             targetOffsetY = { height ->
@@ -78,7 +79,13 @@ fun SessionScreen(
           exit = fadeOut(tween(900)),
           enter = fadeIn(tween(900))
         ) {
-          SessionAppBar(viewModel::onEvent)
+          SessionAppBar(
+            onEvent = viewModel::onEvent,
+            timerVisible = timerVisible.value,
+            onTimerPress = {
+              timerVisible.value = !timerVisible.value
+            }
+          )
         }
         AnimatedVisibility(
           visible = uiState.value.selectedExercise != null,

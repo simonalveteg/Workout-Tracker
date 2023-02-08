@@ -2,10 +2,7 @@ package com.example.android.january2022.ui.session
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -30,10 +27,11 @@ fun TimerBar(
   val maxWidth = LocalConfiguration.current.screenWidthDp
   val timerWidth by remember {
     derivedStateOf {
-      //maxWidth.times(timerTime.toFloat().div(timerMaxTime)).toInt().dp
-      maxWidth.times(0.5).toInt().dp
+      maxWidth.times(timerTime.toFloat().div(timerMaxTime)).toInt().dp
+      //maxWidth.times(0.5).toInt().dp
     }
   }
+  val timerToggleIcon = if (timerRunning) Icons.Default.Pause else Icons.Default.PlayArrow
 
   Surface(
     modifier = Modifier
@@ -46,7 +44,7 @@ fun TimerBar(
         modifier = Modifier
           .width(timerWidth)
           .height(50.dp),
-        tonalElevation = 1400.dp
+        tonalElevation = 140.dp
       ) {}
       Row(
         modifier = Modifier
@@ -58,7 +56,7 @@ fun TimerBar(
         Row(
           verticalAlignment = Alignment.CenterVertically
         ) {
-          IconButton(onClick = { /*TODO*/ }) {
+          IconButton(onClick = { onEvent(SessionEvent.TimerDecreased) }) {
             Icon(Icons.Default.Remove, "Decrease time")
           }
           Text(
@@ -66,18 +64,18 @@ fun TimerBar(
             textAlign = TextAlign.Center,
             modifier = Modifier.width(50.dp)
           )
-          IconButton(onClick = { /*TODO*/ }) {
+          IconButton(onClick = { onEvent(SessionEvent.TimerIncreased) }) {
             Icon(Icons.Default.Add, "Increase time")
           }
         }
         Row(
           verticalAlignment = Alignment.CenterVertically
         ) {
-          IconButton(onClick = { /*TODO*/ }) {
+          IconButton(onClick = { onEvent(SessionEvent.TimerReset) }) {
             Icon(Icons.Default.Refresh, "Reset Timer")
           }
-          IconButton(onClick = { /*TODO*/ }) {
-            Icon(Icons.Default.Pause, "Toggle Timer")
+          IconButton(onClick = { onEvent(SessionEvent.TimerToggled) }) {
+            Icon(timerToggleIcon, "Toggle Timer")
           }
         }
       }

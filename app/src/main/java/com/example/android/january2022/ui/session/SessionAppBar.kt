@@ -14,7 +14,9 @@ import com.example.android.january2022.utils.Event
 
 @Composable
 fun SessionAppBar(
-  onEvent: (Event) -> Unit
+  onEvent: (Event) -> Unit,
+  timerVisible: Boolean,
+  onTimerPress: () -> Unit
 ) {
   BottomAppBar(
     actions = {
@@ -24,9 +26,13 @@ fun SessionAppBar(
       }
       Spacer(modifier = Modifier.width(8.dp))
       IconButton(onClick = {
-        onEvent(SessionEvent.TimerToggled)
+        onTimerPress()
       }) {
-        Icon(imageVector = Icons.Outlined.Timer, contentDescription = "Timer")
+        Icon(
+          imageVector = Icons.Outlined.Timer,
+          contentDescription = "Timer",
+          tint = if (timerVisible) MaterialTheme.colorScheme.primary else LocalContentColor.current
+        )
       }
     },
     floatingActionButton = {
