@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.rework
 
+import androidx.lifecycle.LiveData
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
@@ -25,4 +26,9 @@ data class ExerciseWrapper(
   val sessionExercise: SessionExercise,
   val exercise: Exercise,
   val sets: Flow<List<GymSet>>
+)
+
+data class TimerState(
+  val time: LiveData<Long>,
+  val isRunning: LiveData<Boolean>
 )

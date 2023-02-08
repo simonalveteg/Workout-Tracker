@@ -16,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-  private val repo: GymRepository
+  private val repo: GymRepository,
+  private val workoutTimer: WorkoutTimer
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(
@@ -26,8 +27,15 @@ class MainViewModel @Inject constructor(
       selectedExercise = null
     )
   )
-
   val uiState: StateFlow<SessionState> = _uiState.asStateFlow()
+
+  private val _timerState = MutableStateFlow(
+    TimerState(
+      time = workoutTimer.timerTime,
+      isRunning = workoutTimer.timerIsRunning
+    )
+  )
+  val timerState = _timerState.asStateFlow()
 
   init {
     Timber.d("Initializing ViewModel")

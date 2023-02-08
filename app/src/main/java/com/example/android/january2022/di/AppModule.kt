@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.StartingExercises
+import com.example.android.january2022.ui.rework.WorkoutTimer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +42,12 @@ object AppModule {
     @Singleton
     fun provideGymRepository(db: GymDatabase): GymRepository {
         return GymRepository(db.dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkoutTimer(): WorkoutTimer {
+        return WorkoutTimer()
     }
 
     @ApplicationScope
