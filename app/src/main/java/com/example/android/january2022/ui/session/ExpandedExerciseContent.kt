@@ -36,7 +36,9 @@ fun ExpandedExerciseContent(
   onSetCreated: () -> Unit
 ) {
   Column(
-    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(top = 8.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     sets.forEachIndexed { index, set ->
@@ -69,84 +71,81 @@ fun ExpandedExerciseContent(
           .fillMaxWidth()
           .padding(bottom = 4.dp, start = 4.dp, end = 8.dp)
       ) {
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          ColumnHeader(text = "SET${index + 1}")
-          Surface(
-            onClick = {
-              onEvent(SessionEvent.SetChanged(set.copy(setType = SetType.next(set.setType))))
+        ColumnHeader(text = "SET${index + 1}")
+        Row {
+          BasicTextField(
+            value = if (repsText != "-1") repsText else " ",
+            onValueChange = {
+              repsText = it
             },
-            color = setTypeColor(set.setType, MaterialTheme.colorScheme),
-            shape = MaterialTheme.shapes.small,
+            textStyle = TextStyle(
+              color = MaterialTheme.colorScheme.onSurface,
+              fontSize = 21.sp,
+              fontWeight = FontWeight.Bold,
+              textAlign = TextAlign.End
+            ),
+            keyboardOptions = KeyboardOptions(
+              keyboardType = KeyboardType.Number,
+              imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+              onNext = { localFocusManager.moveFocus(FocusDirection.Right) }
+            ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             modifier = Modifier
-              .defaultMinSize(minWidth = 100.dp)
-              .padding(start = 12.dp)
-          ) {
-            Text(
-              text = set.setType,
-              modifier = Modifier.padding(6.dp),
-              textAlign = TextAlign.Center
-            )
-          }
+              .width(IntrinsicSize.Min)
+              .padding(start = 6.dp)
+              .defaultMinSize(minWidth = 60.dp)
+              .focusRequester(requester)
+          )
+          SetInputLabel(text = "reps")
         }
         Row {
-          Row {
-            BasicTextField(
-              value = if (repsText != "-1") repsText else " ",
-              onValueChange = {
-                repsText = it
-              },
-              textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 21.sp,
-                fontWeight = FontWeight.Bold
-              ),
-              keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-              ),
-              keyboardActions = KeyboardActions(
-                onNext = { localFocusManager.moveFocus(FocusDirection.Right) }
-              ),
-              cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-              modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .padding(start = 6.dp)
-                .focusRequester(requester)
-            )
-            SetInputLabel(text = "reps")
-          }
-          Row {
-            BasicTextField(
-              value = if (weightText != "-1.0") weightText else " ",
-              onValueChange = {
-                weightText = it
-              },
-              textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 21.sp,
-                fontWeight = FontWeight.Bold
-              ),
-              keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-              ),
-              keyboardActions = KeyboardActions(
-                onDone = {
-                  localFocusManager.moveFocus(FocusDirection.Next)
-                  localFocusManager.clearFocus()
-                  //onDone()
-                }
-              ),
-              cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-              modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .padding(start = 8.dp)
-            )
-            SetInputLabel(text = "kg")
-          }
+          BasicTextField(
+            value = if (weightText != "-1.0") weightText else " ",
+            onValueChange = {
+              weightText = it
+            },
+            textStyle = TextStyle(
+              color = MaterialTheme.colorScheme.onSurface,
+              fontSize = 21.sp,
+              fontWeight = FontWeight.Bold,
+              textAlign = TextAlign.End
+            ),
+            keyboardOptions = KeyboardOptions(
+              keyboardType = KeyboardType.Number,
+              imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+              onDone = {
+                localFocusManager.moveFocus(FocusDirection.Next)
+                localFocusManager.clearFocus()
+                //onDone()
+              }
+            ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+            modifier = Modifier
+              .width(IntrinsicSize.Min)
+              .defaultMinSize(minWidth = 60.dp)
+              .padding(start = 8.dp)
+          )
+          SetInputLabel(text = "kg")
+        }
+        Surface(
+          onClick = {
+            onEvent(SessionEvent.SetChanged(set.copy(setType = SetType.next(set.setType))))
+          },
+          color = setTypeColor(set.setType, MaterialTheme.colorScheme),
+          shape = MaterialTheme.shapes.small,
+          modifier = Modifier
+            .defaultMinSize(minWidth = 100.dp)
+            .padding(start = 12.dp)
+        ) {
+          Text(
+            text = set.setType,
+            modifier = Modifier.padding(6.dp),
+            textAlign = TextAlign.Center
+          )
         }
       }
     }
