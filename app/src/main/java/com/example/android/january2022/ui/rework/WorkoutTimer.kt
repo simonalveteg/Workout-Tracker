@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.rework
 
 import android.os.CountDownTimer
+import kotlinx.coroutines.NonCancellable.start
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -11,36 +12,44 @@ class WorkoutTimer {
   val time = MutableStateFlow(0L)
   val maxTime = MutableStateFlow(60000L)
   private val increment = 30*1000L
-  private val maxLength = 60*60*1000L
   private var timer: WorkoutTimer? = null
 
   fun toggle() {
     if (isRunning.value) stop()
-    else if (time.value == 0L) start() else resume()
+    else if (time.value <= 0L) start() else resume()
   }
 
   fun increment() {
-    maxTime.value += increment
-    time.value += increment
+    if (isRunning.value) {
+      stop()
+      maxTime.value += increment
+      time.value += increment
+      resume()
+    } else {
+      maxTime.value += increment
+    }
   }
 
   fun decrement() {
-    if (!isRunning.value) {
-      maxTime.value -= increment
-    } else if (time.value <= increment) reset() else {
-      time.value -= increment
+    if (isRunning.value) {
+      stop()
+      time.value = time.value.minus(increment).coerceAtLeast(0L)
+      if (time.value <= 0L) reset() else resume()
+    } else {
+      maxTime.value = maxTime.value.minus(increment).coerceAtLeast(0L)
+      time.value = time.value.minus(increment).coerceAtLeast(0L)
     }
   }
 
   fun start() {
     timer?.cancel()
-    timer = WorkoutTimer().apply { start() }
+    timer = WorkoutTimer(maxTime.value).apply { start() }
     isRunning.value = true
   }
 
   fun resume() {
     timer?.cancel()
-    timer = WorkoutTimer()
+    timer = WorkoutTimer(time.value)
     timer?.start()
     isRunning.value = true
   }
@@ -58,13 +67,13 @@ class WorkoutTimer {
   }
 
   inner class WorkoutTimer(
-    length: Long = maxLength,
+    length: Long,
     interval: Long = 1000L
   ) : CountDownTimer(length, interval) {
 
 
     override fun onTick(millisUntilFinished: Long) {
-      time.value = maxTime.value-(maxLength-millisUntilFinished)
+      time.value = millisUntilFinished
       Timber.d("onTick: ${time.value}")
       if (time.value <= 0L) onFinish()
     }

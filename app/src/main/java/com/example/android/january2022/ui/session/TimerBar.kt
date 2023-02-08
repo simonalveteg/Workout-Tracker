@@ -33,7 +33,7 @@ fun TimerBar(
     }
   }
   val timerToggleIcon = if (timerRunning) Icons.Default.Pause else Icons.Default.PlayArrow
-  val timerTimeText = if(timerRunning) timerTime.toTimerString() else timerMaxTime.toTimerString()
+  val timerTimeText = if(timerTime > 0L) timerTime.toTimerString() else timerMaxTime.toTimerString()
 
   LaunchedEffect(key1 = timerState) {
     Timber.d("timerState: ${timerState.maxTime.value}, ${timerState.time.value}, ${timerState.isRunning.value}")
