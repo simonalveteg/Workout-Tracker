@@ -174,7 +174,8 @@ fun SetInputLabel(text: String) {
   Text(
     text = text,
     color = LocalContentColor.current.copy(alpha = 0.8f),
-    style = MaterialTheme.typography.labelSmall
+    style = MaterialTheme.typography.labelSmall,
+    modifier = Modifier.padding(start = 4.dp)
   )
 }
 
