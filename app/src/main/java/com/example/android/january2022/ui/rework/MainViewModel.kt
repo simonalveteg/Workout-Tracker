@@ -85,6 +85,9 @@ class MainViewModel @Inject constructor(
           }
         }
       }
+      is SessionEvent.TimerToggled -> {
+        workoutTimer.toggle()
+      }
     }
   }
 }

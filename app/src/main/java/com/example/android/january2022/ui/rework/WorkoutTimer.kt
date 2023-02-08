@@ -1,29 +1,33 @@
 package com.example.android.january2022.ui.rework
 
 import android.os.CountDownTimer
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class WorkoutTimer {
 
-  val timerIsRunning = MutableLiveData(false)
-  val timerTime = MutableLiveData(0L)
-  val timerMaxTime = MutableLiveData(60000L)
+  val timerIsRunning = MutableStateFlow(false)
+  val timerTime = MutableStateFlow(0L)
+  val timerMaxTime = MutableStateFlow(60000L)
   var timer: WorkoutTimer? = null
     private set
 
-  fun startTimer() {
+  fun toggle() {
+    if (timerIsRunning.value) stop() else resume()
+  }
+
+  fun start() {
     timer?.cancel()
-    timer = WorkoutTimer(timerMaxTime.value ?: 0).apply { start() }
+    timer = WorkoutTimer(timerMaxTime.value).apply { start() }
     timerIsRunning.value = true
   }
 
-  fun resumeTimer() {
+  fun resume() {
     timer?.cancel()
-    timer = WorkoutTimer(timerTime.value ?: 0).apply { start() }
+    timer = WorkoutTimer(timerTime.value).apply { start() }
     timerIsRunning.value = true
   }
 
-  fun stopTimer() {
+  fun stop() {
     timer?.cancel()
     timerIsRunning.value = false
   }

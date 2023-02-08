@@ -6,6 +6,7 @@ import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class HomeState(
   val sessions: Flow<List<Session>>
@@ -29,6 +30,6 @@ data class ExerciseWrapper(
 )
 
 data class TimerState(
-  val time: LiveData<Long>,
-  val isRunning: LiveData<Boolean>
+  val time: MutableStateFlow<Long>,
+  val isRunning: MutableStateFlow<Boolean>
 )

@@ -9,4 +9,5 @@ sealed class SessionEvent : Event {
   data class ExerciseSelection(val exercise: ExerciseWrapper) : SessionEvent()
   data class SetChanged(val updatedSet: GymSet) : SessionEvent()
   data class SetCreated(val sessionExercise: SessionExercise) : SessionEvent()
+  object TimerToggled : SessionEvent()
 }

@@ -10,9 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.utils.Event
 
 @Composable
-fun SessionAppBar() {
+fun SessionAppBar(
+  onEvent: (Event) -> Unit
+) {
   BottomAppBar(
     actions = {
       Spacer(modifier = Modifier.width(4.dp))
@@ -20,8 +23,10 @@ fun SessionAppBar() {
         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
       }
       Spacer(modifier = Modifier.width(8.dp))
-      IconButton(onClick = { /*TODO*/ }) {
-        Icon(imageVector = Icons.Outlined.Timer, contentDescription = "Options")
+      IconButton(onClick = {
+        onEvent(SessionEvent.TimerToggled)
+      }) {
+        Icon(imageVector = Icons.Outlined.Timer, contentDescription = "Timer")
       }
     },
     floatingActionButton = {

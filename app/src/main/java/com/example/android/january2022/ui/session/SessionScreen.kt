@@ -1,15 +1,14 @@
 package com.example.android.january2022.ui.session
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +31,8 @@ fun SessionScreen(
   val session = uiState.value.currentSession
   val exercises = session.exercises.collectAsState(initial = emptyList())
   val selectedExercise = uiState.value.selectedExercise
+  val timerState by viewModel.timerState.collectAsState()
+  val timerRunning by timerState.isRunning.collectAsState()
 
   LaunchedEffect(true) {
     Timber.d(session.toString())
@@ -43,14 +44,40 @@ fun SessionScreen(
 
   Scaffold(
     bottomBar = {
-      Box {
+      Box(
+        contentAlignment = Alignment.BottomCenter
+      ) {
         BottomAppBar {}
+        AnimatedVisibility(
+          visible = timerRunning,
+          exit = slideOutVertically(
+            animationSpec = tween(250),
+            targetOffsetY = { height ->
+              height/2
+            }
+          ),
+          enter = slideInVertically(
+            animationSpec = tween(250),
+            initialOffsetY = { height ->
+              height/2
+            }
+          )
+        ) {
+          Column {
+            Surface(
+              modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+              Text(text = "TEST")
+            }
+            BottomAppBar {}
+          }
+        }
         AnimatedVisibility(
           visible = uiState.value.selectedExercise == null,
           exit = fadeOut(tween(900)),
           enter = fadeIn(tween(900))
         ) {
-          SessionAppBar()
+          SessionAppBar(viewModel::onEvent)
         }
         AnimatedVisibility(
           visible = uiState.value.selectedExercise != null,
@@ -94,7 +121,7 @@ fun SessionScreen(
             viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
             if (!expanded) {
               coroutineScope.launch {
-                scrollState.animateScrollToItem(index = (index-2).coerceAtLeast(0))
+                scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
               }
             }
           }
