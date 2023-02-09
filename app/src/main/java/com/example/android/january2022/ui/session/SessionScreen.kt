@@ -91,7 +91,12 @@ fun SessionScreen(
           exit = fadeOut(tween(900)),
           enter = fadeIn(tween(900))
         ) {
-          SessionAppBarSelected()
+          SessionAppBarSelected(
+            timerVisible = timerVisible.value,
+            onTimerPress = {
+              timerVisible.value = !timerVisible.value
+            }
+          )
         }
       }
     }

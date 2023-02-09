@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.ui.session.appbaricons.TimerAction
 import com.example.android.january2022.utils.Event
 
 @Composable
@@ -25,15 +26,7 @@ fun SessionAppBar(
         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
       }
       Spacer(modifier = Modifier.width(8.dp))
-      IconButton(onClick = {
-        onTimerPress()
-      }) {
-        Icon(
-          imageVector = Icons.Outlined.Timer,
-          contentDescription = "Timer",
-          tint = if (timerVisible) MaterialTheme.colorScheme.primary else LocalContentColor.current
-        )
-      }
+      TimerAction(timerVisible,onTimerPress)
     },
     floatingActionButton = {
       FloatingActionButton(
