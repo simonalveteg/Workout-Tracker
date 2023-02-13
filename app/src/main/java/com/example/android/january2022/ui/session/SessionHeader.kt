@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.ui.rework.SessionWrapper
+import com.example.android.january2022.ui.rework.SmallPill
 import com.example.android.january2022.ui.theme.Shapes
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -92,18 +93,8 @@ fun SessionHeader(
         FlowRow(
           mainAxisAlignment = FlowMainAxisAlignment.Center
         ) {
-          muscleGroups.forEach { s ->
-            Surface(
-              shape = Shapes.small,
-              tonalElevation = 1.dp,
-              modifier = Modifier.padding(4.dp)
-            ) {
-              Text(
-                text = s.uppercase(),
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(4.dp)
-              )
-            }
+          muscleGroups.forEach { muscle ->
+            SmallPill(text = muscle, modifier = Modifier.padding(4.dp))
           }
         }
       }
