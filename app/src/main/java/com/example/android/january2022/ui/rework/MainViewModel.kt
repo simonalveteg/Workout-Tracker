@@ -61,24 +61,6 @@ class MainViewModel @Inject constructor(
   )
   val timerState = _timerState.asStateFlow()
 
-  init {
-    Timber.d("Initializing ViewModel")
-    viewModelScope.launch {
-      withContext(Dispatchers.IO) {
-        _homeState.value.sessions.collectLatest { sessions ->
-          Timber.d("Updating uiState")
-          val session = sessions.lastOrNull()
-          session?.let {
-            _sessionState.update { state ->
-              state.copy(
-                currentSession = it
-              )
-            }
-          }
-        }
-      }
-    }
-  }
 
   fun onEvent(event: Event) {
     Timber.d("Received event: $event")
@@ -89,6 +71,7 @@ class MainViewModel @Inject constructor(
             currentSession = event.sessionWrapper
           )
         }
+        Timber.d("currentSession updated: ${sessionState.value.currentSession}")
         sendUiEvent(UiEvent.Navigate(Routes.SESSION))
       }
       is SessionEvent.ExerciseSelection -> {
