@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
+import com.example.android.january2022.ui.settings.SettingsScreen
 import com.example.android.january2022.utils.Routes
 
 @Composable
@@ -35,6 +36,9 @@ fun NavHost(
         },
         viewModel = viewModel
       )
+    }
+    composable(Routes.SETTINGS) {
+      SettingsScreen(viewModel = viewModel)
     }
   }
 }

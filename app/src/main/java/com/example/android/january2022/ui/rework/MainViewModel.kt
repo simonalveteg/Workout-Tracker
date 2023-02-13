@@ -6,6 +6,7 @@ import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
+import com.example.android.january2022.ui.settings.SettingsEvent
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -65,6 +66,9 @@ class MainViewModel @Inject constructor(
   fun onEvent(event: Event) {
     Timber.d("Received event: $event")
     when (event) {
+      /**
+       * Home-related events.
+       */
       is HomeEvent.SessionClicked -> {
         _sessionState.update {
           it.copy(
@@ -74,6 +78,12 @@ class MainViewModel @Inject constructor(
         Timber.d("currentSession updated: ${sessionState.value.currentSession}")
         sendUiEvent(UiEvent.Navigate(Routes.SESSION))
       }
+      is HomeEvent.OpenSettings -> {
+        sendUiEvent(UiEvent.Navigate(Routes.SETTINGS))
+      }
+      /**
+       * Session-related events.
+       */
       is SessionEvent.ExerciseSelection -> {
         event.exercise.let { se ->
           _sessionState.update {
@@ -106,6 +116,9 @@ class MainViewModel @Inject constructor(
           sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx $it"))
         }
       }
+      /**
+       * Settings-related events.
+       */
     }
   }
 

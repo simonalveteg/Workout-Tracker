@@ -21,9 +21,11 @@ fun HomeAppBar(
   BottomAppBar(
     actions = {
       ActionSpacerStart()
-      Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
-      ActionSpacer()
       IconButton(onClick = { /*TODO*/ }) {
+        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
+      }
+      ActionSpacer()
+      IconButton(onClick = { onEvent(HomeEvent.OpenSettings) }) {
         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
       }
     },
