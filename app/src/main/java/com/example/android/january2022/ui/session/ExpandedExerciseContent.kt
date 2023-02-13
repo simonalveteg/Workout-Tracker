@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -70,6 +71,7 @@ fun ExpandedExerciseContent(
         modifier = Modifier
           .fillMaxWidth()
           .padding(bottom = 4.dp, start = 4.dp, end = 8.dp)
+          .clickable {  }
       ) {
         ColumnHeader(text = "SET${index + 1}")
         Row {

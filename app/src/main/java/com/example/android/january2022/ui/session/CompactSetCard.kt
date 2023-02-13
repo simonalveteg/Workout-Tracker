@@ -35,13 +35,13 @@ fun CompactSetCard(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center
   ) {
-    Surface(color = setTypeColor(set.setType, MaterialTheme.colorScheme)) {
-      Box(
-        Modifier
-          .height(34.dp)
-          .width(2.dp)
-      )
-    }
+    Surface(
+      modifier = Modifier
+        .fillMaxHeight(0.7f)
+        .padding(top = 1.dp)
+        .width(2.dp),
+      color = setTypeColor(set.setType, MaterialTheme.colorScheme)
+    ) {}
     Column(Modifier.padding(start = 4.dp)) {
       Row {
         Text(text = repsText, fontWeight = FontWeight.Bold)
