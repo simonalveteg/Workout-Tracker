@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.rework
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,7 +14,7 @@ import com.example.android.january2022.ui.theme.Shapes
 fun SmallPill(text: String, modifier: Modifier = Modifier) {
   Surface(
     shape = Shapes.small,
-    tonalElevation = 2.dp,
+    tonalElevation = LocalAbsoluteTonalElevation.current + 1.dp,
     modifier = modifier
   ) {
     Text(
