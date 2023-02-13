@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.ui.session.actions.ActionSpacer
+import com.example.android.january2022.ui.session.actions.ActionSpacerStart
 import com.example.android.january2022.utils.Event
 
 @Composable
@@ -17,9 +20,11 @@ fun HomeAppBar(
 ) {
   BottomAppBar(
     actions = {
-      Spacer(modifier = Modifier.width(4.dp))
+      ActionSpacerStart()
+      Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
+      ActionSpacer()
       IconButton(onClick = { /*TODO*/ }) {
-        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
+        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
       }
     },
     floatingActionButton = {

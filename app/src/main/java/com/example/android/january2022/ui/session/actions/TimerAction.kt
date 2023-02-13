@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session.appbaricons
+package com.example.android.january2022.ui.session.actions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer

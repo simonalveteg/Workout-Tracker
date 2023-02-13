@@ -5,16 +5,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.OpenInNew
-import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.android.january2022.ui.session.appbaricons.TimerAction
+import com.example.android.january2022.ui.session.actions.ActionSpacer
+import com.example.android.january2022.ui.session.actions.ActionSpacerStart
+import com.example.android.january2022.ui.session.actions.TimerAction
 import com.example.android.january2022.utils.Event
 
 @Composable
@@ -25,19 +25,19 @@ fun SessionAppBarSelected(
 ) {
   BottomAppBar(
     actions = {
-      Spacer(modifier = Modifier.width(4.dp))
+      ActionSpacerStart()
       IconButton(onClick = { /*TODO*/ }) {
         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
       }
-      Spacer(modifier = Modifier.width(8.dp))
+      ActionSpacer()
       TimerAction(timerVisible = timerVisible) {
         onTimerPress()
       }
-      Spacer(modifier = Modifier.width(8.dp))
+      ActionSpacer()
       IconButton(onClick = { onEvent(SessionEvent.OpenGuide) }) {
         Icon(imageVector = Icons.Outlined.OpenInNew, contentDescription = "Open exercise guide.")
       }
-      Spacer(modifier = Modifier.width(8.dp))
+      ActionSpacer()
       IconButton(onClick = { /*TODO*/ }) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
