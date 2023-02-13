@@ -69,8 +69,8 @@ fun ExpandedExerciseContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+          .padding(bottom = 4.dp, start = 12.dp, end = 8.dp)
           .fillMaxWidth()
-          .padding(bottom = 4.dp, start = 4.dp, end = 8.dp)
           .clickable {  }
       ) {
         ColumnHeader(text = "SET${index + 1}")
