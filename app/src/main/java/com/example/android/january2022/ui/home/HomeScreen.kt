@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,13 +38,13 @@ fun HomeScreen(
 
   Scaffold(
     bottomBar = {
-      BottomAppBar() {
-
-      }
+      HomeAppBar(onEvent = viewModel::onEvent)
     }
   ) { paddingValues ->
     LazyColumn(
-      modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 2.dp)
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = 8.dp, vertical = 2.dp)
     ) {
       item {
         Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
