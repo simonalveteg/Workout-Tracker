@@ -41,7 +41,6 @@ fun ExerciseCard(
     modifier = Modifier
       .fillMaxWidth()
       .padding(vertical = 8.dp, horizontal = 8.dp),
-    tonalElevation = 2.dp,
     shape = MaterialTheme.shapes.medium
   ) {
     Column(

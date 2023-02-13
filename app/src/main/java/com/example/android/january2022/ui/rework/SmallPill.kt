@@ -13,7 +13,7 @@ import com.example.android.january2022.ui.theme.Shapes
 fun SmallPill(text: String, modifier: Modifier = Modifier) {
   Surface(
     shape = Shapes.small,
-    tonalElevation = 6.dp,
+    tonalElevation = 2.dp,
     modifier = modifier
   ) {
     Text(

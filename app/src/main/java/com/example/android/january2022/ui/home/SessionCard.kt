@@ -23,8 +23,8 @@ fun SessionCard(
   Surface(
     onClick = { onClick() },
     modifier = Modifier
-      .fillMaxWidth().padding(bottom = 8.dp),
-    shape = MaterialTheme.shapes.large
+      .fillMaxWidth().padding(bottom = 8.dp).requiredHeight(75.dp),
+    shape = MaterialTheme.shapes.medium
   ) {
     Row(
       modifier = Modifier.fillMaxWidth().padding(12.dp),
