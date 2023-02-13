@@ -46,7 +46,7 @@ fun ExerciseCard(
   ) {
     Column(
       Modifier
-        .padding(vertical = 12.dp)
+        .padding(top = 12.dp, bottom = 6.dp)
         .fillMaxWidth()
     ) {
       Text(
