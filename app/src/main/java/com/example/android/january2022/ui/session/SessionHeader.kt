@@ -34,6 +34,7 @@ fun SessionHeader(
       .padding(
         start = 12.dp,
         top = topPadding,
+        end = 12.dp
       )
       .height(height)
       .fillMaxWidth()
@@ -64,7 +65,9 @@ fun SessionHeader(
           .fillMaxWidth()
           .padding(8.dp)
       ) {
-        Row {
+        Row(
+          modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
           Text(
             text = startTime,
             color = MaterialTheme.colorScheme.secondary,
@@ -97,7 +100,7 @@ fun SessionHeader(
             ) {
               Text(
                 text = s.uppercase(),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(4.dp)
               )
             }
