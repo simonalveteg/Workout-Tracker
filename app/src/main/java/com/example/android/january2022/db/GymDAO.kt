@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GymDAO {
 
-  @Query("SELECT * FROM sessions")
+  @Query("SELECT * FROM sessions ORDER BY start DESC")
   fun getAllSessions(): Flow<List<Session>>
 
   @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :sessionId")
