@@ -60,7 +60,7 @@ fun ExerciseCard(
           sets = sets.value,
           onEvent = onEvent,
           onSetCreated = {
-            onEvent(SessionEvent.SetCreated(exerciseWrapper.sessionExercise))
+            onEvent(SessionEvent.SetCreated(exerciseWrapper))
           }
         )
       }

@@ -15,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
@@ -39,8 +40,18 @@ fun SessionScreen(
   val muscleGroups by uiState.value.currentSession.muscleGroups.collectAsState(initial = emptyList())
   val timerState by viewModel.timerState.collectAsState()
 
+  val uriHandler = LocalUriHandler.current
+
   LaunchedEffect(true) {
     Timber.d(session.toString())
+    viewModel.uiEvent.collect { event ->
+      when(event) {
+        is UiEvent.OpenWebsite -> {
+          uriHandler.openUri(event.url)
+        }
+        else -> Unit
+      }
+    }
   }
 
   val scrollState = rememberLazyListState()
@@ -96,7 +107,8 @@ fun SessionScreen(
             timerVisible = timerVisible.value,
             onTimerPress = {
               timerVisible.value = !timerVisible.value
-            }
+            },
+            onEvent = viewModel::onEvent
           )
         }
       }
@@ -125,7 +137,7 @@ fun SessionScreen(
           }
         ) { index, exercise ->
           val expanded =
-            exercise.sessionExercise.sessionExerciseId == selectedExercise?.sessionExerciseId
+            exercise.sessionExercise.sessionExerciseId == selectedExercise?.sessionExercise?.sessionExerciseId
           ExerciseCard(
             exerciseWrapper = exercise,
             expanded = expanded,

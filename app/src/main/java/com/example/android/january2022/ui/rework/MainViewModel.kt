@@ -6,8 +6,10 @@ import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
+import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,6 +21,10 @@ class MainViewModel @Inject constructor(
   private val repo: GymRepository,
   private val workoutTimer: WorkoutTimer
 ) : ViewModel() {
+
+
+  private val _uiEvent = Channel<UiEvent>()
+  val uiEvent = _uiEvent.receiveAsFlow()
 
   private val _uiState = MutableStateFlow(
     SessionState(
@@ -66,7 +72,7 @@ class MainViewModel @Inject constructor(
     Timber.d("Received event: $event")
     when (event) {
       is SessionEvent.ExerciseSelection -> {
-        event.exercise.sessionExercise.let { se ->
+        event.exercise.let { se ->
           _uiState.update {
             it.copy(
               selectedExercise = if (se != it.selectedExercise) se else null
@@ -84,7 +90,7 @@ class MainViewModel @Inject constructor(
       is SessionEvent.SetCreated -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
-            repo.createSet(event.sessionExercise)
+            repo.createSet(event.sessionExercise.sessionExercise)
           }
         }
       }
@@ -92,6 +98,17 @@ class MainViewModel @Inject constructor(
       is SessionEvent.TimerReset -> workoutTimer.reset()
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()
+      is SessionEvent.OpenGuide -> {
+        uiState.value.selectedExercise?.exercise?.title?.let {
+          sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx $it"))
+        }
+      }
+    }
+  }
+
+  private fun sendUiEvent(event: UiEvent) {
+    viewModelScope.launch {
+      _uiEvent.send(event)
     }
   }
 }
