@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
 import com.example.android.january2022.utils.Routes
 
@@ -13,9 +14,16 @@ fun NavHost(
 ) {
   NavHost(
     navController = navController,
-    startDestination = Routes.SESSION
+    startDestination = Routes.HOME
   ) {
 
+    composable(Routes.HOME) {
+      HomeScreen(
+        onNavigate = {
+          navController.navigate(it.route)
+        }
+      )
+    }
     composable(Routes.SESSION) {
       SessionScreen(
         onNavigate = {

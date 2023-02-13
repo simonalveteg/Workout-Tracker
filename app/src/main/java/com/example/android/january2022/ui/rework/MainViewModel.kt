@@ -26,14 +26,20 @@ class MainViewModel @Inject constructor(
   private val _uiEvent = Channel<UiEvent>()
   val uiEvent = _uiEvent.receiveAsFlow()
 
-  private val _uiState = MutableStateFlow(
+  private val _homeState = MutableStateFlow(
+    HomeState(
+      sessions = repo.getAllSessions()
+    )
+  )
+  val homeState: StateFlow<HomeState> = _homeState.asStateFlow()
+
+  private val _sessionState = MutableStateFlow(
     SessionState(
-      sessions = repo.getAllSessions(),
       currentSession = SessionWrapper(Session(), emptyFlow(), emptyFlow()),
       selectedExercise = null
     )
   )
-  val uiState: StateFlow<SessionState> = _uiState.asStateFlow()
+  val sessionState: StateFlow<SessionState> = _sessionState.asStateFlow()
 
   private val _timerState = MutableStateFlow(
     TimerState(
@@ -49,11 +55,11 @@ class MainViewModel @Inject constructor(
     Timber.d("Initializing ViewModel")
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
-        _uiState.value.sessions.collectLatest { sessions ->
+        _homeState.value.sessions.collectLatest { sessions ->
           Timber.d("Updating uiState")
           val session = sessions.lastOrNull()
           session?.let {
-            _uiState.update { state ->
+            _sessionState.update { state ->
               state.copy(
                 currentSession = SessionWrapper(
                   session = it,
@@ -73,7 +79,7 @@ class MainViewModel @Inject constructor(
     when (event) {
       is SessionEvent.ExerciseSelection -> {
         event.exercise.let { se ->
-          _uiState.update {
+          _sessionState.update {
             it.copy(
               selectedExercise = if (se != it.selectedExercise) se else null
             )
@@ -99,7 +105,7 @@ class MainViewModel @Inject constructor(
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()
       is SessionEvent.OpenGuide -> {
-        uiState.value.selectedExercise?.exercise?.title?.let {
+        sessionState.value.selectedExercise?.exercise?.title?.let {
           sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx $it"))
         }
       }

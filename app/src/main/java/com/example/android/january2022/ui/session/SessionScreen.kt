@@ -6,11 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,7 +28,7 @@ fun SessionScreen(
   viewModel: MainViewModel = hiltViewModel()
 ) {
 
-  val uiState = viewModel.uiState.collectAsState()
+  val uiState = viewModel.sessionState.collectAsState()
   val session = uiState.value.currentSession
   val exercises = session.exercises.collectAsState(initial = emptyList())
   val selectedExercise = uiState.value.selectedExercise
