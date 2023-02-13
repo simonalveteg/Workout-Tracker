@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,6 +27,15 @@ fun HomeScreen(
   val uiState = viewModel.homeState.collectAsState()
   val sessions = uiState.value.sessions.collectAsState(initial = emptyList())
 
+  LaunchedEffect(true) {
+    viewModel.uiEvent.collect { event ->
+      when (event) {
+        is UiEvent.Navigate -> onNavigate(event)
+        else -> Unit
+      }
+    }
+  }
+
   Scaffold(
     bottomBar = {
       BottomAppBar() {
@@ -40,8 +49,13 @@ fun HomeScreen(
       item {
         Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
       }
-      items(sessions.value) {
-        SessionCard(it)
+      items(sessions.value) { session ->
+        SessionCard(
+          sessionWrapper = session,
+          onClick = {
+            viewModel.onEvent(HomeEvent.SessionClicked(session))
+          }
+        )
       }
     }
   }

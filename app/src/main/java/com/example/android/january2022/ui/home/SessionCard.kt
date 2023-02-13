@@ -14,13 +14,14 @@ import com.example.android.january2022.ui.rework.SessionWrapper
 @Composable
 fun SessionCard(
   sessionWrapper: SessionWrapper,
+  onClick: () -> Unit
 ) {
 
   val session = sessionWrapper.session
   val muscleGroups by sessionWrapper.muscleGroups.collectAsState(initial = emptyList())
 
   Surface(
-    onClick = { /*TODO*/ },
+    onClick = { onClick() },
     modifier = Modifier
       .fillMaxWidth().padding(bottom = 8.dp),
     shape = MaterialTheme.shapes.large

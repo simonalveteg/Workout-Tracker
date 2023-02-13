@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
+import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +83,14 @@ class MainViewModel @Inject constructor(
   fun onEvent(event: Event) {
     Timber.d("Received event: $event")
     when (event) {
+      is HomeEvent.SessionClicked -> {
+        _sessionState.update {
+          it.copy(
+            currentSession = event.sessionWrapper
+          )
+        }
+        sendUiEvent(UiEvent.Navigate(Routes.SESSION))
+      }
       is SessionEvent.ExerciseSelection -> {
         event.exercise.let { se ->
           _sessionState.update {
