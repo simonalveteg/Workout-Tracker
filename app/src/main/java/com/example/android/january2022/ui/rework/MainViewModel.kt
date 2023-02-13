@@ -20,6 +20,7 @@ import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -46,11 +47,12 @@ class MainViewModel @Inject constructor(
   private val _homeState = MutableStateFlow(
     HomeState(
       sessions = repo.getAllSessions().map {
+        Timber.d("Mapping Sessions.")
         it.map { session ->
           SessionWrapper(
             session = session,
             exercises = repo.getExercisesForSession(session),
-            muscleGroups = repo.getMuscleGroupsForSession(session)
+            muscleGroups = repo.getMuscleGroupsForSession(session).stateIn(viewModelScope)
           )
         }
       }
@@ -60,7 +62,7 @@ class MainViewModel @Inject constructor(
 
   private val _sessionState = MutableStateFlow(
     SessionState(
-      currentSession = SessionWrapper(Session(), emptyFlow(), emptyFlow()),
+      currentSession = SessionWrapper(Session(), emptyFlow(), MutableStateFlow(emptyList())),
       selectedExercise = null
     )
   )
@@ -168,7 +170,7 @@ class MainViewModel @Inject constructor(
     saveToFile(uri, context.contentResolver, ob)
   }
 
-  private fun importDatabase(uri: Uri,context: Context) {
+  private fun importDatabase(uri: Uri, context: Context) {
     viewModelScope.launch {
       val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
       loadFromFile(uri, context.contentResolver)?.let {
@@ -183,7 +185,7 @@ class MainViewModel @Inject constructor(
         importedDatabase.sessionExercises.forEach { sessionExercise ->
           repo.insertSessionExercise(sessionExercise)
         }
-        importedDatabase.sets.forEach { set->
+        importedDatabase.sets.forEach { set ->
           repo.insertSet(set)
         }
       }

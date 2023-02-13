@@ -7,6 +7,7 @@ import com.example.android.january2022.db.entities.SessionExercise
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 data class HomeState(
   val sessions: Flow<List<SessionWrapper>>
@@ -20,7 +21,7 @@ data class SessionState(
 data class SessionWrapper(
   val session: Session,
   val exercises: Flow<List<ExerciseWrapper>>,
-  val muscleGroups: Flow<List<String>>
+  val muscleGroups: StateFlow<List<String>>
 )
 
 data class ExerciseWrapper(

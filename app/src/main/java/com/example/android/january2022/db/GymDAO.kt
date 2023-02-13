@@ -3,6 +3,7 @@ package com.example.android.january2022.db
 import androidx.room.*
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 
 @Dao
@@ -16,6 +17,9 @@ interface GymDAO {
 
   @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId ASC")
   fun getSetsForExercise(id: Long): Flow<List<GymSet>>
+
+  @Query("SELECT GROUP_CONCAT(targets,'|') FROM exercises as e JOIN sessionExercises as se ON e.id = se.parentExerciseId  WHERE se.parentSessionId = :sessionId")
+  fun getMuscleGroupsForSession(sessionId: Long): Flow<String>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertSession(session: Session): Long

@@ -49,7 +49,7 @@ fun HomeScreen(
       item {
         Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
       }
-      items(sessions.value) { session ->
+      items(sessions.value, key = { it.session.sessionId }) { session ->
         SessionCard(
           sessionWrapper = session,
           onClick = {
