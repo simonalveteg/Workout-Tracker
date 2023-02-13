@@ -28,7 +28,15 @@ class MainViewModel @Inject constructor(
 
   private val _homeState = MutableStateFlow(
     HomeState(
-      sessions = repo.getAllSessions()
+      sessions = repo.getAllSessions().map {
+        it.map { session ->
+          SessionWrapper(
+            session = session,
+            exercises = repo.getExercisesForSession(session),
+            muscleGroups = repo.getMuscleGroupsForSession(session)
+          )
+        }
+      }
     )
   )
   val homeState: StateFlow<HomeState> = _homeState.asStateFlow()
@@ -61,11 +69,7 @@ class MainViewModel @Inject constructor(
           session?.let {
             _sessionState.update { state ->
               state.copy(
-                currentSession = SessionWrapper(
-                  session = it,
-                  exercises = repo.getExercisesForSession(it),
-                  muscleGroups = repo.getMuscleGroupsForSession(it)
-                )
+                currentSession = it
               )
             }
           }

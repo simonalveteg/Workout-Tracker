@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class HomeState(
-  val sessions: Flow<List<Session>>
+  val sessions: Flow<List<SessionWrapper>>
 )
 
 data class SessionState(
