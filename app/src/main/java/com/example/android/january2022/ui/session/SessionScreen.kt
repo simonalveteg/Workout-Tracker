@@ -36,6 +36,7 @@ fun SessionScreen(
   val session = uiState.value.currentSession
   val exercises = session.exercises.collectAsState(initial = emptyList())
   val selectedExercise = uiState.value.selectedExercise
+  val muscleGroups by uiState.value.currentSession.muscleGroups.collectAsState(initial = emptyList())
   val timerState by viewModel.timerState.collectAsState()
 
   LaunchedEffect(true) {
@@ -104,7 +105,7 @@ fun SessionScreen(
     Box {
       SessionHeader(
         sessionWrapper = session,
-        muscleGroups = listOf("One", "Two", "Three"),
+        muscleGroups = muscleGroups,
         scrollState = scrollState,
         height = headerHeight,
         topPadding = paddingValues.calculateTopPadding()

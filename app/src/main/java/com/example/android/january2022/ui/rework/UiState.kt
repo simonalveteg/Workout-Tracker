@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.rework
 
+import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
@@ -20,7 +21,8 @@ data class SessionState(
 
 data class SessionWrapper(
   val session: Session,
-  val exercises: Flow<List<ExerciseWrapper>>
+  val exercises: Flow<List<ExerciseWrapper>>,
+  val muscleGroups: Flow<List<String>>
 )
 
 data class ExerciseWrapper(

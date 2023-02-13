@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
   private val _uiState = MutableStateFlow(
     SessionState(
       sessions = repo.getAllSessions(),
-      currentSession = SessionWrapper(Session(), emptyFlow()),
+      currentSession = SessionWrapper(Session(), emptyFlow(), emptyFlow()),
       selectedExercise = null
     )
   )
@@ -51,7 +51,8 @@ class MainViewModel @Inject constructor(
               state.copy(
                 currentSession = SessionWrapper(
                   session = it,
-                  exercises = repo.getExercisesForSession(it)
+                  exercises = repo.getExercisesForSession(it),
+                  muscleGroups = repo.getMuscleGroupsForSession(it)
                 )
               )
             }

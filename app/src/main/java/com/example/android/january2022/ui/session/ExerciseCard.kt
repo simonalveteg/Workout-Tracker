@@ -68,7 +68,7 @@ fun ExerciseCard(
         }
         val startWidth = 50f
         val endWidth by animateFloatAsState(
-          targetValue = width.toFloat() - if (listState.canScrollForward) 300f else 50f
+          targetValue = width.toFloat() - if (listState.canScrollForward) 300f else startWidth
         )
         Box(
           contentAlignment = Alignment.CenterEnd

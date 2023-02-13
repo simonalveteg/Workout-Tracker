@@ -7,7 +7,9 @@ import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.toList
 import timber.log.Timber
 
 
@@ -30,6 +32,18 @@ class GymRepository(
         )
       }
     }
+  }
+
+  fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
+    val list = dao.getExercisesForSession(session.sessionId).map { list ->
+      list.map {
+        it.exercise.getMuscleGroup()
+      }
+        .groupingBy { it }.eachCount().toList()
+        .sortedByDescending { (_, v) -> v }
+        .map { it.first }
+    }
+    return list
   }
 
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
