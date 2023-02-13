@@ -35,3 +35,10 @@ data class TimerState(
   val maxTime: MutableStateFlow<Long>,
   val finishedEvent: Channel<Boolean>
 )
+
+data class DatabaseModel(
+  val sessions: List<Session>,
+  val exercises: List<Exercise>,
+  val sessionExercises: List<SessionExercise>,
+  val sets: List<GymSet>
+)

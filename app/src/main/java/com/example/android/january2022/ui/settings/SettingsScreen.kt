@@ -1,4 +1,5 @@
 package com.example.android.january2022.ui.settings
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
@@ -27,7 +28,7 @@ fun SettingsScreen(
     contract = CreateDocument("application/json"),
     onResult = { uri ->
       uri?.let {
-        viewModel.onEvent(SettingsEvent.ExportDatabase(mContext,it))
+        viewModel.onEvent(SettingsEvent.ExportDatabase(mContext, it))
       }
     }
   )
@@ -35,7 +36,7 @@ fun SettingsScreen(
     contract = ActivityResultContracts.GetContent(),
     onResult = { uri ->
       uri?.let {
-        viewModel.onEvent(SettingsEvent.ImportDatabase(mContext,it))
+        viewModel.onEvent(SettingsEvent.ImportDatabase(mContext, it))
       }
     }
   )
@@ -53,7 +54,9 @@ fun SettingsScreen(
 
   Scaffold() { padding ->
     Column(
-      Modifier.fillMaxSize().padding(padding),
+      Modifier
+        .fillMaxSize()
+        .padding(padding),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
