@@ -20,7 +20,7 @@ data class SessionState(
 
 data class SessionWrapper(
   val session: Session,
-  val exercises: Flow<List<ExerciseWrapper>>,
+  val exercises: StateFlow<List<ExerciseWrapper>>,
   val muscleGroups: StateFlow<List<String>>
 )
 

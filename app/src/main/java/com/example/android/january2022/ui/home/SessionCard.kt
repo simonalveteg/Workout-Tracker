@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.ui.rework.SessionWrapper
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +28,10 @@ fun SessionCard(
     derivedStateOf {
       muscleGroups.drop(1).take(3).toString().drop(1).dropLast(1).uppercase()
     }
+  }
+
+  LaunchedEffect(muscleSubtitle) {
+    Timber.d("New subtitle in sessioncard.")
   }
 
   Surface(

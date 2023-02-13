@@ -24,10 +24,6 @@ fun CompactSetCard(
   val repsText by remember { derivedStateOf { if (reps > -1) reps.toString() else "0" } }
   val weightText by remember { derivedStateOf { if (weight > -1) weight.toString() else "0" } }
 
-  LaunchedEffect(key1 = set) {
-    Timber.d("Received new sets")
-  }
-
   Row(
     Modifier
       .padding(horizontal = 8.dp, vertical = 4.dp)

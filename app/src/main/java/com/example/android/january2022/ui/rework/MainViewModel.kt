@@ -51,7 +51,16 @@ class MainViewModel @Inject constructor(
         it.map { session ->
           SessionWrapper(
             session = session,
-            exercises = repo.getExercisesForSession(session),
+            exercises = repo.getExercisesForSession(session).map { list ->
+              Timber.d("Wrapping latest available list")
+              list.map { se ->
+                ExerciseWrapper(
+                  sessionExercise = se.sessionExercise,
+                  exercise = se.exercise,
+                  sets = repo.getSetsForExercise(se.sessionExercise.sessionExerciseId).stateIn(viewModelScope)
+                )
+              }
+            }.stateIn(viewModelScope),
             muscleGroups = repo.getMuscleGroupsForSession(session).stateIn(viewModelScope)
           )
         }
@@ -62,7 +71,7 @@ class MainViewModel @Inject constructor(
 
   private val _sessionState = MutableStateFlow(
     SessionState(
-      currentSession = SessionWrapper(Session(), emptyFlow(), MutableStateFlow(emptyList())),
+      currentSession = SessionWrapper(Session(), MutableStateFlow(emptyList()), MutableStateFlow(emptyList())),
       selectedExercise = null
     )
   )

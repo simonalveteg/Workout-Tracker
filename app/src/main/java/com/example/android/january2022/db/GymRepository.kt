@@ -1,9 +1,6 @@
 package com.example.android.january2022.db
 
-import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
+import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.rework.DatabaseModel
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.ui.rework.MainViewModel
@@ -20,24 +17,16 @@ class GymRepository(
 
   fun getAllSessions() = dao.getAllSessions()
 
-  @OptIn(ExperimentalCoroutinesApi::class)
-  fun getExercisesForSession(session: Session): Flow<List<ExerciseWrapper>> {
+  fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {
     Timber.d("Retrieving exercises for session: $session")
-    return dao.getExercisesForSession(session.sessionId).mapLatest { list ->
-      Timber.d("Wrapping latest available list")
-      list.map {
-        ExerciseWrapper(
-          sessionExercise = it.sessionExercise,
-          exercise = it.exercise,
-          sets = dao.getSetsForExercise(it.sessionExercise.sessionExerciseId)
-        )
-      }
-    }
+    return dao.getExercisesForSession(session.sessionId)
   }
+
+  fun getSetsForExercise(sessionExerciseId: Long) = dao.getSetsForExercise(sessionExerciseId)
 
   fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
     val list = dao.getMuscleGroupsForSession(session.sessionId).map {
-      Timber.d("COCK")
+      Timber.d("MuscleGroup flow created.")
       it.split("|").map { muscle ->
         turnTargetIntoMuscleGroup(muscle)
       }.distinct()

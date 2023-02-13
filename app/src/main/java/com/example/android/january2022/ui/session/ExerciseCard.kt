@@ -32,6 +32,7 @@ fun ExerciseCard(
 ) {
   val exercise = exerciseWrapper.exercise
   val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
+
   LaunchedEffect(key1 = exercise) {
     Timber.d("ExerciseCard received new exercise")
   }
