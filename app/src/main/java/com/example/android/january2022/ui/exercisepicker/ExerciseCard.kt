@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.exercisepicker
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import com.example.android.january2022.ui.session.actions.OpenStatsAction
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseCard(
   exercise: Exercise,
@@ -26,7 +28,8 @@ fun ExerciseCard(
   val equipment = exercise.equipment
 
   Surface(
-    modifier = Modifier.fillMaxWidth(),
+    onClick = onClick,
+    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
     shape = MaterialTheme.shapes.medium
   ) {
     Row(
@@ -43,7 +46,7 @@ fun ExerciseCard(
       ) {
         Text(
           text = exercise.title,
-          modifier = Modifier.padding(bottom = 8.dp),
+          modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(0.65f),
           style = MaterialTheme.typography.titleMedium
         )
         Row(

@@ -57,7 +57,8 @@ class MainViewModel @Inject constructor(
                 ExerciseWrapper(
                   sessionExercise = se.sessionExercise,
                   exercise = se.exercise,
-                  sets = repo.getSetsForExercise(se.sessionExercise.sessionExerciseId).stateIn(viewModelScope)
+                  sets = repo.getSetsForExercise(se.sessionExercise.sessionExerciseId)
+                    .stateIn(viewModelScope)
                 )
               }
             }.stateIn(viewModelScope),
@@ -69,9 +70,21 @@ class MainViewModel @Inject constructor(
   )
   val homeState: StateFlow<HomeState> = _homeState.asStateFlow()
 
+  private val _pickerState = MutableStateFlow(
+    PickerState(
+      exercises = repo.getAllExercises(),
+      selectedExercises = emptyFlow()
+    )
+  )
+  val pickerState = _pickerState.asStateFlow()
+
   private val _sessionState = MutableStateFlow(
     SessionState(
-      currentSession = SessionWrapper(Session(), MutableStateFlow(emptyList()), MutableStateFlow(emptyList())),
+      currentSession = SessionWrapper(
+        Session(),
+        MutableStateFlow(emptyList()),
+        MutableStateFlow(emptyList())
+      ),
       selectedExercise = null
     )
   )
