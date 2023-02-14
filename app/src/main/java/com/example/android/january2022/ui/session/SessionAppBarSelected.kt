@@ -1,19 +1,15 @@
 package com.example.android.january2022.ui.session
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.android.january2022.ui.session.actions.ActionSpacer
 import com.example.android.january2022.ui.session.actions.ActionSpacerStart
+import com.example.android.january2022.ui.session.actions.OpenInNewAction
 import com.example.android.january2022.ui.session.actions.TimerAction
 import com.example.android.january2022.utils.Event
 
@@ -34,8 +30,8 @@ fun SessionAppBarSelected(
         onTimerPress()
       }
       ActionSpacer()
-      IconButton(onClick = { onEvent(SessionEvent.OpenGuide) }) {
-        Icon(imageVector = Icons.Outlined.OpenInNew, contentDescription = "Open exercise guide.")
+      OpenInNewAction {
+        onEvent(SessionEvent.OpenGuide)
       }
       ActionSpacer()
       IconButton(onClick = { /*TODO*/ }) {
