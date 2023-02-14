@@ -34,14 +34,6 @@ class GymRepository(
     return list
   }
 
-  fun getDatabaseModel() =
-    DatabaseModel(
-      sessions = dao.getSessionList(),
-      exercises = dao.getExerciseList(),
-      sessionExercises = dao.getSessionExerciseList(),
-      sets = dao.getSetList()
-    )
-
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
 
   suspend fun insertSession(session: Session) = dao.insertSession(session)
@@ -51,15 +43,23 @@ class GymRepository(
 
   suspend fun insertSet(gymSet: GymSet) = dao.insertSet(gymSet)
 
+  suspend fun updateSet(set: GymSet) = dao.updateSet(set)
+
+  suspend fun createSet(sessionExercise: SessionExercise) =
+    dao.insertSet(GymSet(parentSessionExerciseId = sessionExercise.sessionExerciseId))
+
+  fun getDatabaseModel() =
+    DatabaseModel(
+      sessions = dao.getSessionList(),
+      exercises = dao.getExerciseList(),
+      sessionExercises = dao.getSessionExerciseList(),
+      sets = dao.getSetList()
+    )
+
   suspend fun clearDatabase() {
     dao.clearSessions()
     dao.clearSessionExercises()
     dao.clearExercises()
     dao.clearSets()
   }
-
-  suspend fun updateSet(set: GymSet) = dao.updateSet(set)
-
-  suspend fun createSet(sessionExercise: SessionExercise) =
-    dao.insertSet(GymSet(parentSessionExerciseId = sessionExercise.sessionExerciseId))
 }
