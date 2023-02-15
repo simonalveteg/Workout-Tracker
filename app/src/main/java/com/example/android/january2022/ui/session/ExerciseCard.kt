@@ -15,10 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.dp
-import com.example.android.january2022.db.MuscleGroup
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.ui.rework.SmallPill
-import com.example.android.january2022.ui.theme.Shapes
 import com.example.android.january2022.utils.Event
 import timber.log.Timber
 
@@ -130,7 +128,9 @@ fun ExerciseCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
       ) {
-        SmallPill(text = exercise.getMuscleGroup(), modifier = Modifier.padding(end = 4.dp))
+        exercise.getMuscleGroups().forEach {
+          SmallPill(text = it, modifier = Modifier.padding(end = 4.dp))
+        }
         SmallPill(text = exercise.equipment, modifier = Modifier.padding(end = 4.dp))
       }
     }

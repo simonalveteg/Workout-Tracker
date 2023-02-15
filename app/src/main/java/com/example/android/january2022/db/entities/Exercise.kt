@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.android.january2022.db.Equipment
-import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
+import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
 
 
 @Entity(tableName = "exercises")
@@ -23,9 +23,9 @@ data class Exercise(
     var favorite: Boolean = false,
     var hidden: Boolean = false
 ) {
-    fun getMuscleGroup(exercise: Exercise = this): String {
-        return exercise.targets.map {
-            turnTargetIntoMuscleGroup(it)
-        }.distinct().filterNot { it=="" }.toString().removeSurrounding("[","]").uppercase()
+    fun getMuscleGroups(exercise: Exercise = this): List<String> {
+        return exercise.targets.flatMap {
+            turnTargetIntoMuscleGroups(it)
+        }.distinct()
     }
 }

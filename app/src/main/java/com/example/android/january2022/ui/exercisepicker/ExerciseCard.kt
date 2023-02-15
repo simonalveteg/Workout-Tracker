@@ -14,7 +14,6 @@ import com.example.android.january2022.ui.rework.SmallPill
 import com.example.android.january2022.ui.session.actions.OpenInNewAction
 import com.example.android.january2022.ui.session.actions.OpenStatsAction
 import com.example.android.january2022.utils.Event
-import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +23,7 @@ fun ExerciseCard(
   onClick: () -> Unit
 ) {
 
-  val targets = exercise.targets.map { turnTargetIntoMuscleGroup(it) }
+  val targets = exercise.getMuscleGroups()
   val equipment = exercise.equipment
 
   Surface(

@@ -2,11 +2,7 @@ package com.example.android.january2022.db
 
 import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.rework.DatabaseModel
-import com.example.android.january2022.ui.rework.ExerciseWrapper
-import com.example.android.january2022.ui.rework.MainViewModel
-import com.example.android.january2022.utils.turnTargetIntoMuscleGroup
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
@@ -28,9 +24,7 @@ class GymRepository(
   fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
     val list = dao.getMuscleGroupsForSession(session.sessionId).map {
       Timber.d("MuscleGroup flow created.")
-      it.split("|").map { muscle ->
-        turnTargetIntoMuscleGroup(muscle)
-      }.distinct()
+      turnTargetIntoMuscleGroups(it)
     }
     return list
   }
