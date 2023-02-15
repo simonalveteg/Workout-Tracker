@@ -37,26 +37,36 @@ fun ExerciseCard(
   val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
   val indicatorColor by
   animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+
+  val localDensity = LocalDensity.current
+  var rowHeightDp by remember { mutableStateOf(0.dp) }
+
   val indicatorHeight by
-  animateDpAsState(targetValue = if (selected) 8.dp else 0.dp)
+  animateDpAsState(targetValue = if (selected) rowHeightDp else 0.dp)
 
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(bottom = 8.dp),
+      .padding(bottom = 8.dp)
+      .onGloballyPositioned { coordinates ->
+        // Set column height using the LayoutCoordinates
+        rowHeightDp = with(localDensity) {
+          coordinates.size.height.minus(95).toDp()
+        }
+      },
     verticalAlignment = Alignment.CenterVertically
   ) {
     Surface(
       color = indicatorColor,
       shape = MaterialTheme.shapes.small,
       modifier = Modifier
-        .width(4.dp)
+        .width(3.dp)
         .height(indicatorHeight)
     ) {}
     Spacer(modifier = Modifier.width(4.dp))
     Surface(
       onClick = onClick,
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp),
       tonalElevation = tonalElevation,
       shape = MaterialTheme.shapes.medium
     ) {
@@ -68,7 +78,6 @@ fun ExerciseCard(
       ) {
         Column(
           modifier = Modifier
-            .fillMaxHeight()
             .padding(top = 8.dp),
           verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -89,7 +98,8 @@ fun ExerciseCard(
           }
         }
         Row(
-          modifier = Modifier.fillMaxHeight()
+          modifier = Modifier.fillMaxHeight(),
+          verticalAlignment = Alignment.CenterVertically
         ) {
           OpenStatsAction {}
           OpenInNewAction { onEvent(PickerEvent.OpenGuide(exercise)) }
