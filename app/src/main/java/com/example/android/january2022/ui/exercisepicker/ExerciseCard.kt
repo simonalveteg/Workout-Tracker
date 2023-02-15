@@ -1,13 +1,20 @@
 package com.example.android.january2022.ui.exercisepicker
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.rework.SmallPill
@@ -27,44 +34,66 @@ fun ExerciseCard(
 
   val targets = exercise.getMuscleGroups()
   val equipment = exercise.equipment
+  val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
+  val indicatorColor by
+  animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+  val indicatorHeight by
+  animateDpAsState(targetValue = if (selected) 8.dp else 0.dp)
 
-  Surface(
-    onClick = onClick,
-    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-    tonalElevation = if(selected) 2.dp else 0.dp,
-    shape = MaterialTheme.shapes.medium
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(bottom = 8.dp),
+    verticalAlignment = Alignment.CenterVertically
   ) {
-    Row(
+    Surface(
+      color = indicatorColor,
+      shape = MaterialTheme.shapes.small,
       modifier = Modifier
-        .padding(start = 14.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
+        .width(4.dp)
+        .height(indicatorHeight)
+    ) {}
+    Spacer(modifier = Modifier.width(4.dp))
+    Surface(
+      onClick = onClick,
+      modifier = Modifier.fillMaxWidth(),
+      tonalElevation = tonalElevation,
+      shape = MaterialTheme.shapes.medium
     ) {
-      Column(
-        modifier = Modifier
-          .fillMaxHeight()
-          .padding(top = 8.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-      ) {
-        Text(
-          text = exercise.title,
-          modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(0.65f),
-          style = MaterialTheme.typography.titleMedium
-        )
-        Row(
-          modifier = Modifier.padding(bottom = 4.dp)
-        ) {
-          targets.forEach { target ->
-            SmallPill(text = target, modifier = Modifier.padding(end = 4.dp))
-          }
-          SmallPill(text = equipment)
-        }
-      }
       Row(
-        modifier = Modifier.fillMaxHeight()
+        modifier = Modifier
+          .padding(start = 14.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
       ) {
-        OpenStatsAction {}
-        OpenInNewAction { onEvent(PickerEvent.OpenGuide(exercise)) }
+        Column(
+          modifier = Modifier
+            .fillMaxHeight()
+            .padding(top = 8.dp),
+          verticalArrangement = Arrangement.SpaceBetween
+        ) {
+          Text(
+            text = exercise.title,
+            modifier = Modifier
+              .padding(bottom = 8.dp)
+              .fillMaxWidth(0.65f),
+            style = MaterialTheme.typography.titleMedium
+          )
+          Row(
+            modifier = Modifier.padding(bottom = 4.dp)
+          ) {
+            targets.forEach { target ->
+              SmallPill(text = target, modifier = Modifier.padding(end = 4.dp))
+            }
+            SmallPill(text = equipment)
+          }
+        }
+        Row(
+          modifier = Modifier.fillMaxHeight()
+        ) {
+          OpenStatsAction {}
+          OpenInNewAction { onEvent(PickerEvent.OpenGuide(exercise)) }
+        }
       }
     }
   }
