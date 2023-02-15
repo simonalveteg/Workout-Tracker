@@ -10,6 +10,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
+import com.example.android.january2022.ui.exercisepicker.PickerEvent
 import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.settings.SettingsEvent
@@ -73,7 +74,7 @@ class MainViewModel @Inject constructor(
   private val _pickerState = MutableStateFlow(
     PickerState(
       exercises = repo.getAllExercises(),
-      selectedExercises = emptyFlow()
+      selectedExercises = emptyList()
     )
   )
   val pickerState = _pickerState.asStateFlow()
@@ -150,8 +151,26 @@ class MainViewModel @Inject constructor(
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()
       is SessionEvent.OpenGuide -> {
-        sessionState.value.selectedExercise?.exercise?.title?.let {
-          sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx $it"))
+        sessionState.value.selectedExercise?.exercise?.let {
+          openGuide(it)
+        }
+      }
+      /**
+       * ExercisePicker-related events.
+       */
+      is PickerEvent.OpenGuide -> openGuide(event.exercise)
+      is PickerEvent.ExerciseSelected -> {
+        _pickerState.update {
+          it.copy(
+            selectedExercises = buildList {
+              if(it.selectedExercises.contains(event.exercise)) {
+                addAll(it.selectedExercises.minusElement(event.exercise))
+              } else {
+                addAll(it.selectedExercises)
+                add(event.exercise)
+              }
+            }
+          )
         }
       }
       /**
@@ -183,6 +202,10 @@ class MainViewModel @Inject constructor(
     viewModelScope.launch {
       _uiEvent.send(event)
     }
+  }
+
+  private fun openGuide(exercise: Exercise) {
+    sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx ${exercise.title}"))
   }
 
   private fun exportDatabase(uri: Uri, context: Context) {

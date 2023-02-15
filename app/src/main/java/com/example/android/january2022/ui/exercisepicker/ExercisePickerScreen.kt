@@ -8,9 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Exercise
@@ -25,7 +27,20 @@ fun ExercisePickerScreen(
 
   val uiState = viewModel.pickerState.collectAsState()
   val exercises by uiState.value.exercises.collectAsState(initial = emptyList())
+  val selectedExercises = uiState.value.selectedExercises
+  val uriHandler = LocalUriHandler.current
 
+  LaunchedEffect(true) {
+    viewModel.uiEvent.collect { event ->
+      when(event) {
+        is UiEvent.OpenWebsite -> {
+          uriHandler.openUri(event.url)
+        }
+        else -> Unit
+      }
+    }
+  }
+  
   LazyColumn(
     modifier = Modifier
       .fillMaxSize()
@@ -35,7 +50,7 @@ fun ExercisePickerScreen(
       Spacer(modifier = Modifier.height(45.dp))
     }
     items(exercises) { exercise ->
-      ExerciseCard(exercise = exercise, onEvent = viewModel::onEvent) {
+      ExerciseCard(exercise = exercise, selected = selectedExercises.contains(exercise), onEvent = viewModel::onEvent) {
         viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
       }
     }

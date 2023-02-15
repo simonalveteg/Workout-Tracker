@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.rework.SmallPill
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.session.actions.OpenInNewAction
 import com.example.android.january2022.ui.session.actions.OpenStatsAction
 import com.example.android.january2022.utils.Event
@@ -19,6 +20,7 @@ import com.example.android.january2022.utils.Event
 @Composable
 fun ExerciseCard(
   exercise: Exercise,
+  selected: Boolean,
   onEvent: (Event) -> Unit,
   onClick: () -> Unit
 ) {
@@ -29,6 +31,7 @@ fun ExerciseCard(
   Surface(
     onClick = onClick,
     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+    tonalElevation = if(selected) 2.dp else 0.dp,
     shape = MaterialTheme.shapes.medium
   ) {
     Row(
@@ -61,7 +64,7 @@ fun ExerciseCard(
         modifier = Modifier.fillMaxHeight()
       ) {
         OpenStatsAction {}
-        OpenInNewAction {}
+        OpenInNewAction { onEvent(PickerEvent.OpenGuide(exercise)) }
       }
     }
   }

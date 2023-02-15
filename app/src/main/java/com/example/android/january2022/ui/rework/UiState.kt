@@ -20,7 +20,7 @@ data class SessionState(
 
 data class PickerState(
   val exercises: Flow<List<Exercise>>,
-  val selectedExercises: Flow<List<Exercise>>
+  val selectedExercises: List<Exercise>
 )
 
 data class SessionWrapper(
