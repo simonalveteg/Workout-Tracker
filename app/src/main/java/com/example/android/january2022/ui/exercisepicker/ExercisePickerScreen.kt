@@ -35,6 +35,11 @@ fun ExercisePickerScreen(
   val uiState = viewModel.pickerState.collectAsState()
   val exercises by uiState.value.exercises.collectAsState(initial = emptyList())
   val selectedExercises = uiState.value.selectedExercises
+  val muscleFilter = uiState.value.muscleFilter
+  val equipmentFilter = uiState.value.equipmentFilter
+  val filterSelected = uiState.value.filterSelected
+  val filterUsed = uiState.value.filterUsed
+
   val uriHandler = LocalUriHandler.current
 
   LaunchedEffect(true) {
@@ -80,23 +85,23 @@ fun ExercisePickerScreen(
             horizontalArrangement = Arrangement.End
           ) {
             FilterChip(
-              selected = false,
-              onClick = { /*TODO*/ },
+              selected = filterSelected,
+              onClick = { viewModel.onEvent(PickerEvent.FilterSelected) },
               label = {
                 Text(text = "Selected")
               }
             )
             Spacer(Modifier.width(8.dp))
             FilterChip(
-              selected = false,
-              onClick = { /*TODO*/ },
+              selected = filterUsed,
+              onClick = { viewModel.onEvent(PickerEvent.FilterUsed) },
               label = {
                 Text(text = "Used")
               }
             )
             Spacer(Modifier.width(8.dp))
             FilterChip(
-              selected = false,
+              selected = muscleFilter.isNotEmpty(),
               onClick = { /*TODO*/ },
               label = {
                 Icon(
@@ -117,7 +122,7 @@ fun ExercisePickerScreen(
             )
             Spacer(Modifier.width(8.dp))
             FilterChip(
-              selected = false,
+              selected = equipmentFilter.isNotEmpty(),
               onClick = { /*TODO*/ },
               label = {
                 Icon(

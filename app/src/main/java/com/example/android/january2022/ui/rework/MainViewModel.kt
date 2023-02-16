@@ -177,6 +177,16 @@ class MainViewModel @Inject constructor(
           )
         }
       }
+      is PickerEvent.FilterSelected -> {
+        _pickerState.update {
+          it.copy(filterSelected = !it.filterSelected)
+        }
+      }
+      is PickerEvent.FilterUsed -> {
+        _pickerState.update {
+          it.copy(filterUsed = !it.filterUsed)
+        }
+      }
       /**
        * Settings-related events.
        */
