@@ -12,8 +12,8 @@ fun EquipmentSheet(
   Sheet(
     items = Equipment.getAllEquipment().sorted(),
     selectedItems = selectedEquipment,
-    onSelect = { onEvent(PickerEvent.SelectMuscle(it)) }
+    onSelect = { onEvent(PickerEvent.SelectEquipment(it)) }
   ) {
-    onEvent(PickerEvent.DeselectMuscles)
+    onEvent(PickerEvent.DeselectEquipment)
   }
 }

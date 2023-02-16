@@ -201,6 +201,23 @@ class MainViewModel @Inject constructor(
           it.copy(muscleFilter = emptyList())
         }
       }
+      is PickerEvent.SelectEquipment -> {
+        _pickerState.update {
+          it.copy(
+            equipmentFilter =
+            if (it.equipmentFilter.contains(event.equipment)) {
+              it.equipmentFilter.minus(event.equipment)
+            } else {
+              it.equipmentFilter.plus(event.equipment)
+            }
+          )
+        }
+      }
+      is PickerEvent.DeselectEquipment -> {
+        _pickerState.update {
+          it.copy(equipmentFilter = emptyList())
+        }
+      }
       /**
        * Settings-related events.
        */
