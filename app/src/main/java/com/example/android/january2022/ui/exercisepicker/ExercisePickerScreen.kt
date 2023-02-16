@@ -1,5 +1,8 @@
 package com.example.android.january2022.ui.exercisepicker
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -56,15 +59,15 @@ fun ExercisePickerScreen(
 
   val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
   val coroutineScope = rememberCoroutineScope()
+  val equipmentBottomsheet = remember { mutableStateOf(false) }
 
   ModalBottomSheetLayout(
     sheetContent = {
-      Text(
-        "HEJHEJ", modifier = Modifier
-          .height(400.dp)
-          .fillMaxWidth()
-          .padding(50.dp), textAlign = TextAlign.Center
-      )
+      if (equipmentBottomsheet.value) {
+        EquipmentBottomsheet(equipmentFilter, viewModel::onEvent)
+      } else {
+        MusclegroupBottomsheet(muscleFilter, viewModel::onEvent)
+      }
     },
     sheetState = sheetState,
     sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
@@ -125,6 +128,7 @@ fun ExercisePickerScreen(
               FilterChip(
                 selected = muscleFilter.isNotEmpty(),
                 onClick = {
+                  equipmentBottomsheet.value = false
                   coroutineScope.launch {
                     if (sheetState.isVisible) sheetState.hide() else sheetState.expand()
                   }
@@ -150,6 +154,7 @@ fun ExercisePickerScreen(
               FilterChip(
                 selected = equipmentFilter.isNotEmpty(),
                 onClick = {
+                  equipmentBottomsheet.value = true
                   coroutineScope.launch {
                     if (sheetState.isVisible) sheetState.hide() else sheetState.show()
                   }
