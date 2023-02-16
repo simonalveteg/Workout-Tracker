@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -57,6 +58,13 @@ fun ExercisePickerScreen(
   val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
   val coroutineScope = rememberCoroutineScope()
   val equipmentBottomsheet = remember { mutableStateOf(false) }
+  val filterColors = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = MaterialTheme.colorScheme.primary,
+    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+    selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    iconColor = MaterialTheme.colorScheme.onSurfaceVariant
+  )
 
   ModalBottomSheetLayout(
     sheetContent = {
@@ -111,7 +119,8 @@ fun ExercisePickerScreen(
                 onClick = { viewModel.onEvent(PickerEvent.FilterSelected) },
                 label = {
                   Text(text = "Selected")
-                }
+                },
+                colors = filterColors
               )
               Spacer(Modifier.width(8.dp))
               FilterChip(
@@ -119,7 +128,8 @@ fun ExercisePickerScreen(
                 onClick = { viewModel.onEvent(PickerEvent.FilterUsed) },
                 label = {
                   Text(text = "Used")
-                }
+                },
+                colors = filterColors
               )
               Spacer(Modifier.width(8.dp))
               FilterChip(
@@ -134,7 +144,6 @@ fun ExercisePickerScreen(
                   Icon(
                     imageVector = Icons.Default.AccessibilityNew,
                     contentDescription = "Equipment",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                   )
                 },
@@ -142,10 +151,10 @@ fun ExercisePickerScreen(
                   Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                   )
-                }
+                },
+                colors = filterColors
               )
               Spacer(Modifier.width(8.dp))
               FilterChip(
@@ -160,7 +169,6 @@ fun ExercisePickerScreen(
                   Icon(
                     imageVector = Icons.Default.FitnessCenter,
                     contentDescription = "Equipment",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                   )
                 },
@@ -168,10 +176,10 @@ fun ExercisePickerScreen(
                   Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                   )
-                }
+                },
+                colors = filterColors
               )
             }
           }
