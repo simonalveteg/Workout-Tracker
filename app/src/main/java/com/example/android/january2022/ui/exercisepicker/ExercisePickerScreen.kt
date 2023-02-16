@@ -67,8 +67,7 @@ fun ExercisePickerScreen(
       )
     },
     sheetState = sheetState,
-    sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp),
-    scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
+    sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
   ) {
     Scaffold(
       topBar = {

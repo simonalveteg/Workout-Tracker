@@ -399,5 +399,5 @@ object ModalBottomSheetDefaults {
    */
   val scrimColor: Color
     @Composable
-    get() = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
+    get() = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
 }
