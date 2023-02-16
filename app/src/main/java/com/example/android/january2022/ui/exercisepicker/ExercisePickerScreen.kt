@@ -83,6 +83,14 @@ fun ExercisePickerScreen(
               selected = false,
               onClick = { /*TODO*/ },
               label = {
+                Text(text = "Only Used")
+              }
+            )
+            Spacer(Modifier.width(8.dp))
+            FilterChip(
+              selected = false,
+              onClick = { /*TODO*/ },
+              label = {
                 Icon(
                   imageVector = Icons.Default.AccessibilityNew,
                   contentDescription = "Equipment",
