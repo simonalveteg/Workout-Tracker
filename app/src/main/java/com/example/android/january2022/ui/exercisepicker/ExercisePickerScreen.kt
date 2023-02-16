@@ -83,7 +83,15 @@ fun ExercisePickerScreen(
               selected = false,
               onClick = { /*TODO*/ },
               label = {
-                Text(text = "Only Used")
+                Text(text = "Selected")
+              }
+            )
+            Spacer(Modifier.width(8.dp))
+            FilterChip(
+              selected = false,
+              onClick = { /*TODO*/ },
+              label = {
+                Text(text = "Used")
               }
             )
             Spacer(Modifier.width(8.dp))
