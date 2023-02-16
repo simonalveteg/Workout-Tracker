@@ -8,4 +8,8 @@ sealed class PickerEvent : Event {
   data class OpenGuide(val exercise: Exercise) : PickerEvent()
   object FilterSelected : PickerEvent()
   object FilterUsed : PickerEvent()
+  data class SelectMuscle(val muscle: String) : PickerEvent()
+  object DeselectMuscles : PickerEvent()
+  data class SelectEquipment(val equipment: String) : PickerEvent()
+  object DeselectEquipment : PickerEvent()
 }

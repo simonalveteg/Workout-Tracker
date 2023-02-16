@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.exercisepicker.PickerEvent
 import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
@@ -21,7 +19,6 @@ import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -167,7 +164,7 @@ class MainViewModel @Inject constructor(
         _pickerState.update {
           it.copy(
             selectedExercises = buildList {
-              if(it.selectedExercises.contains(event.exercise)) {
+              if (it.selectedExercises.contains(event.exercise)) {
                 addAll(it.selectedExercises.minusElement(event.exercise))
               } else {
                 addAll(it.selectedExercises)
@@ -185,6 +182,23 @@ class MainViewModel @Inject constructor(
       is PickerEvent.FilterUsed -> {
         _pickerState.update {
           it.copy(filterUsed = !it.filterUsed)
+        }
+      }
+      is PickerEvent.SelectMuscle -> {
+        _pickerState.update {
+          it.copy(
+            muscleFilter =
+            if (it.muscleFilter.contains(event.muscle)) {
+              it.muscleFilter.minus(event.muscle)
+            } else {
+              it.muscleFilter.plus(event.muscle)
+            }
+          )
+        }
+      }
+      is PickerEvent.DeselectMuscles -> {
+        _pickerState.update {
+          it.copy(muscleFilter = emptyList())
         }
       }
       /**

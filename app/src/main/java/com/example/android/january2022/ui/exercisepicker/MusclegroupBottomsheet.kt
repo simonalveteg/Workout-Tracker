@@ -1,8 +1,13 @@
 package com.example.android.january2022.ui.exercisepicker
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.TextButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,21 +23,41 @@ fun MusclegroupBottomsheet(
   selectedMusclegroups: List<String>,
   onEvent: (Event) -> Unit
 ) {
+  val muscles = MuscleGroup.getAllMuscleGroups().sorted()
+
   Column(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(top = 16.dp, bottom = 16.dp)
+      .padding(top = 16.dp, bottom = 20.dp)
       .padding(horizontal = 16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
+    horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Text(
       text = "Filter by Body-parts",
       textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.headlineMedium,
-      modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+      style = MaterialTheme.typography.titleLarge,
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 12.dp)
     )
-    for (muscleGroup in MuscleGroup.getAllMuscleGroups()) {
-      MuscleButton(muscleGroup,selectedMusclegroups.contains(muscleGroup)) {}
+    LazyVerticalGrid(
+      columns = GridCells.Adaptive(120.dp),
+      horizontalArrangement = Arrangement.Center
+    ) {
+      items(muscles) { muscle ->
+        MuscleButton(
+          muscle = muscle,
+          selected = selectedMusclegroups.contains(muscle)
+        ) {
+          onEvent(PickerEvent.SelectMuscle(muscle))
+        }
+      }
+    }
+    TextButton(onClick = { onEvent(PickerEvent.DeselectMuscles) }) {
+      Text(
+        text = "Deselect All".uppercase(),
+        style = MaterialTheme.typography.labelLarge
+      )
     }
   }
 }
