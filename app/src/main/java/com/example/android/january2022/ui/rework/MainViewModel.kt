@@ -74,7 +74,11 @@ class MainViewModel @Inject constructor(
   private val _pickerState = MutableStateFlow(
     PickerState(
       exercises = repo.getAllExercises(),
-      selectedExercises = emptyList()
+      selectedExercises = emptyList(),
+      equipmentFilter = emptyList(),
+      muscleFilter = emptyList(),
+      filterUsed = false,
+      filterSelected = false
     )
   )
   val pickerState = _pickerState.asStateFlow()
