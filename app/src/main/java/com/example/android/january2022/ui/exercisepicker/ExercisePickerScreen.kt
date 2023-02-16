@@ -1,12 +1,12 @@
 package com.example.android.january2022.ui.exercisepicker
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +19,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExercisePickerScreen(
   onNavigate: (UiEvent.Navigate) -> Unit,
@@ -32,7 +33,7 @@ fun ExercisePickerScreen(
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
-      when(event) {
+      when (event) {
         is UiEvent.OpenWebsite -> {
           uriHandler.openUri(event.url)
         }
@@ -40,7 +41,7 @@ fun ExercisePickerScreen(
       }
     }
   }
-  
+
   LazyColumn(
     modifier = Modifier
       .fillMaxSize()
@@ -49,8 +50,60 @@ fun ExercisePickerScreen(
     item {
       Spacer(modifier = Modifier.height(45.dp))
     }
+    item {
+      Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.End
+      ) {
+        FilterChip(
+          selected = false,
+          onClick = { /*TODO*/ },
+          label = {
+            Icon(
+              imageVector = Icons.Default.AccessibilityNew,
+              contentDescription = "Equipment",
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.size(18.dp)
+            )
+                  },
+          trailingIcon = {
+            Icon(
+              imageVector = Icons.Default.ArrowDropDown,
+              contentDescription = "Dropdown",
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.size(22.dp)
+            )
+          }
+        )
+        Spacer(Modifier.width(8.dp))
+        FilterChip(
+          selected = false,
+          onClick = { /*TODO*/ },
+          label = {
+            Icon(
+              imageVector = Icons.Default.FitnessCenter,
+              contentDescription = "Equipment",
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.size(18.dp)
+            )
+          },
+          trailingIcon = {
+            Icon(
+              imageVector = Icons.Default.ArrowDropDown,
+              contentDescription = "Dropdown",
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.size(22.dp)
+            )
+          }
+        )
+      }
+    }
     items(exercises) { exercise ->
-      ExerciseCard(exercise = exercise, selected = selectedExercises.contains(exercise), onEvent = viewModel::onEvent) {
+      ExerciseCard(
+        exercise = exercise,
+        selected = selectedExercises.contains(exercise),
+        onEvent = viewModel::onEvent
+      ) {
         viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
       }
     }
