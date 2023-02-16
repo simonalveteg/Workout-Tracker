@@ -12,6 +12,9 @@ interface GymDAO {
   @Query("SELECT * FROM sessions ORDER BY start DESC")
   fun getAllSessions(): Flow<List<Session>>
 
+  @Query("SELECT * FROM sessions ORDER BY sessionId DESC LIMIT 1")
+  fun getLastSession(): Session
+
   @Query("SELECT * FROM exercises ORDER BY title ASC")
   fun getAllExercises(): Flow<List<Exercise>>
 

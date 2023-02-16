@@ -122,6 +122,34 @@ class MainViewModel @Inject constructor(
       is HomeEvent.OpenSettings -> {
         sendUiEvent(UiEvent.Navigate(Routes.SETTINGS))
       }
+      is HomeEvent.NewSession -> {
+        viewModelScope.launch {
+          withContext(Dispatchers.IO) {
+            repo.insertSession(Session())
+            val session = repo.getLastSession()
+            _sessionState.update {
+              it.copy(
+                currentSession = SessionWrapper(
+                  session = session,
+                  exercises = repo.getExercisesForSession(session).map { list ->
+                    Timber.d("Wrapping latest available list")
+                    list.map { se ->
+                      ExerciseWrapper(
+                        sessionExercise = se.sessionExercise,
+                        exercise = se.exercise,
+                        sets = repo.getSetsForExercise(se.sessionExercise.sessionExerciseId)
+                          .stateIn(viewModelScope)
+                      )
+                    }
+                  }.stateIn(viewModelScope),
+                  muscleGroups = repo.getMuscleGroupsForSession(session).stateIn(viewModelScope)
+                )
+              )
+            }
+          }
+          sendUiEvent(UiEvent.Navigate(Routes.SESSION))
+        }
+      }
       /**
        * Session-related events.
        */

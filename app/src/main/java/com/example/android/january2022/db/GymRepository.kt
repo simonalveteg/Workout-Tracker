@@ -14,6 +14,8 @@ class GymRepository(
   fun getAllSessions() = dao.getAllSessions()
   fun getAllExercises() = dao.getAllExercises()
 
+  fun getLastSession() = dao.getLastSession()
+
   fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {
     Timber.d("Retrieving exercises for session: $session")
     return dao.getExercisesForSession(session.sessionId)
@@ -22,9 +24,14 @@ class GymRepository(
   fun getSetsForExercise(sessionExerciseId: Long) = dao.getSetsForExercise(sessionExerciseId)
 
   fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
-    val list = dao.getMuscleGroupsForSession(session.sessionId).map {
+    val list = dao.getMuscleGroupsForSession(session.sessionId).mapNotNull {
       Timber.d("MuscleGroup flow created.")
-      turnTargetIntoMuscleGroups(it)
+      try {
+        turnTargetIntoMuscleGroups(it)
+      } catch (_: Exception) {
+        Timber.d("Error when converting target.")
+        emptyList()
+      }
     }
     return list
   }

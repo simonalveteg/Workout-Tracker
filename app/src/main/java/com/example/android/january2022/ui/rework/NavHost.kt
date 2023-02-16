@@ -19,7 +19,7 @@ fun NavHost(
 
   NavHost(
     navController = navController,
-    startDestination = Routes.EXERCISE_PICKER
+    startDestination = Routes.HOME
   ) {
 
     composable(Routes.HOME) {
