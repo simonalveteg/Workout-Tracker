@@ -29,10 +29,10 @@ fun MusclegroupBottomsheet(
       text = "Filter by Body-parts",
       textAlign = TextAlign.Center,
       style = MaterialTheme.typography.headlineMedium,
-      modifier = Modifier.fillMaxWidth()
+      modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
     )
     for (muscleGroup in MuscleGroup.getAllMuscleGroups()) {
-      Text(muscleGroup)
+      MuscleButton(muscleGroup,selectedMusclegroups.contains(muscleGroup)) {}
     }
   }
 }
