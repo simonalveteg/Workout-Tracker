@@ -1,12 +1,12 @@
 package com.example.android.january2022.ui.exercisepicker
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -27,7 +27,7 @@ import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ExercisePickerScreen(
   onNavigate: (UiEvent.Navigate) -> Unit,
@@ -65,6 +65,9 @@ fun ExercisePickerScreen(
     labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
     iconColor = MaterialTheme.colorScheme.onSurfaceVariant
   )
+  val fabSize by animateDpAsState(
+    targetValue = if (selectedExercises.isEmpty()) 0.dp else 50.dp
+  )
 
   ModalBottomSheetLayout(
     sheetContent = {
@@ -78,6 +81,28 @@ fun ExercisePickerScreen(
     sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
   ) {
     Scaffold(
+      floatingActionButton = {
+        Box(modifier = Modifier.height(64.dp).width(80.dp)) {
+          AnimatedVisibility(
+            visible = selectedExercises.isNotEmpty(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut()
+          ) {
+            FloatingActionButton(
+              onClick = { /*TODO*/ },
+              containerColor = MaterialTheme.colorScheme.primary,
+              modifier = Modifier.align(Alignment.BottomEnd)
+            ) {
+              Text(
+                text = "ADD ${selectedExercises.size}",
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 10.dp).fillMaxWidth(),
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center
+              )
+            }
+          }
+        }
+      },
       topBar = {
         Surface(
           shape = CutCornerShape(0.dp),
