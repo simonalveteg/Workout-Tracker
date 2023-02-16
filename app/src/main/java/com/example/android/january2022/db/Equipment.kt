@@ -11,4 +11,17 @@ object Equipment {
     const val WEIGHTED = "Weighted"
     const val STRETCH = "Stretch"
     const val NULL = "not specified"
+
+    fun getAllEquipment(): List<String> {
+        return listOf(
+            BARBELL,
+            MACHINE,
+            DUMBBELLS,
+            BODYWEIGHT,
+            CABLE,
+            LEVER,
+            WEIGHTED,
+            STRETCH
+        )
+    }
 }

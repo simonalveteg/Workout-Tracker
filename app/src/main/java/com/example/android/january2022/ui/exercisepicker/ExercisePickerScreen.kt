@@ -1,8 +1,5 @@
 package com.example.android.january2022.ui.exercisepicker
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -64,9 +61,9 @@ fun ExercisePickerScreen(
   ModalBottomSheetLayout(
     sheetContent = {
       if (equipmentBottomsheet.value) {
-        EquipmentBottomsheet(equipmentFilter, viewModel::onEvent)
+        EquipmentSheet(equipmentFilter, viewModel::onEvent)
       } else {
-        MusclegroupBottomsheet(muscleFilter, viewModel::onEvent)
+        MuscleSheet(muscleFilter, viewModel::onEvent)
       }
     },
     sheetState = sheetState,
