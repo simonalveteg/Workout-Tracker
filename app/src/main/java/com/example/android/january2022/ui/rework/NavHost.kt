@@ -40,9 +40,7 @@ fun NavHost(
     }
     composable(Routes.EXERCISE_PICKER) {
       ExercisePickerScreen(
-        onNavigate = {
-          navController.navigate(it.route)
-        },
+        navController = navController,
         viewModel = viewModel
       )
     }

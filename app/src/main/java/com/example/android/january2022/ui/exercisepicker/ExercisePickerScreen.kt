@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ExercisePickerScreen(
-  onNavigate: (UiEvent.Navigate) -> Unit,
+  navController: NavController,
   viewModel: MainViewModel = hiltViewModel()
 ) {
 
@@ -65,9 +66,6 @@ fun ExercisePickerScreen(
     labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
     iconColor = MaterialTheme.colorScheme.onSurfaceVariant
   )
-  val fabSize by animateDpAsState(
-    targetValue = if (selectedExercises.isEmpty()) 0.dp else 50.dp
-  )
 
   ModalBottomSheetLayout(
     sheetContent = {
@@ -82,20 +80,27 @@ fun ExercisePickerScreen(
   ) {
     Scaffold(
       floatingActionButton = {
-        Box(modifier = Modifier.height(64.dp).width(80.dp)) {
+        Box(modifier = Modifier
+          .height(64.dp)
+          .width(80.dp)) {
           AnimatedVisibility(
             visible = selectedExercises.isNotEmpty(),
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
           ) {
             FloatingActionButton(
-              onClick = { /*TODO*/ },
+              onClick = {
+                viewModel.onEvent(PickerEvent.AddExercises)
+                navController.popBackStack()
+              },
               containerColor = MaterialTheme.colorScheme.primary,
               modifier = Modifier.align(Alignment.BottomEnd)
             ) {
               Text(
                 text = "ADD ${selectedExercises.size}",
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 10.dp).fillMaxWidth(),
+                modifier = Modifier
+                  .padding(vertical = 4.dp, horizontal = 10.dp)
+                  .fillMaxWidth(),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center
               )

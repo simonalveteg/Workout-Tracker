@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.exercisepicker.PickerEvent
 import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
@@ -216,6 +217,18 @@ class MainViewModel @Inject constructor(
       is PickerEvent.DeselectEquipment -> {
         _pickerState.update {
           it.copy(equipmentFilter = emptyList())
+        }
+      }
+      is PickerEvent.AddExercises -> {
+        viewModelScope.launch {
+          pickerState.value.selectedExercises.forEach { exercise ->
+            val session = sessionState.value.currentSession
+            val sessionExercise = SessionExercise(
+              parentSessionId = session.session.sessionId,
+              parentExerciseId = exercise.id
+            )
+            repo.insertSessionExercise(sessionExercise)
+          }
         }
       }
       /**
