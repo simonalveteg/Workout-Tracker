@@ -1,7 +1,6 @@
 package com.example.android.january2022.ui.session
 
 import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.utils.Event
 
@@ -16,4 +15,5 @@ sealed class SessionEvent : Event {
   object TimerDecreased : SessionEvent()
 
   object OpenGuide : SessionEvent()
+  object AddExercise : SessionEvent()
 }

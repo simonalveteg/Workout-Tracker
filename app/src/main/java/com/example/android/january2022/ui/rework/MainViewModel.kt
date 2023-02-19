@@ -185,6 +185,10 @@ class MainViewModel @Inject constructor(
           openGuide(it)
         }
       }
+      is SessionEvent.AddExercise -> {
+        clearPickerState()
+        sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER))
+      }
       /**
        * ExercisePicker-related events.
        */
@@ -257,6 +261,7 @@ class MainViewModel @Inject constructor(
             )
             repo.insertSessionExercise(sessionExercise)
           }
+          clearPickerState()
         }
       }
       /**
@@ -292,6 +297,18 @@ class MainViewModel @Inject constructor(
 
   private fun openGuide(exercise: Exercise) {
     sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx ${exercise.title}"))
+  }
+
+  private fun clearPickerState() {
+    _pickerState.update {
+      it.copy(
+        selectedExercises = emptyList(),
+        equipmentFilter = emptyList(),
+        muscleFilter = emptyList(),
+        filterSelected = false,
+        filterUsed = false
+      )
+    }
   }
 
   private fun exportDatabase(uri: Uri, context: Context) {

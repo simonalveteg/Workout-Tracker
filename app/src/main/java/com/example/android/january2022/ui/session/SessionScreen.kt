@@ -40,10 +40,11 @@ fun SessionScreen(
   LaunchedEffect(true) {
     Timber.d(session.toString())
     viewModel.uiEvent.collect { event ->
-      when(event) {
+      when (event) {
         is UiEvent.OpenWebsite -> {
           uriHandler.openUri(event.url)
         }
+        is UiEvent.Navigate -> onNavigate(event)
         else -> Unit
       }
     }
@@ -65,13 +66,13 @@ fun SessionScreen(
           exit = slideOutVertically(
             animationSpec = tween(250),
             targetOffsetY = { height ->
-              height/2
+              height / 2
             }
           ),
           enter = slideInVertically(
             animationSpec = tween(250),
             initialOffsetY = { height ->
-              height/2
+              height / 2
             }
           )
         ) {
@@ -91,7 +92,9 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             }
-          )
+          ) {
+            viewModel.onEvent(SessionEvent.AddExercise)
+          }
         }
         AnimatedVisibility(
           visible = uiState.value.selectedExercise != null,
