@@ -13,4 +13,5 @@ sealed class PickerEvent : Event {
   data class SelectEquipment(val equipment: String) : PickerEvent()
   object DeselectEquipment : PickerEvent()
   object AddExercises : PickerEvent()
+  data class SearchChanged(val text: String) : PickerEvent()
 }

@@ -76,7 +76,8 @@ class MainViewModel @Inject constructor(
       equipmentFilter = emptyList(),
       muscleFilter = emptyList(),
       filterUsed = false,
-      filterSelected = false
+      filterSelected = false,
+      searchText = ""
     )
   )
   val pickerState = _pickerState.asStateFlow()
@@ -264,6 +265,9 @@ class MainViewModel @Inject constructor(
           clearPickerState()
         }
       }
+      is PickerEvent.SearchChanged -> {
+        onSearchTextChange(event.text)
+      }
       /**
        * Settings-related events.
        */
@@ -286,6 +290,14 @@ class MainViewModel @Inject constructor(
           repo.clearDatabase()
         }
       }
+    }
+  }
+
+  private fun onSearchTextChange(text: String) {
+    _pickerState.update {
+      it.copy(
+        searchText = text
+      )
     }
   }
 

@@ -24,7 +24,8 @@ data class PickerState(
   val equipmentFilter: List<String>,
   val muscleFilter: List<String>,
   val filterUsed: Boolean,
-  val filterSelected: Boolean
+  val filterSelected: Boolean,
+  val searchText: String
 )
 
 data class SessionWrapper(

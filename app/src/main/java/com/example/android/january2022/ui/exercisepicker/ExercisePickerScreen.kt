@@ -118,7 +118,7 @@ fun ExercisePickerScreen(
           ) {
             Spacer(Modifier.height(40.dp))
             TextField(
-              value = "",
+              value = uiState.value.searchText,
               label = {
                 Text(
                   text = "search for exercise",
@@ -126,7 +126,7 @@ fun ExercisePickerScreen(
                   modifier = Modifier.fillMaxWidth()
                 )
               },
-              onValueChange = {},
+              onValueChange = { viewModel.onEvent(PickerEvent.SearchChanged(it))},
               modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp, start = 8.dp, end = 8.dp)

@@ -116,6 +116,8 @@ dependencies {
     // Timber logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
+    // Fuzzy Wuzzy search stuff
+    implementation "com.willowtreeapps:fuzzywuzzy-kotlin:0.1.1"
 
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:2.42"
