@@ -4,10 +4,9 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 
 data class HomeState(
   val sessions: Flow<List<SessionWrapper>>
@@ -20,14 +19,30 @@ data class SessionState(
 
 data class PickerState(
   val exercises: Flow<List<Exercise>>,
-  val filteredExercises: Flow<List<Exercise>>,
   val selectedExercises: List<Exercise>,
   val equipmentFilter: List<String>,
   val muscleFilter: List<String>,
   val filterUsed: Boolean,
   val filterSelected: Boolean,
   val searchText: String
-)
+) {
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun getFilteredExercises(): Flow<List<Exercise>> {
+    return exercises.mapLatest { list ->
+      list.filter { ex ->
+        (muscleFilter.isEmpty() || ex.getMuscleGroups().map { muscleFilter.contains(it) }
+          .contains(true)) &&
+            (equipmentFilter.isEmpty() || equipmentFilter.contains(ex.equipment))
+      }.sortedBy { ex ->
+        if (searchText.isNotBlank()) {
+          ex.getStringMatch(searchText)
+        } else {
+          0
+        }
+      }
+    }
+  }
+}
 
 data class SessionWrapper(
   val session: Session,

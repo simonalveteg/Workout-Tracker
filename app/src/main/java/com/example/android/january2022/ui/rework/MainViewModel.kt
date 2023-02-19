@@ -21,9 +21,11 @@ import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.FileInputStream
@@ -74,7 +76,6 @@ class MainViewModel @Inject constructor(
     PickerState(
       exercises = repo.getAllExercises(),
       selectedExercises = emptyList(),
-      filteredExercises = repo.getAllExercises(),
       equipmentFilter = emptyList(),
       muscleFilter = emptyList(),
       filterUsed = false,
@@ -298,17 +299,7 @@ class MainViewModel @Inject constructor(
   private fun onSearchTextChange(text: String) {
     _pickerState.update {
       it.copy(
-        searchText = text,
-        filteredExercises = MutableStateFlow(text).combine(it.exercises) { text, exercises ->
-          if (text.isBlank()) {
-            exercises
-          } else {
-            val searchTerm = "$text ${it.equipmentFilter} ${it.muscleFilter}"
-            exercises.sortedBy { exercise ->
-              FuzzySearch.levenshtein(searchTerm, exercise.toString())
-            }
-          }
-        }
+        searchText = text
       )
     }
   }
