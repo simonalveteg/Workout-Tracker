@@ -14,6 +14,7 @@ import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.settings.SettingsEvent
 import com.example.android.january2022.utils.Event
+import com.example.android.january2022.utils.FuzzySearch
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import com.fatboyindustrial.gsonjavatime.Converters
@@ -73,6 +74,7 @@ class MainViewModel @Inject constructor(
     PickerState(
       exercises = repo.getAllExercises(),
       selectedExercises = emptyList(),
+      filteredExercises = repo.getAllExercises(),
       equipmentFilter = emptyList(),
       muscleFilter = emptyList(),
       filterUsed = false,
@@ -296,7 +298,17 @@ class MainViewModel @Inject constructor(
   private fun onSearchTextChange(text: String) {
     _pickerState.update {
       it.copy(
-        searchText = text
+        searchText = text,
+        filteredExercises = MutableStateFlow(text).combine(it.exercises) { text, exercises ->
+          if (text.isBlank()) {
+            exercises
+          } else {
+            val searchTerm = "$text ${it.equipmentFilter} ${it.muscleFilter}"
+            exercises.sortedBy { exercise ->
+              FuzzySearch.levenshtein(searchTerm, exercise.toString())
+            }
+          }
+        }
       )
     }
   }

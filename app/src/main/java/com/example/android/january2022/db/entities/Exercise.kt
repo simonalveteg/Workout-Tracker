@@ -28,4 +28,8 @@ data class Exercise(
             turnTargetIntoMuscleGroups(it)
         }.distinct()
     }
+
+    override fun toString() : String {
+        return "$title $equipment $targets $force"
+    }
 }
