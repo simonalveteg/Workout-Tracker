@@ -32,7 +32,8 @@ data class PickerState(
       list.filter { ex ->
         (muscleFilter.isEmpty() || ex.getMuscleGroups().map { muscleFilter.contains(it) }
           .contains(true)) &&
-            (equipmentFilter.isEmpty() || equipmentFilter.contains(ex.equipment))
+            (equipmentFilter.isEmpty() || equipmentFilter.contains(ex.equipment)) &&
+            (!filterSelected || selectedExercises.contains(ex))
       }.sortedBy { ex ->
         if (searchText.isNotBlank()) {
           ex.getStringMatch(searchText)
