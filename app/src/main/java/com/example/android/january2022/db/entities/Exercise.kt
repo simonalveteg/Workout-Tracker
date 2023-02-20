@@ -31,6 +31,11 @@ data class Exercise(
   }
 
   fun getStringMatch(string: String): Int {
-    return FuzzySearch.levenshtein(string, title)
+    val strings = title.split(" ")
+    strings.map {
+      FuzzySearch.levenshtein(it.lowercase(), string.lowercase())
+    }.also {
+      return it.min() + it.max().div(4)
+    }
   }
 }

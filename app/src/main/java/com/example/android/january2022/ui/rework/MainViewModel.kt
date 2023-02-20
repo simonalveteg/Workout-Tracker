@@ -321,7 +321,8 @@ class MainViewModel @Inject constructor(
         equipmentFilter = emptyList(),
         muscleFilter = emptyList(),
         filterSelected = false,
-        filterUsed = false
+        filterUsed = false,
+        searchText = ""
       )
     }
   }
