@@ -26,6 +26,7 @@ import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
 import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
+import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -130,6 +131,7 @@ fun ExercisePickerScreen(
               modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp, start = 8.dp, end = 8.dp)
+                .clearFocusOnKeyboardDismiss()
                 .align(Alignment.CenterHorizontally),
               colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
