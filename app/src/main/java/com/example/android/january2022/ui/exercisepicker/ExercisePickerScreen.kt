@@ -36,7 +36,7 @@ fun ExercisePickerScreen(
 ) {
 
   val uiState = viewModel.pickerState.collectAsState()
-  val exercises by uiState.value.getFilteredExercises().collectAsState(initial = emptyList())
+  val exercises by viewModel.getFilteredExercises().collectAsState(initial = emptyList())
   val selectedExercises = uiState.value.selectedExercises
   val muscleFilter = uiState.value.muscleFilter
   val equipmentFilter = uiState.value.equipmentFilter

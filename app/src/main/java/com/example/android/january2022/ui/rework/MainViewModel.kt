@@ -107,6 +107,24 @@ class MainViewModel @Inject constructor(
   )
   val timerState = _timerState.asStateFlow()
 
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun getFilteredExercises(): Flow<List<Exercise>> {
+    val ps = _pickerState.value
+    return ps.exercises.mapLatest { list ->
+      list.filter { ex ->
+        (ps.muscleFilter.isEmpty() || ex.getMuscleGroups().map { ps.muscleFilter.contains(it) }
+          .contains(true)) &&
+            (ps.equipmentFilter.isEmpty() || ps.equipmentFilter.contains(ex.equipment)) &&
+            (!ps.filterSelected || ps.selectedExercises.contains(ex))
+      }.sortedBy { ex ->
+        if (ps.searchText.isNotBlank()) {
+          ex.getStringMatch(ps.searchText)
+        } else {
+          0
+        }
+      }
+    }
+  }
 
   fun onEvent(event: Event) {
     Timber.d("Received event: $event")
