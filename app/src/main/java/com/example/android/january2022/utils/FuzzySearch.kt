@@ -30,5 +30,14 @@ class FuzzySearch {
 
       return cost[lhsLength - 1]
     }
+
+
+    fun regexMatch(query: String, text: String): Boolean {
+      val q = query.lowercase().filter { it.isLetterOrDigit() }
+      val t = text.lowercase().filter { it.isLetterOrDigit() }
+      val regexp =
+        q.split(" ").joinToString(separator = "", postfix = ".*") { "(?=.*$it)" }.toRegex()
+      return regexp.matches(t)
+    }
   }
 }

@@ -115,12 +115,13 @@ class MainViewModel @Inject constructor(
         (ps.muscleFilter.isEmpty() || ex.getMuscleGroups().map { ps.muscleFilter.contains(it) }
           .contains(true)) &&
             (ps.equipmentFilter.isEmpty() || ps.equipmentFilter.contains(ex.equipment)) &&
-            (!ps.filterSelected || ps.selectedExercises.contains(ex))
+            (!ps.filterSelected || ps.selectedExercises.contains(ex)) &&
+            ex.getStringMatch(ps.searchText)
       }.sortedBy { ex ->
         if (ps.searchText.isNotBlank()) {
-          ex.getStringMatch(ps.searchText)
+          ex.title.length
         } else {
-          0
+          ex.title.first().code
         }
       }
     }
