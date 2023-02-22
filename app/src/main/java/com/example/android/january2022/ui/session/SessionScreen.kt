@@ -31,7 +31,8 @@ fun SessionScreen(
   val uiState = viewModel.sessionState.collectAsState()
   val session = uiState.value.currentSession
   val exercises = session.exercises.collectAsState(initial = emptyList())
-  val selectedExercise = uiState.value.selectedExercise
+  val expandedExercise = uiState.value.expandedExercise
+  val selectedExercises = uiState.value.selectedExercises
   val muscleGroups by uiState.value.currentSession.muscleGroups.collectAsState(initial = emptyList())
   val timerState by viewModel.timerState.collectAsState()
 
@@ -82,7 +83,7 @@ fun SessionScreen(
           }
         }
         AnimatedVisibility(
-          visible = uiState.value.selectedExercise == null,
+          visible = uiState.value.expandedExercise == null,
           exit = fadeOut(tween(900)),
           enter = fadeIn(tween(900))
         ) {
@@ -97,7 +98,7 @@ fun SessionScreen(
           }
         }
         AnimatedVisibility(
-          visible = uiState.value.selectedExercise != null,
+          visible = uiState.value.expandedExercise != null,
           exit = fadeOut(tween(900)),
           enter = fadeIn(tween(900))
         ) {
@@ -135,13 +136,18 @@ fun SessionScreen(
           }
         ) { index, exercise ->
           val expanded =
-            exercise.sessionExercise.sessionExerciseId == selectedExercise?.sessionExercise?.sessionExerciseId
+            exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
+          val selected = selectedExercises.contains(exercise)
           ExerciseCard(
             exerciseWrapper = exercise,
             expanded = expanded,
-            onEvent = viewModel::onEvent
+            selected = selected,
+            onEvent = viewModel::onEvent,
+            onLongClick = {
+              viewModel.onEvent(SessionEvent.ExerciseSelected(exercise))
+            }
           ) {
-            viewModel.onEvent(SessionEvent.ExerciseSelection(exercise))
+            viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
             if (!expanded) {
               coroutineScope.launch {
                 scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))

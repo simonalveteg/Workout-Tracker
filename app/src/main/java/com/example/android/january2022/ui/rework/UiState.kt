@@ -4,7 +4,6 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
@@ -14,7 +13,8 @@ data class HomeState(
 
 data class SessionState(
   val currentSession: SessionWrapper,
-  val selectedExercise: ExerciseWrapper?
+  val expandedExercise: ExerciseWrapper?,
+  val selectedExercises: List<ExerciseWrapper>
 )
 
 data class PickerState(

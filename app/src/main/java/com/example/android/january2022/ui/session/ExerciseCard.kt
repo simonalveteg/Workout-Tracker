@@ -1,46 +1,68 @@
 package com.example.android.january2022.ui.session
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.ui.rework.SmallPill
 import com.example.android.january2022.utils.Event
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseCard(
   exerciseWrapper: ExerciseWrapper,
   expanded: Boolean = false,
+  selected: Boolean = false,
   onEvent: (Event) -> Unit,
+  onLongClick: () -> Unit,
   onClick: () -> Unit
 ) {
   val exercise = exerciseWrapper.exercise
   val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
+  val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
+  val localHaptic = LocalHapticFeedback.current
 
   LaunchedEffect(key1 = exercise) {
     Timber.d("ExerciseCard received new exercise")
   }
 
   Surface(
-    onClick = { onClick() },
+    tonalElevation = tonalElevation,
+    shape = MaterialTheme.shapes.medium,
     modifier = Modifier
       .fillMaxWidth()
-      .padding(vertical = 8.dp, horizontal = 8.dp),
-    shape = MaterialTheme.shapes.medium
+      .padding(vertical = 8.dp, horizontal = 8.dp)
+      .clip(MaterialTheme.shapes.medium)
+      .combinedClickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = rememberRipple(bounded = true),
+        onLongClick = {
+          localHaptic.performHapticFeedback(HapticFeedbackType.LongPress)
+          onLongClick()
+        },
+        onClick = onClick
+      )
   ) {
     Column(
       Modifier
@@ -108,8 +130,8 @@ fun ExerciseCard(
           Column {
             AnimatedVisibility(
               visible = listState.canScrollForward,
-              enter = slideInHorizontally(initialOffsetX = { it/2 }) + fadeIn(),
-              exit = slideOutHorizontally(targetOffsetX = { it/2 }) + fadeOut()
+              enter = slideInHorizontally(initialOffsetX = { it / 2 }) + fadeIn(),
+              exit = slideOutHorizontally(targetOffsetX = { it / 2 }) + fadeOut()
             ) {
               Icon(
                 imageVector = Icons.Default.ChevronRight,

@@ -14,7 +14,6 @@ import com.example.android.january2022.ui.home.HomeEvent
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.settings.SettingsEvent
 import com.example.android.january2022.utils.Event
-import com.example.android.january2022.utils.FuzzySearch
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import com.fatboyindustrial.gsonjavatime.Converters
@@ -25,7 +24,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.FileInputStream
@@ -92,7 +90,8 @@ class MainViewModel @Inject constructor(
         MutableStateFlow(emptyList()),
         MutableStateFlow(emptyList())
       ),
-      selectedExercise = null
+      expandedExercise = null,
+      selectedExercises = emptyList()
     )
   )
   val sessionState: StateFlow<SessionState> = _sessionState.asStateFlow()
@@ -176,11 +175,27 @@ class MainViewModel @Inject constructor(
       /**
        * Session-related events.
        */
-      is SessionEvent.ExerciseSelection -> {
+      is SessionEvent.ExerciseExpanded -> {
         event.exercise.let { se ->
           _sessionState.update {
             it.copy(
-              selectedExercise = if (se != it.selectedExercise) se else null
+              expandedExercise = if (se != it.expandedExercise) se else null
+            )
+          }
+        }
+      }
+      is SessionEvent.ExerciseSelected -> {
+        event.exercise.let { se ->
+          _sessionState.update {
+            it.copy(
+              selectedExercises = buildList {
+                if (it.selectedExercises.contains(event.exercise)) {
+                  addAll(it.selectedExercises.minusElement(event.exercise))
+                } else {
+                  addAll(it.selectedExercises)
+                  add(event.exercise)
+                }
+              }
             )
           }
         }
@@ -204,7 +219,7 @@ class MainViewModel @Inject constructor(
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()
       is SessionEvent.OpenGuide -> {
-        sessionState.value.selectedExercise?.exercise?.let {
+        sessionState.value.expandedExercise?.exercise?.let {
           openGuide(it)
         }
       }

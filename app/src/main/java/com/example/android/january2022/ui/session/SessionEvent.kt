@@ -5,7 +5,8 @@ import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.utils.Event
 
 sealed class SessionEvent : Event {
-  data class ExerciseSelection(val exercise: ExerciseWrapper) : SessionEvent()
+  data class ExerciseExpanded(val exercise: ExerciseWrapper) : SessionEvent()
+  data class ExerciseSelected(val exercise: ExerciseWrapper) : SessionEvent()
   data class SetChanged(val updatedSet: GymSet) : SessionEvent()
   data class SetCreated(val sessionExercise: ExerciseWrapper) : SessionEvent()
 
