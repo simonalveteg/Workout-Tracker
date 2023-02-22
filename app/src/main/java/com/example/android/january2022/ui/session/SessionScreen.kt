@@ -84,8 +84,8 @@ fun SessionScreen(
         }
         AnimatedVisibility(
           visible = uiState.value.expandedExercise == null,
-          exit = fadeOut(tween(900)),
-          enter = fadeIn(tween(900))
+          exit = fadeOut(tween(500)),
+          enter = fadeIn(tween(500))
         ) {
           SessionAppBar(
             onEvent = viewModel::onEvent,
@@ -99,8 +99,21 @@ fun SessionScreen(
         }
         AnimatedVisibility(
           visible = uiState.value.expandedExercise != null,
-          exit = fadeOut(tween(900)),
-          enter = fadeIn(tween(900))
+          exit = fadeOut(tween(500)),
+          enter = fadeIn(tween(500))
+        ) {
+          SessionAppBarExpanded(
+            timerVisible = timerVisible.value,
+            onTimerPress = {
+              timerVisible.value = !timerVisible.value
+            },
+            onEvent = viewModel::onEvent
+          )
+        }
+        AnimatedVisibility(
+          visible = uiState.value.selectedExercises.isNotEmpty(),
+          exit = fadeOut(tween(500)),
+          enter = fadeIn(tween(500))
         ) {
           SessionAppBarSelected(
             timerVisible = timerVisible.value,
