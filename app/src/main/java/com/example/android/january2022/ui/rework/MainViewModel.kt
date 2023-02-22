@@ -185,19 +185,17 @@ class MainViewModel @Inject constructor(
         }
       }
       is SessionEvent.ExerciseSelected -> {
-        event.exercise.let { se ->
-          _sessionState.update {
-            it.copy(
-              selectedExercises = buildList {
-                if (it.selectedExercises.contains(event.exercise)) {
-                  addAll(it.selectedExercises.minusElement(event.exercise))
-                } else {
-                  addAll(it.selectedExercises)
-                  add(event.exercise)
-                }
+        _sessionState.update {
+          it.copy(
+            selectedExercises = buildList {
+              if (it.selectedExercises.contains(event.exercise)) {
+                addAll(it.selectedExercises.minusElement(event.exercise))
+              } else {
+                addAll(it.selectedExercises)
+                add(event.exercise)
               }
-            )
-          }
+            }
+          )
         }
       }
       is SessionEvent.SetChanged -> {
@@ -226,6 +224,16 @@ class MainViewModel @Inject constructor(
       is SessionEvent.AddExercise -> {
         clearPickerState()
         sendUiEvent(UiEvent.Navigate(Routes.EXERCISE_PICKER))
+      }
+      is SessionEvent.RemoveSelectedExercises -> {
+        viewModelScope.launch {
+          _sessionState.value.selectedExercises.forEach {
+            repo.removeSessionExercise(it.sessionExercise)
+          }
+          _sessionState.update {
+            it.copy(selectedExercises = emptyList())
+          }
+        }
       }
       /**
        * ExercisePicker-related events.

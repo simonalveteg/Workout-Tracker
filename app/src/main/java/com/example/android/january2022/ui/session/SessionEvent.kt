@@ -10,6 +10,8 @@ sealed class SessionEvent : Event {
   data class SetChanged(val updatedSet: GymSet) : SessionEvent()
   data class SetCreated(val sessionExercise: ExerciseWrapper) : SessionEvent()
 
+  object RemoveSelectedExercises : SessionEvent()
+
   object TimerToggled : SessionEvent()
   object TimerReset : SessionEvent()
   object TimerIncreased : SessionEvent()

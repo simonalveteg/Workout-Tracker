@@ -43,6 +43,9 @@ class GymRepository(
   suspend fun insertSessionExercise(sessionExercise: SessionExercise) =
     dao.insertSessionExercise(sessionExercise)
 
+  suspend fun removeSessionExercise(sessionExercise: SessionExercise) =
+    dao.removeSessionExercise(sessionExercise)
+
   suspend fun insertSet(gymSet: GymSet) = dao.insertSet(gymSet)
 
   suspend fun updateSet(set: GymSet) = dao.updateSet(set)

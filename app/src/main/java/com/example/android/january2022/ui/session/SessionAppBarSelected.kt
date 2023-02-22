@@ -29,7 +29,7 @@ fun SessionAppBarSelected(
       ActionSpacer()
       TimerAction(timerVisible = timerVisible) { onTimerPress() }
       ActionSpacer()
-      IconButton(onClick = { /*TODO*/ }) {
+      IconButton(onClick = { onEvent(SessionEvent.RemoveSelectedExercises) }) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
     }

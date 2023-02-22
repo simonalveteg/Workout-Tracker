@@ -36,6 +36,9 @@ interface GymDAO {
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertSessionExercise(sessionExercise: SessionExercise): Long
 
+  @Delete
+  suspend fun removeSessionExercise(sessionExercise: SessionExercise)
+
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertSet(set: GymSet): Long
 
