@@ -235,6 +235,12 @@ class MainViewModel @Inject constructor(
           }
         }
       }
+      is SessionEvent.RemoveSession -> {
+        sendUiEvent(UiEvent.Navigate(Routes.HOME, popBackStack = true))
+        viewModelScope.launch {
+          repo.removeSession(_sessionState.value.currentSession.session)
+        }
+      }
       /**
        * ExercisePicker-related events.
        */

@@ -41,6 +41,7 @@ fun SessionScreen(
   LaunchedEffect(true) {
     Timber.d(session.toString())
     viewModel.uiEvent.collect { event ->
+      Timber.d("UiEvent Received: $event")
       when (event) {
         is UiEvent.OpenWebsite -> {
           uriHandler.openUri(event.url)
