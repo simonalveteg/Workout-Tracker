@@ -10,13 +10,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import com.example.android.january2022.ui.session.actions.ActionSpacer
 import com.example.android.january2022.ui.session.actions.ActionSpacerStart
-import com.example.android.january2022.ui.session.actions.OpenInNewAction
 import com.example.android.january2022.ui.session.actions.TimerAction
 import com.example.android.january2022.utils.Event
 
 @Composable
 fun SessionAppBarSelected(
   onEvent: (Event) -> Unit,
+  onDelete: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit
 ) {
@@ -29,7 +29,7 @@ fun SessionAppBarSelected(
       ActionSpacer()
       TimerAction(timerVisible = timerVisible) { onTimerPress() }
       ActionSpacer()
-      IconButton(onClick = { onEvent(SessionEvent.RemoveSelectedExercises) }) {
+      IconButton(onClick =  onDelete ) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
     }

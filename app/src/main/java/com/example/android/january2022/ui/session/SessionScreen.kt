@@ -56,6 +56,33 @@ fun SessionScreen(
   val coroutineScope = rememberCoroutineScope()
   val timerVisible = remember { mutableStateOf(false) }
 
+  val openDialog = remember { mutableStateOf(false) }
+
+  if (openDialog.value) {
+    AlertDialog(
+      onDismissRequest = { openDialog.value = false },
+      confirmButton = {
+        Button(onClick = {
+          viewModel.onEvent(SessionEvent.RemoveSelectedExercises)
+          openDialog.value = false
+        }) {
+          Text(text = "Delete")
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = { openDialog.value = false }) {
+          Text(text = "Cancel")
+        }
+      },
+      title = {
+        Text(text = "Remove ${selectedExercises.size} Exercise${if (selectedExercises.size > 1) "s" else ""}?")
+      },
+      text = {
+        Text(text = "Are you sure you want to remove the selected exercises from this session? This can not be undone.")
+      }
+    )
+  }
+
   Scaffold(
     bottomBar = {
       Box(
@@ -120,6 +147,7 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             },
+            onDelete = { openDialog.value = true },
             onEvent = viewModel::onEvent
           )
         }
