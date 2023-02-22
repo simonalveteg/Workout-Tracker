@@ -2,7 +2,6 @@ package com.example.android.january2022.ui.session
 
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -10,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import com.example.android.january2022.ui.session.actions.ActionSpacer
 import com.example.android.january2022.ui.session.actions.ActionSpacerStart
+import com.example.android.january2022.ui.session.actions.MenuAction
 import com.example.android.january2022.ui.session.actions.TimerAction
 import com.example.android.january2022.utils.Event
 
@@ -23,13 +23,11 @@ fun SessionAppBarSelected(
   BottomAppBar(
     actions = {
       ActionSpacerStart()
-      IconButton(onClick = { /*TODO*/ }) {
-        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options")
-      }
+      MenuAction { /* TODO */ }
       ActionSpacer()
       TimerAction(timerVisible = timerVisible) { onTimerPress() }
       ActionSpacer()
-      IconButton(onClick =  onDelete ) {
+      IconButton(onClick = onDelete) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
     }
