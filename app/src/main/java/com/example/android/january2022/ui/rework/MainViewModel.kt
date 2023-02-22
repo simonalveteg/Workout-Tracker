@@ -241,6 +241,13 @@ class MainViewModel @Inject constructor(
           repo.removeSession(_sessionState.value.currentSession.session)
         }
       }
+      is SessionEvent.DeselectExercises -> {
+        _sessionState.update {
+          it.copy(
+            selectedExercises = emptyList()
+          )
+        }
+      }
       /**
        * ExercisePicker-related events.
        */

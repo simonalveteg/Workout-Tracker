@@ -12,6 +12,7 @@ sealed class SessionEvent : Event {
 
   object RemoveSelectedExercises : SessionEvent()
   object RemoveSession : SessionEvent()
+  object DeselectExercises : SessionEvent()
 
   object TimerToggled : SessionEvent()
   object TimerReset : SessionEvent()
