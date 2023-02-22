@@ -16,18 +16,19 @@ import com.example.android.january2022.utils.Event
 @Composable
 fun SessionAppBarSelected(
   onEvent: (Event) -> Unit,
-  onDelete: () -> Unit,
+  onDeleteSession: () -> Unit,
+  onDeleteExercise: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit
 ) {
   BottomAppBar(
     actions = {
       ActionSpacerStart()
-      MenuAction { /* TODO */ }
+      MenuAction { onDeleteSession() }
       ActionSpacer()
       TimerAction(timerVisible = timerVisible) { onTimerPress() }
       ActionSpacer()
-      IconButton(onClick = onDelete) {
+      IconButton(onClick = onDeleteExercise) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode")
       }
     }

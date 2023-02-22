@@ -11,6 +11,7 @@ sealed class SessionEvent : Event {
   data class SetCreated(val sessionExercise: ExerciseWrapper) : SessionEvent()
 
   object RemoveSelectedExercises : SessionEvent()
+  object RemoveSession : SessionEvent()
 
   object TimerToggled : SessionEvent()
   object TimerReset : SessionEvent()

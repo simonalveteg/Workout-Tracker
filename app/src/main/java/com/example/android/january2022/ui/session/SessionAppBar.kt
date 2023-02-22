@@ -16,6 +16,7 @@ import com.example.android.january2022.utils.Event
 @Composable
 fun SessionAppBar(
   onEvent: (Event) -> Unit,
+  onDeleteSession: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
   onFAB: () -> Unit
@@ -23,7 +24,7 @@ fun SessionAppBar(
   BottomAppBar(
     actions = {
       ActionSpacerStart()
-      MenuAction { /* TODO */ }
+      MenuAction { onDeleteSession() }
       ActionSpacer()
       TimerAction(timerVisible, onTimerPress)
     },

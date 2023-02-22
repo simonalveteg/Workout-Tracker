@@ -56,29 +56,36 @@ fun SessionScreen(
   val coroutineScope = rememberCoroutineScope()
   val timerVisible = remember { mutableStateOf(false) }
 
-  val openDialog = remember { mutableStateOf(false) }
+  val deleteExerciseDialog = remember { mutableStateOf(false) }
+  val deleteSessionDialog = remember { mutableStateOf(false) }
 
-  if (openDialog.value) {
-    AlertDialog(
-      onDismissRequest = { openDialog.value = false },
-      confirmButton = {
-        Button(onClick = {
-          viewModel.onEvent(SessionEvent.RemoveSelectedExercises)
-          openDialog.value = false
-        }) {
-          Text(text = "Delete")
-        }
-      },
-      dismissButton = {
-        TextButton(onClick = { openDialog.value = false }) {
-          Text(text = "Cancel")
-        }
+  if (deleteExerciseDialog.value) {
+    DeletionAlertDialog(
+      onDismiss = { deleteExerciseDialog.value = false },
+      onDelete = {
+        viewModel.onEvent(SessionEvent.RemoveSelectedExercises)
+        deleteExerciseDialog.value = false
       },
       title = {
         Text(text = "Remove ${selectedExercises.size} Exercise${if (selectedExercises.size > 1) "s" else ""}?")
       },
       text = {
-        Text(text = "Are you sure you want to remove the selected exercises from this session? This can not be undone.")
+        Text(text = "Are you sure you want to remove the selected exercises from this session? This action can not be undone.")
+      }
+    )
+  }
+  if (deleteSessionDialog.value) {
+    DeletionAlertDialog(
+      onDismiss = { deleteSessionDialog.value = false },
+      onDelete = {
+        viewModel.onEvent(SessionEvent.RemoveSession)
+        deleteSessionDialog.value = false
+      },
+      title = {
+        Text(text = "Delete Session?")
+      },
+      text = {
+        Text(text = "Are you sure you want to delete this session and all of its contents? This action can not be undone.")
       }
     )
   }
@@ -116,6 +123,7 @@ fun SessionScreen(
         ) {
           SessionAppBar(
             onEvent = viewModel::onEvent,
+            onDeleteSession = { deleteSessionDialog.value = true },
             timerVisible = timerVisible.value,
             onTimerPress = {
               timerVisible.value = !timerVisible.value
@@ -134,6 +142,7 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             },
+            onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent
           )
         }
@@ -147,7 +156,8 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             },
-            onDelete = { openDialog.value = true },
+            onDeleteExercise = { deleteExerciseDialog.value = true },
+            onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent
           )
         }
