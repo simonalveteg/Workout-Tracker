@@ -4,6 +4,7 @@ import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.utils.Event
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 sealed class SessionEvent : Event {
   data class ExerciseExpanded(val exercise: ExerciseWrapper) : SessionEvent()
@@ -23,6 +24,6 @@ sealed class SessionEvent : Event {
   object OpenGuide : SessionEvent()
   object AddExercise : SessionEvent()
 
-  data class StartTimeChanged(val newTime: LocalDateTime) : SessionEvent()
-  data class EndTimeChanged(val newTime: LocalDateTime) : SessionEvent()
+  data class StartTimeChanged(val newTime: LocalTime) : SessionEvent()
+  data class EndTimeChanged(val newTime: LocalTime) : SessionEvent()
 }

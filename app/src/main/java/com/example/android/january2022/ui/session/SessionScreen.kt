@@ -22,6 +22,7 @@ import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -104,15 +105,12 @@ fun SessionScreen(
     }
   ) {
     timepicker(
-      initialTime = session.session.start.toLocalTime(),
+      initialTime = LocalTime.now(),
       is24HourClock = true,
       waitForPositiveButton = true,
-      title = "Select end-time",
-      colors = TimePickerDefaults.colors(
-
-      )
+      title = "Select end-time"
     ) { time ->
-
+      viewModel.onEvent(SessionEvent.EndTimeChanged(time))
     }
   }
   LaunchedEffect(timeDialog.value) {
