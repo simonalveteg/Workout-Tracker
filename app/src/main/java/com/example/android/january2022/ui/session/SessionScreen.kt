@@ -59,6 +59,7 @@ fun SessionScreen(
 
   val deleteExerciseDialog = remember { mutableStateOf(false) }
   val deleteSessionDialog = remember { mutableStateOf(false) }
+  val timeDialog = remember { mutableStateOf(false) }
 
   if (deleteExerciseDialog.value) {
     DeletionAlertDialog(
@@ -128,7 +129,8 @@ fun SessionScreen(
             timerVisible = timerVisible.value,
             onTimerPress = {
               timerVisible.value = !timerVisible.value
-            }
+            },
+            onTime = { timeDialog.value = true }
           ) {
             viewModel.onEvent(SessionEvent.AddExercise)
           }
@@ -144,7 +146,8 @@ fun SessionScreen(
               timerVisible.value = !timerVisible.value
             },
             onDeleteSession = { deleteSessionDialog.value = true },
-            onEvent = viewModel::onEvent
+            onEvent = viewModel::onEvent,
+            onTime = { timeDialog.value = true }
           )
         }
         AnimatedVisibility(
@@ -159,7 +162,8 @@ fun SessionScreen(
             },
             onDeleteExercise = { deleteExerciseDialog.value = true },
             onDeleteSession = { deleteSessionDialog.value = true },
-            onEvent = viewModel::onEvent
+            onEvent = viewModel::onEvent,
+            onTime = { timeDialog.value = true }
           )
         }
       }
