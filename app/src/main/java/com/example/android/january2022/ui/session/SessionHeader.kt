@@ -83,7 +83,7 @@ fun SessionHeader(
             modifier = Modifier.padding(start = 4.dp)
           )
           Text(
-            text = if (endTime <= startTime) "ongoing" else endTime,
+            text = endTime,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
