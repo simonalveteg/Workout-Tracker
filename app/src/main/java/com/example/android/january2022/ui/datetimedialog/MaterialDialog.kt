@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.LocalElevationOverlay
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -220,10 +220,10 @@ fun rememberMaterialDialogState(initialValue: Boolean = false): MaterialDialogSt
 fun MaterialDialog(
   dialogState: MaterialDialogState = rememberMaterialDialogState(),
   properties: DialogProperties = DialogProperties(),
-  backgroundColor: Color = MaterialTheme.colors.surface,
+  backgroundColor: Color = MaterialTheme.colorScheme.surface,
   shape: Shape = MaterialTheme.shapes.medium,
   border: BorderStroke? = null,
-  elevation: Dp = 24.dp,
+  elevation: Dp = 0.dp,
   autoDismiss: Boolean = true,
   onCloseRequest: (MaterialDialogState) -> Unit = { it.hide() },
   buttons: @Composable MaterialDialogButtons.() -> Unit = {},
@@ -250,7 +250,7 @@ fun MaterialDialog(
       dialogState.dialogBackgroundColor = LocalElevationOverlay.current?.apply(
         color = backgroundColor,
         elevation = elevation
-      ) ?: MaterialTheme.colors.surface
+      ) ?: MaterialTheme.colorScheme.surface
 
       Dialog(
         properties = properties,
@@ -267,7 +267,7 @@ fun MaterialDialog(
           shape = shape,
           color = backgroundColor,
           border = border,
-          elevation = elevation
+          tonalElevation = elevation
         ) {
           Layout(
             content = {

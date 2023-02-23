@@ -9,14 +9,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
@@ -58,7 +59,7 @@ internal fun MaterialDialogScope.DialogButtonsLayout(
     modifier
       .fillMaxWidth()
       .padding(horizontal = 8.dp)
-      .background(dialogState.dialogBackgroundColor!!),
+      .background(Color.Transparent),
     { measurables, constraints ->
 
       if (measurables.isEmpty()) {
@@ -128,7 +129,6 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
   @Composable
   fun button(
     text: String? = null,
-    textStyle: TextStyle = MaterialTheme.typography.button,
     @StringRes res: Int? = null,
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
     onClick: () -> Unit = {}
@@ -143,7 +143,7 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
         .testTag(MaterialDialogButtonTypes.Text.testTag),
       colors = colors
     ) {
-      Text(text = buttonText, style = textStyle)
+      Text(text = buttonText)
     }
   }
 
@@ -159,7 +159,6 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
   @Composable
   fun positiveButton(
     text: String? = null,
-    textStyle: TextStyle = MaterialTheme.typography.button,
     @StringRes res: Int? = null,
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
     disableDismiss: Boolean = false,
@@ -186,7 +185,7 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
       enabled = buttonEnabled,
       colors = colors
     ) {
-      Text(text = buttonText, style = textStyle)
+      Text(text = buttonText)
     }
   }
 
@@ -201,7 +200,6 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
   @Composable
   fun negativeButton(
     text: String? = null,
-    textStyle: TextStyle = MaterialTheme.typography.button,
     @StringRes res: Int? = null,
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
     onClick: () -> Unit = {}
@@ -220,7 +218,7 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
         .testTag(MaterialDialogButtonTypes.Negative.testTag),
       colors = colors
     ) {
-      Text(text = buttonText, style = textStyle)
+      Text(text = buttonText)
     }
   }
 
@@ -233,7 +231,7 @@ class MaterialDialogButtons(private val scope: MaterialDialogScope) {
   @Composable
   fun accessibilityButton(
     icon: ImageVector,
-    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
+    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
     onClick: () -> Unit
   ) {
     Box(

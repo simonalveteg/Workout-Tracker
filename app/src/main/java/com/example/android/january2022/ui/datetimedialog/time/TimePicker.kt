@@ -12,9 +12,9 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -321,7 +321,7 @@ internal fun TimeLayout(modifier: Modifier = Modifier, state: TimePickerState) {
     ) {
       Text(
         text = ":",
-        style = TextStyle(fontSize = 50.sp, color = MaterialTheme.colors.onBackground)
+        style = TextStyle(fontSize = 50.sp, color = MaterialTheme.colorScheme.onSurface)
       )
     }
 

@@ -1,7 +1,7 @@
 package com.example.android.january2022.ui.datetimedialog.time
 
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -26,15 +26,15 @@ object TimePickerDefaults {
    */
   @Composable
   fun colors(
-    activeBackgroundColor: Color = MaterialTheme.colors.primary.copy(0.3f),
-    inactiveBackgroundColor: Color = MaterialTheme.colors.onBackground.copy(0.3f),
-    activeTextColor: Color = MaterialTheme.colors.onPrimary,
-    inactiveTextColor: Color = MaterialTheme.colors.onBackground,
+    activeBackgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant.copy(0.6f),
+    inactiveBackgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant.copy(0.3f),
+    activeTextColor: Color = MaterialTheme.colorScheme.primary,
+    inactiveTextColor: Color = MaterialTheme.colorScheme.onBackground,
     inactivePeriodBackground: Color = Color.Transparent,
-    selectorColor: Color = MaterialTheme.colors.primary,
-    selectorTextColor: Color = MaterialTheme.colors.onPrimary,
-    headerTextColor: Color = MaterialTheme.colors.onBackground,
-    borderColor: Color = MaterialTheme.colors.onBackground
+    selectorColor: Color = MaterialTheme.colorScheme.primary,
+    selectorTextColor: Color = MaterialTheme.colorScheme.onPrimary,
+    headerTextColor: Color = MaterialTheme.colorScheme.onBackground,
+    borderColor: Color = MaterialTheme.colorScheme.onBackground
   ): TimePickerColors {
     return DefaultTimePickerColors(
       activeBackgroundColor = activeBackgroundColor,
