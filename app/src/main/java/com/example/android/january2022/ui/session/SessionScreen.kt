@@ -14,6 +14,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.ui.datetimedialog.MaterialDialog
+import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
+import com.example.android.january2022.ui.datetimedialog.time.TimePickerDefaults
+import com.example.android.january2022.ui.datetimedialog.time.timepicker
 import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.launch
@@ -90,6 +94,29 @@ fun SessionScreen(
         Text(text = "Are you sure you want to delete this session and all of its contents? This action can not be undone.")
       }
     )
+  }
+  val dialogState = rememberMaterialDialogState()
+  MaterialDialog(
+    dialogState = dialogState,
+    buttons = {
+      positiveButton("Ok")
+      negativeButton("Cancel")
+    }
+  ) {
+    timepicker(
+      initialTime = session.session.start.toLocalTime(),
+      is24HourClock = true,
+      waitForPositiveButton = true,
+      title = "Select end-time",
+      colors = TimePickerDefaults.colors(
+
+      )
+    ) { time ->
+
+    }
+  }
+  LaunchedEffect(timeDialog.value) {
+    if (timeDialog.value) dialogState.show()
   }
 
   Scaffold(
