@@ -64,7 +64,6 @@ fun SessionScreen(
 
   val deleteExerciseDialog = remember { mutableStateOf(false) }
   val deleteSessionDialog = remember { mutableStateOf(false) }
-  val timeDialog = remember { mutableStateOf(false) }
 
   if (deleteExerciseDialog.value) {
     DeletionAlertDialog(
@@ -113,9 +112,6 @@ fun SessionScreen(
       viewModel.onEvent(SessionEvent.EndTimeChanged(time))
     }
   }
-  LaunchedEffect(timeDialog.value) {
-    if (timeDialog.value) dialogState.show()
-  }
 
   Scaffold(
     bottomBar = {
@@ -155,7 +151,7 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             },
-            onTime = { timeDialog.value = true }
+            onTime = {  dialogState.show() }
           ) {
             viewModel.onEvent(SessionEvent.AddExercise)
           }
@@ -172,7 +168,7 @@ fun SessionScreen(
             },
             onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent,
-            onTime = { timeDialog.value = true }
+            onTime = {  dialogState.show() }
           )
         }
         AnimatedVisibility(
@@ -188,7 +184,7 @@ fun SessionScreen(
             onDeleteExercise = { deleteExerciseDialog.value = true },
             onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent,
-            onTime = { timeDialog.value = true }
+            onTime = {  dialogState.show() }
           )
         }
       }

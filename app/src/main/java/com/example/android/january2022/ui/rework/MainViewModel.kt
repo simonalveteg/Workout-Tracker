@@ -249,14 +249,17 @@ class MainViewModel @Inject constructor(
         }
       }
       is SessionEvent.EndTimeChanged -> {
-        val session = _sessionState.value.currentSession.session
+        var session = _sessionState.value.currentSession.session
         val newEndTime = LocalDateTime.of(session.end.toLocalDate(), event.newTime)
         viewModelScope.launch {
           repo.updateSession(
             session.copy(
               end = newEndTime
-            )
+            ).also { session = it }
           )
+          _sessionState.update {
+            it.copy(currentSession = it.currentSession.copy(session = session)) // update state manually
+          }
         }
       }
       /**
