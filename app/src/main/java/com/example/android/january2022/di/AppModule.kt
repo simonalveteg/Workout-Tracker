@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.StartingExercises
-import com.example.android.january2022.ui.rework.WorkoutTimer
+import com.example.android.january2022.ui.WorkoutTimer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

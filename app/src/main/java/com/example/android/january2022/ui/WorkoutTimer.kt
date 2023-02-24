@@ -1,11 +1,9 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui
 
 import android.os.CountDownTimer
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
-import kotlin.coroutines.coroutineContext
 import kotlin.math.roundToInt
 
 class WorkoutTimer {

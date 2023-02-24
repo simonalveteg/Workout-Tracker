@@ -1,7 +1,7 @@
 package com.example.android.january2022.db
 
 import com.example.android.january2022.db.entities.*
-import com.example.android.january2022.ui.rework.DatabaseModel
+import com.example.android.january2022.ui.DatabaseModel
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
 import kotlinx.coroutines.flow.*
 import timber.log.Timber

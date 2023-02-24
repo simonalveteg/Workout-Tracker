@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalAbsoluteTonalElevation

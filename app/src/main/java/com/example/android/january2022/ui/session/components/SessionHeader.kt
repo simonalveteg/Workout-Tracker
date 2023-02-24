@@ -1,9 +1,8 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,9 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.android.january2022.ui.rework.SessionWrapper
-import com.example.android.january2022.ui.rework.SmallPill
-import com.example.android.january2022.ui.theme.Shapes
+import com.example.android.january2022.ui.SessionWrapper
+import com.example.android.january2022.ui.session.toSessionTitle
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import java.time.format.DateTimeFormatter

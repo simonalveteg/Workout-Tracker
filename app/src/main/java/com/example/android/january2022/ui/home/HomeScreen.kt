@@ -6,14 +6,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.rework.MainViewModel
+import com.example.android.january2022.ui.MainViewModel
+import com.example.android.january2022.ui.home.components.HomeAppBar
+import com.example.android.january2022.ui.home.components.SessionCard
 import com.example.android.january2022.utils.UiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)

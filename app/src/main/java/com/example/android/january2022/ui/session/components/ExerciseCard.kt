@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -27,8 +27,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.ui.rework.ExerciseWrapper
-import com.example.android.january2022.ui.rework.SmallPill
+import com.example.android.january2022.ui.ExerciseWrapper
+import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
 import timber.log.Timber
 

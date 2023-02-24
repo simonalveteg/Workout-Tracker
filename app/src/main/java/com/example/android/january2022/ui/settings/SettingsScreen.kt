@@ -13,9 +13,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.rework.MainViewModel
+import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,7 +1,8 @@
-package com.example.android.january2022.ui.exercisepicker
+package com.example.android.january2022.ui.exercisepicker.components
 
 import androidx.compose.runtime.Composable
 import com.example.android.january2022.db.MuscleGroup
+import com.example.android.january2022.ui.exercisepicker.PickerEvent
 import com.example.android.january2022.utils.Event
 
 @Composable

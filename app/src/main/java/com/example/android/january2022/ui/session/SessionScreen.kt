@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
-import com.example.android.january2022.ui.datetimedialog.time.TimePickerDefaults
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
-import com.example.android.january2022.ui.rework.MainViewModel
+import com.example.android.january2022.ui.session.components.*
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber

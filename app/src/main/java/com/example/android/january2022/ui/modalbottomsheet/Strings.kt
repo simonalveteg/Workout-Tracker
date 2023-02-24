@@ -18,10 +18,10 @@ package com.example.android.january2022.ui.modalbottomsheet
  */
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.R
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.runtime.Immutable
 
 @Immutable
 @kotlin.jvm.JvmInline

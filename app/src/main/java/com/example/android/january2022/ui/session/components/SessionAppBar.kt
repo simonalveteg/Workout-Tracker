@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,8 +12,6 @@ import com.example.android.january2022.ui.session.actions.ActionSpacerStart
 import com.example.android.january2022.ui.session.actions.MenuAction
 import com.example.android.january2022.ui.session.actions.TimerAction
 import com.example.android.january2022.utils.Event
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Composable
 fun SessionAppBar(

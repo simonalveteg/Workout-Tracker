@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.exercisepicker
+package com.example.android.january2022.ui.exercisepicker.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -13,14 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.android.january2022.db.entities.Exercise
-import com.example.android.january2022.ui.rework.SmallPill
-import com.example.android.january2022.ui.session.SessionEvent
+import com.example.android.january2022.ui.exercisepicker.PickerEvent
 import com.example.android.january2022.ui.session.actions.OpenInNewAction
 import com.example.android.january2022.ui.session.actions.OpenStatsAction
+import com.example.android.january2022.ui.session.components.SmallPill
 import com.example.android.january2022.utils.Event
 
 @OptIn(ExperimentalMaterial3Api::class)

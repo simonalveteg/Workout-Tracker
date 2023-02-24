@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.home
+package com.example.android.january2022.ui.home.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme

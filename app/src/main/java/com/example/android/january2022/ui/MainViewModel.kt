@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.rework
+package com.example.android.january2022.ui
 
 import android.content.ContentResolver
 import android.content.Context

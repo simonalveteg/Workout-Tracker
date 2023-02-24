@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.home
+package com.example.android.january2022.ui.home.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -6,8 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.android.january2022.db.MuscleGroup
-import com.example.android.january2022.ui.rework.SessionWrapper
+import com.example.android.january2022.ui.SessionWrapper
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)

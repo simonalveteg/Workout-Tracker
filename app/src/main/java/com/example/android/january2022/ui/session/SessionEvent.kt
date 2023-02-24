@@ -1,9 +1,8 @@
 package com.example.android.january2022.ui.session
 
 import com.example.android.january2022.db.entities.GymSet
-import com.example.android.january2022.ui.rework.ExerciseWrapper
+import com.example.android.january2022.ui.ExerciseWrapper
 import com.example.android.january2022.utils.Event
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 sealed class SessionEvent : Event {

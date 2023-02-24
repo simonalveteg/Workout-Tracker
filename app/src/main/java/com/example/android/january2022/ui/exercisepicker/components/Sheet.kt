@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.exercisepicker
+package com.example.android.january2022.ui.exercisepicker.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

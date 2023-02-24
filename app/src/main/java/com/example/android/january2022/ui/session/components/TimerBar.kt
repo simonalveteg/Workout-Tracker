@@ -1,4 +1,4 @@
-package com.example.android.january2022.ui.session
+package com.example.android.january2022.ui.session.components
 
 import android.content.Context
 import android.os.Build
@@ -20,8 +20,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.android.january2022.ui.rework.TimerState
-import com.example.android.january2022.ui.rework.toTimerString
+import com.example.android.january2022.ui.TimerState
+import com.example.android.january2022.ui.session.SessionEvent
+import com.example.android.january2022.ui.toTimerString
 import com.example.android.january2022.utils.Event
 import kotlinx.coroutines.channels.consumeEach
 

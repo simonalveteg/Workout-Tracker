@@ -1,7 +1,6 @@
 package com.example.android.january2022.ui.exercisepicker
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,10 +20,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.android.january2022.ui.MainViewModel
+import com.example.android.january2022.ui.exercisepicker.components.EquipmentSheet
+import com.example.android.january2022.ui.exercisepicker.components.ExerciseCard
+import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
-import com.example.android.january2022.ui.rework.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
