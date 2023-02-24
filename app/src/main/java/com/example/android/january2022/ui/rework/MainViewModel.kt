@@ -224,9 +224,7 @@ class MainViewModel @Inject constructor(
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()
       is SessionEvent.OpenGuide -> {
-        sessionState.value.expandedExercise?.exercise?.let {
-          openGuide(it)
-        }
+        sessionState.value.expandedExercise?.exercise?.let { openGuide(it) }
       }
       is SessionEvent.AddExercise -> {
         clearPickerState()

@@ -1,6 +1,7 @@
 package com.example.android.january2022.ui.session
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -71,7 +72,7 @@ fun ExpandedExerciseContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-          .padding(bottom = 4.dp, start = 12.dp, end = 8.dp)
+          .padding(bottom = 4.dp, start = 6.dp, end = 8.dp)
           .fillMaxWidth()
           .clickable { }
       ) {
@@ -80,7 +81,6 @@ fun ExpandedExerciseContent(
         ) {
           Icon(imageVector = Icons.Default.Close, contentDescription = "Delete Set")
         }
-        ColumnHeader(text = "SET${index + 1}")
         Row {
           BasicTextField(
             value = if (repsText != "-1") repsText else " ",
@@ -169,11 +169,10 @@ fun ExpandedExerciseContent(
 @Composable
 fun ColumnHeader(text: String) {
   Box {
-    Text(text = text, style = MaterialTheme.typography.labelMedium)
     Text(
-      text = "SET000",
+      text = text,
       style = MaterialTheme.typography.labelMedium,
-      modifier = Modifier.alpha(0f)
+      textAlign = TextAlign.Center
     )
   }
 }
