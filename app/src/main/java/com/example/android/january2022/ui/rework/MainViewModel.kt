@@ -236,7 +236,7 @@ class MainViewModel @Inject constructor(
             repo.removeSessionExercise(it.sessionExercise)
           }
           _sessionState.update {
-            it.copy(selectedExercises = emptyList())
+            it.copy(selectedExercises = emptyList(), expandedExercise = null)
           }
         }
       }
