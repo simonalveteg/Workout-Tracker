@@ -162,7 +162,6 @@ fun SessionScreen(
           enter = fadeIn(tween(500))
         ) {
           SessionAppBar(
-            onEvent = viewModel::onEvent,
             onDeleteSession = { deleteSessionDialog.value = true },
             timerVisible = timerVisible.value,
             onTimerPress = {

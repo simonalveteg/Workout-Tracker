@@ -44,7 +44,7 @@ fun ExpandedExerciseContent(
       .padding(top = 8.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    sets.forEachIndexed { index, set ->
+    sets.forEach { set ->
       val localFocusManager = LocalFocusManager.current
       val reps: Int = set.reps
       val weight: Float = set.weight

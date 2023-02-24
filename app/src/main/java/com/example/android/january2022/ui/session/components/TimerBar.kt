@@ -47,9 +47,9 @@ fun TimerBar(
 
   val context = LocalContext.current
   val vibrator = if (Build.VERSION.SDK_INT >= 31) {
-    (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator;
+    (context.getSystemService(VibratorManager::class.java)).defaultVibrator;
   } else {
-    context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    context.getSystemService(Vibrator::class.java)
   }
 
   LaunchedEffect(key1 = true) {

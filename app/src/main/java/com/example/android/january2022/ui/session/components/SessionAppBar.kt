@@ -15,7 +15,6 @@ import com.example.android.january2022.utils.Event
 
 @Composable
 fun SessionAppBar(
-  onEvent: (Event) -> Unit,
   onDeleteSession: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
