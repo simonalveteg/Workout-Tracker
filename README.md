@@ -16,3 +16,5 @@ A Workout Tracker for Android written with Jetpack Compose using MVVM architectu
 - [ ] Exercise Presets
 - [ ] 5/3/1 support
 - [ ] More Exercises
+
+Progress videos can be found in PROGRESS.md
