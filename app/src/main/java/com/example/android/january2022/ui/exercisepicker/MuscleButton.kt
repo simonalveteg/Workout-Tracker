@@ -20,7 +20,7 @@ fun MuscleButton(
   onClick: () -> Unit
 ) {
   val containerColor by animateColorAsState(
-    targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface.copy(alpha = 0.23f)
+    targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.23f)
   )
 
   Surface(

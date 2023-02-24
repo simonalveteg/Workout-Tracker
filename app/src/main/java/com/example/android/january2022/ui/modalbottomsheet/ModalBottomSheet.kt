@@ -392,7 +392,7 @@ object ModalBottomSheetDefaults {
   /**
    * The default elevation used by [ModalBottomSheetLayout].
    */
-  val Elevation = 16.dp
+  val Elevation = 2.dp
 
   /**
    * The default scrim color used by [ModalBottomSheetLayout].
