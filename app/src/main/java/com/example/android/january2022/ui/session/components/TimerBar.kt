@@ -1,6 +1,5 @@
 package com.example.android.january2022.ui.session.components
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
