@@ -1,146 +1,80 @@
 package com.example.android.january2022.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.android.january2022.db.entities.*
 import kotlinx.coroutines.flow.Flow
-import org.json.JSONArray
+import kotlinx.coroutines.flow.StateFlow
 
 
 @Dao
 interface GymDAO {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSession(session: Session): Long
+  @Query("SELECT * FROM sessions ORDER BY start DESC")
+  fun getAllSessions(): Flow<List<Session>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertExercise(exercise: Exercise): Long
+  @Query("SELECT * FROM sessions ORDER BY sessionId DESC LIMIT 1")
+  fun getLastSession(): Session
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSessionExercise(item: SessionExercise)
+  @Query("SELECT * FROM exercises ORDER BY title ASC")
+  fun getAllExercises(): Flow<List<Exercise>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSet(item: GymSet)
+  @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :sessionId")
+  fun getExercisesForSession(sessionId: Long): Flow<List<SessionExerciseWithExercise>>
 
-    @Delete
-    suspend fun removeSessionExercise(item: SessionExercise)
+  @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId ASC")
+  fun getSetsForExercise(id: Long): Flow<List<GymSet>>
 
-    @Delete
-    suspend fun removeSet(item: GymSet)
+  @Query("SELECT GROUP_CONCAT(targets,'|') FROM exercises as e JOIN sessionExercises as se ON e.id = se.parentExerciseId  WHERE se.parentSessionId = :sessionId")
+  fun getMuscleGroupsForSession(sessionId: Long): Flow<String>
 
-    @Delete
-    suspend fun removeSession(item: Session)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertSession(session: Session): Long
 
-    @Update
-    suspend fun updateSet(item: GymSet)
+  @Delete
+  suspend fun removeSession(session: Session)
 
-    @Update
-    suspend fun updateSession(session: Session)
+  @Update
+  suspend fun updateSession(session: Session)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertExercise(exercise: Exercise): Long
 
-    @MapInfo(valueColumn = "count")
-    @Query(
-        "SELECT COUNT(DISTINCT sessionExerciseId) as count, * FROM exercises " +
-                "LEFT JOIN sessionExercises ON id = parentExerciseId " +
-                "GROUP BY id ORDER BY count DESC, title ASC"
-    )
-    fun getExercisesWithCount(): Flow<Map<Exercise, Int>>
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertSessionExercise(sessionExercise: SessionExercise): Long
 
-    @Query("SELECT * FROM sets ORDER BY setId DESC LIMIT 1")
-    fun getLastSet(): GymSet
+  @Delete
+  suspend fun removeSessionExercise(sessionExercise: SessionExercise)
 
-    @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :key ORDER BY setId DESC")
-    fun getSetsForSessionExercise(key: Long): Flow<List<GymSet>>
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertSet(set: GymSet): Long
 
-    @Query("SELECT * FROM sets JOIN sessionExercises ON sessionExerciseId=parentSessionExerciseId WHERE parentSessionId = :key ORDER BY setId ASC")
-    fun getSetsForSession(key: Long): LiveData<List<GymSet>>
+  @Update
+  suspend fun updateSet(set: GymSet)
 
-    @Query("SELECT * FROM exercises ORDER BY id DESC LIMIT 1")
-    fun getLastExercise(): Exercise
+  @Delete
+  suspend fun deleteSet(set: GymSet)
 
-    @Query("SELECT * FROM exercises WHERE id = :key")
-    fun getExercise(key: Long): Exercise
+  @Query("SELECT * FROM sessions")
+  fun getSessionList(): List<Session>
 
-    @Query("SELECT * FROM sessionExercises ORDER BY sessionExerciseId DESC LIMIT 1")
-    fun getLastSessionExercise(): SessionExercise
+  @Query("SELECT * FROM exercises")
+  fun getExerciseList(): List<Exercise>
 
-    @Query("DELETE FROM sessions")
-    suspend fun clearSessions()
+  @Query("SELECT * FROM sessionExercises")
+  fun getSessionExerciseList(): List<SessionExercise>
 
-    @Query("DELETE FROM sessionExercises")
-    suspend fun clearSessionExercises()
+  @Query("SELECT * FROM sets")
+  fun getSetList(): List<GymSet>
 
-    @Query("DELETE FROM sets")
-    suspend fun clearSets()
+  @Query("DELETE FROM sessions")
+  suspend fun clearSessions()
 
-    @Query("DELETE FROM exercises")
-    suspend fun clearExercises()
+  @Query("DELETE FROM sessionExercises")
+  suspend fun clearSessionExercises()
 
-    @Query("SELECT * FROM sessions WHERE sessionId = :key")
-    fun getSession(key: Long): Session
+  @Query("DELETE FROM sets")
+  suspend fun clearSets()
 
-    @Query("SELECT DISTINCT targets FROM exercises ORDER BY targets ASC")
-    fun getAllMuscleGroups(): LiveData<List<String>>
-
-    @Query("SELECT * FROM sessions ORDER BY start DESC")
-    fun getAllSessions(): LiveData<List<Session>>
-
-    @Query("SELECT * FROM exercises ORDER BY id DESC")
-    fun getAllExercises(): LiveData<List<Exercise>>
-
-    @Query("SELECT * FROM sets")
-    fun getAllSets(): LiveData<List<GymSet>>
-
-    @Query("SELECT * FROM sessions")
-    fun getSessionList(): List<Session>
-
-    @Query("SELECT * FROM exercises")
-    fun getExerciseList(): List<Exercise>
-
-    @Query("SELECT * FROM sessionExercises")
-    fun getSessionExerciseList(): List<SessionExercise>
-
-    @Query("SELECT * FROM sets")
-    fun getSetList(): List<GymSet>
-
-
-    @Query(
-        "SELECT targets FROM exercises AS e " +
-                "JOIN sessionExercises AS se ON e.id = se.parentExerciseId " +
-                "JOIN sessions AS s ON s.sessionId = se.parentSessionId " +
-                "WHERE s.sessionId = :key"
-    )
-    fun getSessionMuscleGroups(key: Long): List<String>
-
-    /**
-     * Returns a list of ALL SessionExerciseWithExercise objects
-     */
-    @Transaction
-    @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id")
-    fun getSessionExercisesWithExercise(): LiveData<List<SessionExerciseWithExercise>>
-
-    @Query(
-        "SELECT * FROM sessionExercises " +
-                "LEFT JOIN sets ON sets.parentSessionExerciseId = sessionExercises.sessionExerciseId " +
-                "JOIN exercises ON sessionExercises.parentExerciseId = exercises.id " +
-                "JOIN sessions ON sessionExercises.parentSessionId = sessions.sessionId " +
-                "WHERE parentExerciseId = :exerciseId"
-    )
-    fun getSessionExercisesForExercise(exerciseId: Long): Flow<Map<SessionWithSessionExerciseWithExercise, List<GymSet>>>
-
-    /**
-     * Returns a list of SessionExerciseWithExercise for the given Session
-     */
-    @Transaction
-    @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :key")
-    fun getSessionExercisesWithExerciseForSession(key: Long): LiveData<List<SessionExerciseWithExercise>>
-
-    @Query(
-        "SELECT * FROM exercises " +
-                "WHERE equipment LIKE :equipment " +
-                "AND title LIKE :query " +
-                "ORDER BY (CASE WHEN :query = '%%' THEN title ELSE length(title) END) ASC, title ASC"
-    )
-    fun getExercisesByQuery(equipment: String, query: String): Flow<List<Exercise>>
-
+  @Query("DELETE FROM exercises")
+  suspend fun clearExercises()
 }
 

@@ -1,13 +1,11 @@
 package com.example.android.january2022.utils
 
-import android.util.Log
 import com.example.android.january2022.db.MuscleGroup
+import timber.log.Timber
 
-fun turnTargetIntoMuscleGroup(target: String): String {
-    var muscleGroup = ""
-    val split = target.split("|")
-    split.forEachIndexed { index, targ ->
-        muscleGroup += when (targ.trim().replace("\n", "").replace(" ", "").lowercase()) {
+fun turnTargetIntoMuscleGroups(targets: String): List<String> {
+    return targets.split("|").map {
+        when (it.trim().replace("\n", "").replace(" ", "").lowercase()) {
             "adductorbrevis" -> MuscleGroup.THIGHS
             "adductorlongus" -> MuscleGroup.THIGHS
             "adductormagnus" -> MuscleGroup.THIGHS
@@ -94,6 +92,7 @@ fun turnTargetIntoMuscleGroup(target: String): String {
             "teresminor" -> MuscleGroup.SHOULDERS
             "tibialisanterior" -> MuscleGroup.CALVES
             "transverseabdominis" -> MuscleGroup.ABDOMINALS
+            "compressesandsupportsabdominalviscera" -> MuscleGroup.ABDOMINALS
             "trapezius,lower" -> MuscleGroup.SHOULDERS
             "trapezius,middle" -> MuscleGroup.SHOULDERS
             "trapezius,middlefibers" -> MuscleGroup.SHOULDERS
@@ -109,10 +108,7 @@ fun turnTargetIntoMuscleGroup(target: String): String {
             "wrist/fingerflexors" -> MuscleGroup.FOREARMS
             "wristextensors" -> MuscleGroup.FOREARMS
             "wristflexors" -> MuscleGroup.FOREARMS
-            else -> "FAILURE"
+            else -> "FAILURE".also { Timber.d("Target: $targets") }
         }
-        if (index < split.size - 1) muscleGroup += ", "
-    }
-    if(muscleGroup.isEmpty()) Log.d("Converter", "FAILURE: $target")
-    return muscleGroup
+    }.distinct().filterNot { it == "FAILURE" }
 }

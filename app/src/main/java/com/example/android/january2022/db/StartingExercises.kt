@@ -2,7 +2,6 @@ package com.example.android.january2022.db
 
 import android.content.Context
 import android.util.Log
-import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.android.january2022.R
@@ -11,7 +10,6 @@ import com.example.android.january2022.di.ApplicationScope
 import com.google.gson.GsonBuilder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
