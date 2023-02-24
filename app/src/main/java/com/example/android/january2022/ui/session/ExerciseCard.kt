@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.ui.rework.ExerciseWrapper
 import com.example.android.january2022.ui.rework.SmallPill
 import com.example.android.january2022.utils.Event
@@ -39,6 +40,7 @@ fun ExerciseCard(
   selected: Boolean = false,
   onEvent: (Event) -> Unit,
   onLongClick: () -> Unit,
+  onSetDeleted: (GymSet) -> Unit,
   onClick: () -> Unit
 ) {
   val exercise = exerciseWrapper.exercise
@@ -84,7 +86,8 @@ fun ExerciseCard(
           onEvent = onEvent,
           onSetCreated = {
             onEvent(SessionEvent.SetCreated(exerciseWrapper))
-          }
+          },
+          onSetDeleted = onSetDeleted
         )
       }
       AnimatedVisibility(!expanded) {

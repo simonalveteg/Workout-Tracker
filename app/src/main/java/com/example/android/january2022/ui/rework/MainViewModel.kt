@@ -212,6 +212,13 @@ class MainViewModel @Inject constructor(
           }
         }
       }
+      is SessionEvent.SetDeleted -> {
+        viewModelScope.launch {
+          withContext(Dispatchers.IO) {
+            repo.deleteSet(event.set)
+          }
+        }
+      }
       is SessionEvent.TimerToggled -> workoutTimer.toggle()
       is SessionEvent.TimerReset -> workoutTimer.reset()
       is SessionEvent.TimerIncreased -> workoutTimer.increment()

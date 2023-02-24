@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
@@ -64,6 +65,7 @@ fun SessionScreen(
 
   val deleteExerciseDialog = remember { mutableStateOf(false) }
   val deleteSessionDialog = remember { mutableStateOf(false) }
+  val deleteSetDialog = remember { mutableStateOf<GymSet?>(null) }
 
   if (deleteExerciseDialog.value) {
     DeletionAlertDialog(
@@ -92,6 +94,21 @@ fun SessionScreen(
       },
       text = {
         Text(text = "Are you sure you want to delete this session and all of its contents? This action can not be undone.")
+      }
+    )
+  }
+  if (deleteSetDialog.value != null) {
+    DeletionAlertDialog(
+      onDismiss = { deleteSetDialog.value = null },
+      onDelete = {
+        deleteSetDialog.value?.let { viewModel.onEvent(SessionEvent.SetDeleted(it)) }
+        deleteSetDialog.value = null
+      },
+      title = {
+        Text(text = "Delete Set?")
+      },
+      text = {
+        Text(text = "Are you sure you want to delete this set? This action can not be undone.")
       }
     )
   }
@@ -151,7 +168,7 @@ fun SessionScreen(
             onTimerPress = {
               timerVisible.value = !timerVisible.value
             },
-            onTime = {  dialogState.show() }
+            onTime = { dialogState.show() }
           ) {
             viewModel.onEvent(SessionEvent.AddExercise)
           }
@@ -168,7 +185,7 @@ fun SessionScreen(
             },
             onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent,
-            onTime = {  dialogState.show() }
+            onTime = { dialogState.show() }
           )
         }
         AnimatedVisibility(
@@ -184,7 +201,7 @@ fun SessionScreen(
             onDeleteExercise = { deleteExerciseDialog.value = true },
             onDeleteSession = { deleteSessionDialog.value = true },
             onEvent = viewModel::onEvent,
-            onTime = {  dialogState.show() }
+            onTime = { dialogState.show() }
           )
         }
       }
@@ -220,9 +237,8 @@ fun SessionScreen(
             expanded = expanded,
             selected = selected,
             onEvent = viewModel::onEvent,
-            onLongClick = {
-              viewModel.onEvent(SessionEvent.ExerciseSelected(exercise))
-            }
+            onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
+            onSetDeleted = { deleteSetDialog.value = it }
           ) {
             viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
             if (!expanded) {

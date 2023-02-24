@@ -11,6 +11,7 @@ sealed class SessionEvent : Event {
   data class ExerciseSelected(val exercise: ExerciseWrapper) : SessionEvent()
   data class SetChanged(val updatedSet: GymSet) : SessionEvent()
   data class SetCreated(val sessionExercise: ExerciseWrapper) : SessionEvent()
+  data class SetDeleted(val set: GymSet) : SessionEvent()
 
   object RemoveSelectedExercises : SessionEvent()
   object RemoveSession : SessionEvent()

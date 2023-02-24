@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import com.example.android.january2022.utils.Event
 fun ExpandedExerciseContent(
   sets: List<GymSet>,
   onEvent: (Event) -> Unit,
+  onSetDeleted: (GymSet) -> Unit,
   onSetCreated: () -> Unit
 ) {
   Column(
@@ -71,8 +73,13 @@ fun ExpandedExerciseContent(
         modifier = Modifier
           .padding(bottom = 4.dp, start = 12.dp, end = 8.dp)
           .fillMaxWidth()
-          .clickable {  }
+          .clickable { }
       ) {
+        IconButton(
+          onClick = { onSetDeleted(set) }
+        ) {
+          Icon(imageVector = Icons.Default.Close, contentDescription = "Delete Set")
+        }
         ColumnHeader(text = "SET${index + 1}")
         Row {
           BasicTextField(

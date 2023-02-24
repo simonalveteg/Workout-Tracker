@@ -50,6 +50,9 @@ interface GymDAO {
   @Update
   suspend fun updateSet(set: GymSet)
 
+  @Delete
+  suspend fun deleteSet(set: GymSet)
+
   @Query("SELECT * FROM sessions")
   fun getSessionList(): List<Session>
 

@@ -53,6 +53,7 @@ class GymRepository(
   suspend fun insertSet(gymSet: GymSet) = dao.insertSet(gymSet)
 
   suspend fun updateSet(set: GymSet) = dao.updateSet(set)
+  suspend fun deleteSet(set: GymSet) = dao.deleteSet(set)
 
   suspend fun createSet(sessionExercise: SessionExercise) =
     dao.insertSet(GymSet(parentSessionExerciseId = sessionExercise.sessionExerciseId))
