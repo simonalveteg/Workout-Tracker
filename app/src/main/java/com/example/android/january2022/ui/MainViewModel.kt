@@ -135,7 +135,9 @@ class MainViewModel @Inject constructor(
       is HomeEvent.SessionClicked -> {
         _sessionState.update {
           it.copy(
-            currentSession = event.sessionWrapper
+            currentSession = event.sessionWrapper,
+            selectedExercises = emptyList(),
+            expandedExercise = null
           )
         }
         Timber.d("currentSession updated: ${sessionState.value.currentSession}")
