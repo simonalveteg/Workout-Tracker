@@ -12,7 +12,7 @@ A Workout Tracker for Android written with Jetpack Compose using MVVM architectu
 <img src="https://user-images.githubusercontent.com/41792248/221199377-623988a9-29fe-4f5a-bf1a-f3ffed4f9aed.png" width="200" />
 
 # Planned Functionality
-- [] Show statistics for each exercise
-- [] Exercise Presets
-- [] 5/3/1 support
-- [] More Exercises
+- [ ] Show statistics for each exercise
+- [ ] Exercise Presets
+- [ ] 5/3/1 support
+- [ ] More Exercises
