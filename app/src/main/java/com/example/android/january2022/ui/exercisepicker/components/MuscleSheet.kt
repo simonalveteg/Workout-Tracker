@@ -13,6 +13,7 @@ fun MuscleSheet(
   Sheet(
     items = MuscleGroup.getAllMuscleGroups().sorted(),
     selectedItems = selectedMusclegroups,
+    title = "Filter by Body-part",
     onSelect = { onEvent(PickerEvent.SelectMuscle(it)) }
   ) {
     onEvent(PickerEvent.DeselectMuscles)
