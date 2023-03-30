@@ -17,12 +17,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,25 +50,6 @@ fun ExpandedExerciseContent(
       val localFocusManager = LocalFocusManager.current
       val reps: Int = set.reps
       val weight: Float = set.weight
-      val repsRequester = FocusRequester()
-      val weightRequester = FocusRequester()
-      var repsText by remember { mutableStateOf(reps.toString()) }
-      var weightText by remember { mutableStateOf(weight.toString()) }
-
-      LaunchedEffect(weightText) {
-        try {
-          val newWeight = weightText.trim().toFloat()
-          onEvent(SessionEvent.SetChanged(set.copy(weight = newWeight)))
-        } catch (_: Exception) {
-        }
-      }
-      LaunchedEffect(repsText) {
-        try {
-          val newReps = repsText.trim().toInt()
-          onEvent(SessionEvent.SetChanged(set.copy(reps = newReps)))
-        } catch (_: Exception) {
-        }
-      }
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -78,77 +60,54 @@ fun ExpandedExerciseContent(
           .clickable { }
       ) {
         IconButton(
-          onClick = { onSetDeleted(set) }
+          onClick = { onSetDeleted(set) },
+          modifier = Modifier.padding(end = 8.dp)
         ) {
           Icon(imageVector = Icons.Default.Close, contentDescription = "Delete Set")
         }
-        Row(
-          modifier = Modifier.clickable {
-            repsRequester.requestFocus()
-          }
-        ) {
-          BasicTextField(
-            value = if (repsText != "-1") repsText else " ",
-            onValueChange = {
-              repsText = it
-            },
-            textStyle = TextStyle(
-              color = MaterialTheme.colorScheme.onSurface,
-              fontSize = 21.sp,
-              fontWeight = FontWeight.Bold,
-              textAlign = TextAlign.End
-            ),
-            keyboardOptions = KeyboardOptions(
-              keyboardType = KeyboardType.Number,
-              imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-              onNext = { localFocusManager.moveFocus(FocusDirection.Right) }
-            ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-            modifier = Modifier
-              .width(IntrinsicSize.Min)
-              .padding(start = 6.dp)
-              .defaultMinSize(minWidth = 60.dp)
-              .focusRequester(repsRequester)
+        InputField(
+          label = "reps",
+          initialValue = reps.toString(),
+          onValueChange = {
+            val tfv = it.text.trim().toIntOrNull()
+            if (tfv != null) {
+              onEvent(SessionEvent.SetChanged(set.copy(reps = tfv)))
+              true
+            } else {
+              false
+            }
+          },
+          keyboardActions = KeyboardActions(
+            onNext = { localFocusManager.moveFocus(FocusDirection.Next) }
+          ),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
           )
-          SetInputLabel(text = "reps")
-        }
-        Row(
-          modifier = Modifier.clickable {
-            weightRequester.requestFocus()
-          }
-        ) {
-          BasicTextField(
-            value = if (weightText != "-1.0") weightText else " ",
-            onValueChange = {
-              weightText = it
-            },
-            textStyle = TextStyle(
-              color = MaterialTheme.colorScheme.onSurface,
-              fontSize = 21.sp,
-              fontWeight = FontWeight.Bold,
-              textAlign = TextAlign.End
-            ),
-            keyboardOptions = KeyboardOptions(
-              keyboardType = KeyboardType.Number,
-              imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-              onDone = {
-                localFocusManager.moveFocus(FocusDirection.Next)
-                localFocusManager.clearFocus()
-              }
-            ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-            modifier = Modifier
-              .width(IntrinsicSize.Min)
-              .defaultMinSize(minWidth = 60.dp)
-              .padding(start = 8.dp)
-              .focusRequester(weightRequester)
+        )
+        InputField(
+          label = "kg",
+          initialValue = weight.toString(),
+          onValueChange = {
+            val tfv = it.text.trim().toFloatOrNull()
+            if (tfv != null) {
+              onEvent(SessionEvent.SetChanged(set.copy(weight = tfv)))
+              true
+            } else {
+              false
+            }
+          },
+          keyboardActions = KeyboardActions(
+            onDone = {
+              localFocusManager.moveFocus(FocusDirection.Next)
+              localFocusManager.clearFocus()
+            }
+          ),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
           )
-          SetInputLabel(text = "kg")
-        }
+        )
         Surface(
           onClick = {
             onEvent(SessionEvent.SetChanged(set.copy(setType = SetType.next(set.setType))))
@@ -173,16 +132,6 @@ fun ExpandedExerciseContent(
       Icon(imageVector = Icons.Default.Add, contentDescription = "Add new set")
     }
   }
-}
-
-@Composable
-fun SetInputLabel(text: String) {
-  Text(
-    text = text,
-    color = LocalContentColor.current.copy(alpha = 0.8f),
-    style = MaterialTheme.typography.labelSmall,
-    modifier = Modifier.padding(start = 4.dp)
-  )
 }
 
 fun setTypeColor(setType: String, colorScheme: ColorScheme): Color {
