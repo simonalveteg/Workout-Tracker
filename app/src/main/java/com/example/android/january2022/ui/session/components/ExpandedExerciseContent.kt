@@ -17,6 +17,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +49,8 @@ fun ExpandedExerciseContent(
       val localFocusManager = LocalFocusManager.current
       val reps: Int = set.reps
       val weight: Float = set.weight
-      val requester = FocusRequester()
+      val repsRequester = FocusRequester()
+      val weightRequester = FocusRequester()
       var repsText by remember { mutableStateOf(reps.toString()) }
       var weightText by remember { mutableStateOf(weight.toString()) }
 
@@ -80,7 +82,11 @@ fun ExpandedExerciseContent(
         ) {
           Icon(imageVector = Icons.Default.Close, contentDescription = "Delete Set")
         }
-        Row {
+        Row(
+          modifier = Modifier.clickable {
+            repsRequester.requestFocus()
+          }
+        ) {
           BasicTextField(
             value = if (repsText != "-1") repsText else " ",
             onValueChange = {
@@ -104,11 +110,15 @@ fun ExpandedExerciseContent(
               .width(IntrinsicSize.Min)
               .padding(start = 6.dp)
               .defaultMinSize(minWidth = 60.dp)
-              .focusRequester(requester)
+              .focusRequester(repsRequester)
           )
           SetInputLabel(text = "reps")
         }
-        Row {
+        Row(
+          modifier = Modifier.clickable {
+            weightRequester.requestFocus()
+          }
+        ) {
           BasicTextField(
             value = if (weightText != "-1.0") weightText else " ",
             onValueChange = {
@@ -128,7 +138,6 @@ fun ExpandedExerciseContent(
               onDone = {
                 localFocusManager.moveFocus(FocusDirection.Next)
                 localFocusManager.clearFocus()
-                //onDone()
               }
             ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
@@ -136,6 +145,7 @@ fun ExpandedExerciseContent(
               .width(IntrinsicSize.Min)
               .defaultMinSize(minWidth = 60.dp)
               .padding(start = 8.dp)
+              .focusRequester(weightRequester)
           )
           SetInputLabel(text = "kg")
         }
@@ -162,17 +172,6 @@ fun ExpandedExerciseContent(
     ) {
       Icon(imageVector = Icons.Default.Add, contentDescription = "Add new set")
     }
-  }
-}
-
-@Composable
-fun ColumnHeader(text: String) {
-  Box {
-    Text(
-      text = text,
-      style = MaterialTheme.typography.labelMedium,
-      textAlign = TextAlign.Center
-    )
   }
 }
 
