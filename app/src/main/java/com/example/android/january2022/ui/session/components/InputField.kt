@@ -28,7 +28,8 @@ fun InputField(
   initialValue: String,
   onValueChange: (TextFieldValue) -> Boolean,
   keyboardActions: KeyboardActions,
-  keyboardOptions: KeyboardOptions
+  keyboardOptions: KeyboardOptions,
+  autoRequestFocus: Boolean = false
 ) {
   val initialText = initialValue.toFloatOrNull().let {
     if (it == null || it < 0) "" else initialValue
@@ -43,6 +44,10 @@ fun InputField(
   val textColor by animateColorAsState(
     targetValue = if (textValidation) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error
   )
+  DisposableEffect(Unit) {
+    if (autoRequestFocus && initialText.isEmpty()) requester.requestFocus()
+    onDispose { }
+  }
 
   Row(
     modifier = Modifier

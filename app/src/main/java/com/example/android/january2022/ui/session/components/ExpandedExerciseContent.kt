@@ -87,7 +87,8 @@ fun ExpandedExerciseContent(
           keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
-          )
+          ),
+          autoRequestFocus = true
         )
         InputField(
           label = "kg",
