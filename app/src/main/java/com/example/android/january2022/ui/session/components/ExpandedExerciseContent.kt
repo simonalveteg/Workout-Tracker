@@ -63,7 +63,11 @@ fun ExpandedExerciseContent(
           onClick = { onSetDeleted(set) },
           modifier = Modifier.padding(end = 8.dp)
         ) {
-          Icon(imageVector = Icons.Default.Close, contentDescription = "Delete Set")
+          Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Delete Set",
+            tint = LocalContentColor.current.copy(alpha = 0.75f)
+          )
         }
         InputField(
           label = "reps",

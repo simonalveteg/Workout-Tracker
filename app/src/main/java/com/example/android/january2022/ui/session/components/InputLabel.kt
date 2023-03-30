@@ -16,7 +16,7 @@ fun InputLabel(text: String) {
     color = LocalContentColor.current.copy(alpha = 0.8f),
     style = MaterialTheme.typography.labelSmall,
     modifier = Modifier
-      .padding(start = 4.dp, top = 4.dp)
+      .padding(start = 4.dp, top = 6.dp)
       .fillMaxHeight()
   )
 }

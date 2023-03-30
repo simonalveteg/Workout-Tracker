@@ -51,7 +51,7 @@ fun InputField(
       }
       .height(40.dp)
       .defaultMinSize(minWidth = 60.dp)
-      .padding(start = 10.dp, end = 20.dp),
+      .padding(start = 8.dp, end = 6.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center
   ) {
@@ -71,7 +71,7 @@ fun InputField(
       keyboardActions = keyboardActions,
       cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
       modifier = Modifier
-        .width(48.dp)
+        .width(60.dp)
         .focusRequester(requester)
         .onFocusChanged {
           // reset cursor position when receiving focus
