@@ -13,6 +13,7 @@ fun EquipmentSheet(
   Sheet(
     items = Equipment.getAllEquipment().sorted(),
     selectedItems = selectedEquipment,
+    title = "Filter by Equipment",
     onSelect = { onEvent(PickerEvent.SelectEquipment(it)) }
   ) {
     onEvent(PickerEvent.DeselectEquipment)

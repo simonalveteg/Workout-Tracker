@@ -13,8 +13,10 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +33,9 @@ import com.example.android.january2022.utils.UiEvent
 import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+  ExperimentalComposeUiApi::class
+)
 @Composable
 fun ExercisePickerScreen(
   navController: NavController,
@@ -46,6 +50,7 @@ fun ExercisePickerScreen(
   val filterSelected = uiState.value.filterSelected
   val filterUsed = uiState.value.filterUsed
 
+  val controller = LocalSoftwareKeyboardController.current
   val uriHandler = LocalUriHandler.current
 
   LaunchedEffect(true) {
@@ -83,9 +88,11 @@ fun ExercisePickerScreen(
   ) {
     Scaffold(
       floatingActionButton = {
-        Box(modifier = Modifier
-          .height(64.dp)
-          .width(80.dp)) {
+        Box(
+          modifier = Modifier
+            .height(64.dp)
+            .width(80.dp)
+        ) {
           AnimatedVisibility(
             visible = selectedExercises.isNotEmpty(),
             enter = scaleIn() + fadeIn(),
@@ -116,9 +123,7 @@ fun ExercisePickerScreen(
           shape = CutCornerShape(0.dp),
           tonalElevation = 2.dp
         ) {
-          Column(
-
-          ) {
+          Column {
             Spacer(Modifier.height(40.dp))
             TextField(
               value = uiState.value.searchText,
@@ -129,7 +134,7 @@ fun ExercisePickerScreen(
                   modifier = Modifier.fillMaxWidth()
                 )
               },
-              onValueChange = { viewModel.onEvent(PickerEvent.SearchChanged(it))},
+              onValueChange = { viewModel.onEvent(PickerEvent.SearchChanged(it)) },
               modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp, start = 8.dp, end = 8.dp)
@@ -171,7 +176,10 @@ fun ExercisePickerScreen(
                 onClick = {
                   equipmentBottomsheet.value = false
                   coroutineScope.launch {
-                    if (sheetState.isVisible) sheetState.hide() else sheetState.expand()
+                    if (sheetState.isVisible) sheetState.hide() else{
+                      controller?.hide()
+                      sheetState.expand()
+                    }
                   }
                 },
                 label = {
@@ -196,7 +204,10 @@ fun ExercisePickerScreen(
                 onClick = {
                   equipmentBottomsheet.value = true
                   coroutineScope.launch {
-                    if (sheetState.isVisible) sheetState.hide() else sheetState.show()
+                    if (sheetState.isVisible) sheetState.hide() else {
+                      controller?.hide()
+                      sheetState.show()
+                    }
                   }
                 },
                 label = {

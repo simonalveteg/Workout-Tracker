@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Sheet(
   items: List<String>,
+  title: String,
   selectedItems: List<String>,
   onSelect: (String) -> Unit,
   onDeselectAll: () -> Unit
@@ -31,7 +32,7 @@ fun Sheet(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Text(
-      text = "Filter by Body-parts",
+      text = title,
       textAlign = TextAlign.Center,
       style = MaterialTheme.typography.titleLarge,
       modifier = Modifier
