@@ -47,7 +47,7 @@ fun SessionCard(
         .padding(12.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
-      SessionDate(session, Modifier.padding(end = 16.dp))
+      SessionDate(session, Modifier.padding(start = 4.dp, end = 14.dp))
       Column(verticalArrangement = Arrangement.Center) {
         Text(
           text = muscleTitle,
