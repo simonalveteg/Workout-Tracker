@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +21,13 @@ import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
+import com.example.android.january2022.ui.exercisepicker.components.EquipmentSheet
+import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
+import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
+import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
+import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
 import com.example.android.january2022.ui.session.components.*
+import com.example.android.january2022.ui.theme.onlyTop
 import com.example.android.january2022.utils.UiEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -130,131 +138,140 @@ fun SessionScreen(
     }
   }
 
-  Scaffold(
-    bottomBar = {
-      Box(
-        contentAlignment = Alignment.BottomCenter
-      ) {
-        BottomAppBar {}
-        AnimatedVisibility(
-          visible = timerVisible.value,
-          exit = slideOutVertically(
-            animationSpec = tween(250),
-            targetOffsetY = { height ->
-              height / 2
-            }
-          ),
-          enter = slideInVertically(
-            animationSpec = tween(250),
-            initialOffsetY = { height ->
-              height / 2
-            }
-          )
+  val sessionInfoSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+
+  ModalBottomSheetLayout(
+    sheetContent = {
+      Text("SESSION INFO", modifier = Modifier.height(400.dp))
+    },
+    sheetState = sessionInfoSheetState,
+    sheetShape = MaterialTheme.shapes.large.onlyTop()
+  ) {
+    Scaffold(
+      bottomBar = {
+        Box(
+          contentAlignment = Alignment.BottomCenter
         ) {
-          Column {
-            TimerBar(timerState, viewModel::onEvent)
-            BottomAppBar {}
-          }
-        }
-        AnimatedVisibility(
-          visible = uiState.value.expandedExercise == null,
-          exit = fadeOut(tween(500)),
-          enter = fadeIn(tween(500))
-        ) {
-          SessionAppBar(
-            onDeleteSession = { deleteSessionDialog.value = true },
-            timerVisible = timerVisible.value,
-            onTimerPress = {
-              timerVisible.value = !timerVisible.value
-            },
-            onTime = { dialogState.show() }
+          BottomAppBar {}
+          AnimatedVisibility(
+            visible = timerVisible.value,
+            exit = slideOutVertically(
+              animationSpec = tween(250),
+              targetOffsetY = { height ->
+                height / 2
+              }
+            ),
+            enter = slideInVertically(
+              animationSpec = tween(250),
+              initialOffsetY = { height ->
+                height / 2
+              }
+            )
           ) {
-            viewModel.onEvent(SessionEvent.AddExercise)
+            Column {
+              TimerBar(timerState, viewModel::onEvent)
+              BottomAppBar {}
+            }
           }
-        }
-        AnimatedVisibility(
-          visible = uiState.value.expandedExercise != null,
-          exit = fadeOut(tween(500)),
-          enter = fadeIn(tween(500))
-        ) {
-          SessionAppBarExpanded(
-            timerVisible = timerVisible.value,
-            onTimerPress = {
-              timerVisible.value = !timerVisible.value
-            },
-            onDeleteSession = { deleteSessionDialog.value = true },
-            onEvent = viewModel::onEvent,
-            onTime = { dialogState.show() }
-          )
-        }
-        AnimatedVisibility(
-          visible = uiState.value.selectedExercises.isNotEmpty(),
-          exit = fadeOut(tween(500)),
-          enter = fadeIn(tween(500))
-        ) {
-          SessionAppBarSelected(
-            timerVisible = timerVisible.value,
-            onTimerPress = {
-              timerVisible.value = !timerVisible.value
-            },
-            onDeleteExercise = { deleteExerciseDialog.value = true },
-            onDeleteSession = { deleteSessionDialog.value = true },
-            onEvent = viewModel::onEvent,
-            onTime = { dialogState.show() }
-          )
+          AnimatedVisibility(
+            visible = uiState.value.expandedExercise == null,
+            exit = fadeOut(tween(500)),
+            enter = fadeIn(tween(500))
+          ) {
+            SessionAppBar(
+              onDeleteSession = { deleteSessionDialog.value = true },
+              timerVisible = timerVisible.value,
+              onTimerPress = {
+                timerVisible.value = !timerVisible.value
+              },
+              onTime = { dialogState.show() }
+            ) {
+              viewModel.onEvent(SessionEvent.AddExercise)
+            }
+          }
+          AnimatedVisibility(
+            visible = uiState.value.expandedExercise != null,
+            exit = fadeOut(tween(500)),
+            enter = fadeIn(tween(500))
+          ) {
+            SessionAppBarExpanded(
+              timerVisible = timerVisible.value,
+              onTimerPress = {
+                timerVisible.value = !timerVisible.value
+              },
+              onDeleteSession = { deleteSessionDialog.value = true },
+              onEvent = viewModel::onEvent,
+              onTime = { dialogState.show() }
+            )
+          }
+          AnimatedVisibility(
+            visible = uiState.value.selectedExercises.isNotEmpty(),
+            exit = fadeOut(tween(500)),
+            enter = fadeIn(tween(500))
+          ) {
+            SessionAppBarSelected(
+              timerVisible = timerVisible.value,
+              onTimerPress = {
+                timerVisible.value = !timerVisible.value
+              },
+              onDeleteExercise = { deleteExerciseDialog.value = true },
+              onDeleteSession = { deleteSessionDialog.value = true },
+              onEvent = viewModel::onEvent,
+              onTime = { dialogState.show() }
+            )
+          }
         }
       }
-    }
-  ) { paddingValues ->
-    Box {
-      SessionHeader(
-        sessionWrapper = session,
-        muscleGroups = muscleGroups,
-        scrollState = scrollState,
-        height = headerHeight,
-        topPadding = paddingValues.calculateTopPadding()
-      )
-      LazyColumn(
-        modifier = Modifier
-          .fillMaxSize(),
-        state = scrollState
-      ) {
-        item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
-        }
-        itemsIndexed(
-          items = exercises.value,
-          key = { _, exercise ->
-            exercise.sessionExercise.sessionExerciseId
+    ) { paddingValues ->
+      Box {
+        SessionHeader(
+          sessionWrapper = session,
+          muscleGroups = muscleGroups,
+          scrollState = scrollState,
+          height = headerHeight,
+          topPadding = paddingValues.calculateTopPadding()
+        )
+        LazyColumn(
+          modifier = Modifier
+            .fillMaxSize(),
+          state = scrollState
+        ) {
+          item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
           }
-        ) { index, exercise ->
-          val expanded =
-            exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
-          val selected = selectedExercises.contains(exercise)
-          ExerciseCard(
-            exerciseWrapper = exercise,
-            expanded = expanded,
-            selected = selected,
-            onEvent = viewModel::onEvent,
-            onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
-            onSetDeleted = { deleteSetDialog.value = it }
-          ) {
-            viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
-            if (!expanded) {
-              coroutineScope.launch {
-                scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
+          itemsIndexed(
+            items = exercises.value,
+            key = { _, exercise ->
+              exercise.sessionExercise.sessionExerciseId
+            }
+          ) { index, exercise ->
+            val expanded =
+              exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
+            val selected = selectedExercises.contains(exercise)
+            ExerciseCard(
+              exerciseWrapper = exercise,
+              expanded = expanded,
+              selected = selected,
+              onEvent = viewModel::onEvent,
+              onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
+              onSetDeleted = { deleteSetDialog.value = it }
+            ) {
+              viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
+              if (!expanded) {
+                coroutineScope.launch {
+                  scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
+                }
               }
             }
           }
-        }
-        item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+          item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+          }
         }
       }
     }
   }
 }
-
 fun Session.toSessionTitle(): String {
   return try {
     DateTimeFormatter.ofPattern("MMM d yyyy").format(this.start)

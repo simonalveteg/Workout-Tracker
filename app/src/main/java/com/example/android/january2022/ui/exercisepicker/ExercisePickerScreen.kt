@@ -29,6 +29,7 @@ import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
+import com.example.android.january2022.ui.theme.onlyTop
 import com.example.android.january2022.utils.UiEvent
 import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ fun ExercisePickerScreen(
       }
     },
     sheetState = sheetState,
-    sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
+    sheetShape = MaterialTheme.shapes.large.onlyTop()
   ) {
     Scaffold(
       floatingActionButton = {
