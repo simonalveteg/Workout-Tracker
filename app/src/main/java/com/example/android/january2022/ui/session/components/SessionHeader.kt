@@ -24,7 +24,8 @@ fun SessionHeader(
   scrollState: LazyListState,
   height: Dp,
   topPadding: Dp,
-  onTime: () -> Unit
+  onEndTime: () -> Unit,
+  onStartTime: () -> Unit
 ) {
   val session = sessionWrapper.session
   val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
@@ -75,6 +76,9 @@ fun SessionHeader(
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
               .padding(start = 4.dp)
+              .clickable {
+                onStartTime()
+              }
           )
           Text(
             text = "-",
@@ -89,7 +93,7 @@ fun SessionHeader(
             modifier = Modifier
               .padding(start = 4.dp)
               .clickable {
-                onTime()
+                onEndTime()
               }
           )
         }

@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,8 +19,6 @@ import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
-import com.example.android.january2022.ui.exercisepicker.components.EquipmentSheet
-import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
@@ -120,9 +116,26 @@ fun SessionScreen(
       }
     )
   }
-  val dialogState = rememberMaterialDialogState()
+  val startTimeDialogState = rememberMaterialDialogState()
   MaterialDialog(
-    dialogState = dialogState,
+    dialogState = startTimeDialogState,
+    buttons = {
+      positiveButton("Ok")
+      negativeButton("Cancel")
+    }
+  ) {
+    timepicker(
+      initialTime = session.session.start.toLocalTime(),
+      is24HourClock = true,
+      waitForPositiveButton = true,
+      title = "Select end-time"
+    ) { time ->
+      viewModel.onEvent(SessionEvent.StartTimeChanged(time))
+    }
+  }
+  val endTimeDialogState = rememberMaterialDialogState()
+  MaterialDialog(
+    dialogState = endTimeDialogState,
     buttons = {
       positiveButton("Ok")
       negativeButton("Cancel")
@@ -233,7 +246,8 @@ fun SessionScreen(
             scrollState = scrollState,
             height = headerHeight,
             topPadding = paddingValues.calculateTopPadding(),
-            onTime = { dialogState.show() }
+            onEndTime = { endTimeDialogState.show() },
+            onStartTime = { startTimeDialogState.show() }
           )
         }
         itemsIndexed(

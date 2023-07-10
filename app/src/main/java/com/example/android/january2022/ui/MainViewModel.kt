@@ -269,6 +269,20 @@ class MainViewModel @Inject constructor(
           }
         }
       }
+      is SessionEvent.StartTimeChanged -> {
+        var session = _sessionState.value.currentSession.session
+        val newStartTime = LocalDateTime.of(session.start.toLocalDate(), event.newTime)
+        viewModelScope.launch {
+          repo.updateSession(
+            session.copy(
+              start = newStartTime
+            ).also { session = it }
+          )
+          _sessionState.update {
+            it.copy(currentSession = it.currentSession.copy(session = session)) // update state manually
+          }
+        }
+      }
       /**
        * ExercisePicker-related events.
        */
