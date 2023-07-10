@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,8 +19,6 @@ import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
-import com.example.android.january2022.ui.exercisepicker.components.EquipmentSheet
-import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetLayout
 import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
@@ -120,9 +116,26 @@ fun SessionScreen(
       }
     )
   }
-  val dialogState = rememberMaterialDialogState()
+  val startTimeDialogState = rememberMaterialDialogState()
   MaterialDialog(
-    dialogState = dialogState,
+    dialogState = startTimeDialogState,
+    buttons = {
+      positiveButton("Ok")
+      negativeButton("Cancel")
+    }
+  ) {
+    timepicker(
+      initialTime = session.session.start.toLocalTime(),
+      is24HourClock = true,
+      waitForPositiveButton = true,
+      title = "Select end-time"
+    ) { time ->
+      viewModel.onEvent(SessionEvent.StartTimeChanged(time))
+    }
+  }
+  val endTimeDialogState = rememberMaterialDialogState()
+  MaterialDialog(
+    dialogState = endTimeDialogState,
     buttons = {
       positiveButton("Ok")
       negativeButton("Cancel")
@@ -138,7 +151,8 @@ fun SessionScreen(
     }
   }
 
-  val sessionInfoSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+  val sessionInfoSheetState =
+    rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
   ModalBottomSheetLayout(
     sheetContent = {
@@ -183,8 +197,7 @@ fun SessionScreen(
               timerVisible = timerVisible.value,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
-              },
-              onTime = { dialogState.show() }
+              }
             ) {
               viewModel.onEvent(SessionEvent.AddExercise)
             }
@@ -200,8 +213,7 @@ fun SessionScreen(
                 timerVisible.value = !timerVisible.value
               },
               onDeleteSession = { deleteSessionDialog.value = true },
-              onEvent = viewModel::onEvent,
-              onTime = { dialogState.show() }
+              onEvent = viewModel::onEvent
             )
           }
           AnimatedVisibility(
@@ -216,62 +228,61 @@ fun SessionScreen(
               },
               onDeleteExercise = { deleteExerciseDialog.value = true },
               onDeleteSession = { deleteSessionDialog.value = true },
-              onEvent = viewModel::onEvent,
-              onTime = { dialogState.show() }
+              onEvent = viewModel::onEvent
             )
           }
         }
       }
     ) { paddingValues ->
-      Box {
-        SessionHeader(
-          sessionWrapper = session,
-          muscleGroups = muscleGroups,
-          scrollState = scrollState,
-          height = headerHeight,
-          topPadding = paddingValues.calculateTopPadding()
-        )
-        LazyColumn(
-          modifier = Modifier
-            .fillMaxSize(),
-          state = scrollState
-        ) {
-          item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxSize(),
+        state = scrollState
+      ) {
+        item {
+          SessionHeader(
+            sessionWrapper = session,
+            muscleGroups = muscleGroups,
+            scrollState = scrollState,
+            height = headerHeight,
+            topPadding = paddingValues.calculateTopPadding(),
+            onEndTime = { endTimeDialogState.show() },
+            onStartTime = { startTimeDialogState.show() }
+          )
+        }
+        itemsIndexed(
+          items = exercises.value,
+          key = { _, exercise ->
+            exercise.sessionExercise.sessionExerciseId
           }
-          itemsIndexed(
-            items = exercises.value,
-            key = { _, exercise ->
-              exercise.sessionExercise.sessionExerciseId
-            }
-          ) { index, exercise ->
-            val expanded =
-              exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
-            val selected = selectedExercises.contains(exercise)
-            ExerciseCard(
-              exerciseWrapper = exercise,
-              expanded = expanded,
-              selected = selected,
-              onEvent = viewModel::onEvent,
-              onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
-              onSetDeleted = { deleteSetDialog.value = it }
-            ) {
-              viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
-              if (!expanded) {
-                coroutineScope.launch {
-                  scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
-                }
+        ) { index, exercise ->
+          val expanded =
+            exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
+          val selected = selectedExercises.contains(exercise)
+          ExerciseCard(
+            exerciseWrapper = exercise,
+            expanded = expanded,
+            selected = selected,
+            onEvent = viewModel::onEvent,
+            onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
+            onSetDeleted = { deleteSetDialog.value = it }
+          ) {
+            viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
+            if (!expanded) {
+              coroutineScope.launch {
+                scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
               }
             }
           }
-          item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
-          }
+        }
+        item {
+          Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
         }
       }
     }
   }
 }
+
 fun Session.toSessionTitle(): String {
   return try {
     DateTimeFormatter.ofPattern("MMM d yyyy").format(this.start)
