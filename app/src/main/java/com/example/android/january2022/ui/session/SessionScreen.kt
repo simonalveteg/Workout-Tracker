@@ -138,7 +138,8 @@ fun SessionScreen(
     }
   }
 
-  val sessionInfoSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+  val sessionInfoSheetState =
+    rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
   ModalBottomSheetLayout(
     sheetContent = {
@@ -223,55 +224,53 @@ fun SessionScreen(
         }
       }
     ) { paddingValues ->
-      Box {
-        SessionHeader(
-          sessionWrapper = session,
-          muscleGroups = muscleGroups,
-          scrollState = scrollState,
-          height = headerHeight,
-          topPadding = paddingValues.calculateTopPadding()
-        )
-        LazyColumn(
-          modifier = Modifier
-            .fillMaxSize(),
-          state = scrollState
-        ) {
-          item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + headerHeight))
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxSize(),
+        state = scrollState
+      ) {
+        item {
+          SessionHeader(
+            sessionWrapper = session,
+            muscleGroups = muscleGroups,
+            scrollState = scrollState,
+            height = headerHeight,
+            topPadding = paddingValues.calculateTopPadding()
+          )
+        }
+        itemsIndexed(
+          items = exercises.value,
+          key = { _, exercise ->
+            exercise.sessionExercise.sessionExerciseId
           }
-          itemsIndexed(
-            items = exercises.value,
-            key = { _, exercise ->
-              exercise.sessionExercise.sessionExerciseId
-            }
-          ) { index, exercise ->
-            val expanded =
-              exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
-            val selected = selectedExercises.contains(exercise)
-            ExerciseCard(
-              exerciseWrapper = exercise,
-              expanded = expanded,
-              selected = selected,
-              onEvent = viewModel::onEvent,
-              onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
-              onSetDeleted = { deleteSetDialog.value = it }
-            ) {
-              viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
-              if (!expanded) {
-                coroutineScope.launch {
-                  scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
-                }
+        ) { index, exercise ->
+          val expanded =
+            exercise.sessionExercise.sessionExerciseId == expandedExercise?.sessionExercise?.sessionExerciseId
+          val selected = selectedExercises.contains(exercise)
+          ExerciseCard(
+            exerciseWrapper = exercise,
+            expanded = expanded,
+            selected = selected,
+            onEvent = viewModel::onEvent,
+            onLongClick = { viewModel.onEvent(SessionEvent.ExerciseSelected(exercise)) },
+            onSetDeleted = { deleteSetDialog.value = it }
+          ) {
+            viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
+            if (!expanded) {
+              coroutineScope.launch {
+                scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
               }
             }
           }
-          item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
-          }
+        }
+        item {
+          Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
         }
       }
     }
   }
 }
+
 fun Session.toSessionTitle(): String {
   return try {
     DateTimeFormatter.ofPattern("MMM d yyyy").format(this.start)

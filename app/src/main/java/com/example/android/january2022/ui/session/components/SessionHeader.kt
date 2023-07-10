@@ -43,7 +43,7 @@ fun SessionHeader(
         } else {
           10000f
         }
-        translationY = -scroll / 2f // Parallax effect
+        translationY = scroll / 3f // Parallax effect
         alpha = 1 - scroll / 250f // Fade out text
         scaleX = 1 - scroll / 3000f
         scaleY = 1 - scroll / 3000f
