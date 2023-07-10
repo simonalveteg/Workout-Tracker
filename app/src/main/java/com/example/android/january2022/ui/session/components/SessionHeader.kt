@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +23,8 @@ fun SessionHeader(
   muscleGroups: List<String>,
   scrollState: LazyListState,
   height: Dp,
-  topPadding: Dp
+  topPadding: Dp,
+  onTime: () -> Unit
 ) {
   val session = sessionWrapper.session
   val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
@@ -86,6 +88,9 @@ fun SessionHeader(
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
               .padding(start = 4.dp)
+              .clickable {
+                onTime()
+              }
           )
         }
         FlowRow(

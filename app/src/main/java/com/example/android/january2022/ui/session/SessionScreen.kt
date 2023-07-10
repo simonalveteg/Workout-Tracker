@@ -184,8 +184,7 @@ fun SessionScreen(
               timerVisible = timerVisible.value,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
-              },
-              onTime = { dialogState.show() }
+              }
             ) {
               viewModel.onEvent(SessionEvent.AddExercise)
             }
@@ -201,8 +200,7 @@ fun SessionScreen(
                 timerVisible.value = !timerVisible.value
               },
               onDeleteSession = { deleteSessionDialog.value = true },
-              onEvent = viewModel::onEvent,
-              onTime = { dialogState.show() }
+              onEvent = viewModel::onEvent
             )
           }
           AnimatedVisibility(
@@ -217,8 +215,7 @@ fun SessionScreen(
               },
               onDeleteExercise = { deleteExerciseDialog.value = true },
               onDeleteSession = { deleteSessionDialog.value = true },
-              onEvent = viewModel::onEvent,
-              onTime = { dialogState.show() }
+              onEvent = viewModel::onEvent
             )
           }
         }
@@ -235,7 +232,8 @@ fun SessionScreen(
             muscleGroups = muscleGroups,
             scrollState = scrollState,
             height = headerHeight,
-            topPadding = paddingValues.calculateTopPadding()
+            topPadding = paddingValues.calculateTopPadding(),
+            onTime = { dialogState.show() }
           )
         }
         itemsIndexed(

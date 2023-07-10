@@ -18,7 +18,6 @@ fun SessionAppBar(
   onDeleteSession: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
-  onTime: () -> Unit,
   onFAB: () -> Unit
 ) {
   BottomAppBar(
@@ -26,7 +25,6 @@ fun SessionAppBar(
       ActionSpacerStart()
       MenuAction(
         onDelete = onDeleteSession,
-        onTime = onTime
       )
       ActionSpacer()
       TimerAction(timerVisible, onTimerPress)

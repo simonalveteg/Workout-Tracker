@@ -23,14 +23,12 @@ fun SessionAppBarSelected(
   onDeleteExercise: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
-  onTime: () -> Unit
 ) {
   BottomAppBar(
     actions = {
       ActionSpacerStart()
       MenuAction(
         onDelete = onDeleteSession,
-        onTime = onTime
       )
       ActionSpacer()
       TimerAction(timerVisible = timerVisible) { onTimerPress() }

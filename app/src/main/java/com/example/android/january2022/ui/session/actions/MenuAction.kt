@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 @Composable
 fun MenuAction(
   onDelete: () -> Unit,
-  onTime: () -> Unit
 ) {
   val expanded = remember { mutableStateOf(false) }
 
@@ -20,7 +19,6 @@ fun MenuAction(
     Box {
       DropdownMenu(expanded = expanded.value, onDismissRequest = { expanded.value = false }) {
         DropdownMenuItem(text = { Text(text = "Delete Session") }, onClick = onDelete )
-        DropdownMenuItem(text = { Text(text = "Change Time") }, onClick = onTime )
       }
     }
     IconButton(onClick = { expanded.value = true }) {
