@@ -16,6 +16,7 @@ class GymRepository(
 
   fun getLastSession() = dao.getLastSession()
 
+  fun getAllSessionExercises() = dao.getAllSessionExercises()
   fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {
     Timber.d("Retrieving exercises for session: $session")
     return dao.getExercisesForSession(session.sessionId)

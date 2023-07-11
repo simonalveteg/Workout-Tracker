@@ -27,7 +27,6 @@ fun NavHost(
     composable(Routes.HOME) {
       HomeScreen(
         onNavigate = { navController.navigationEvent(event = it) },
-        viewModel = viewModel
       )
     }
     composable(Routes.SESSION) {
