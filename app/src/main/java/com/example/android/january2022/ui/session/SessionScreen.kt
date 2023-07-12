@@ -56,6 +56,7 @@ fun SessionScreen(
   val exercises by viewModel.exercises.collectAsState(initial = emptyList())
   val expandedExercise by viewModel.expandedExercise.collectAsState()
   val selectedExercises by viewModel.selectedExercises.collectAsState()
+  val timerState by viewModel.timerState.collectAsState()
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
@@ -178,7 +179,7 @@ fun SessionScreen(
             )
           ) {
             Column {
-//              TimerBar(timerState, viewModel::onEvent)
+              TimerBar(timerState, viewModel::onEvent)
               BottomAppBar {}
             }
           }

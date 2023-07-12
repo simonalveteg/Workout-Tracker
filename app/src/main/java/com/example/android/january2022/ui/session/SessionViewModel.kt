@@ -8,6 +8,7 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.ExerciseWrapper
 import com.example.android.january2022.ui.SessionWrapper
+import com.example.android.january2022.ui.TimerState
 import com.example.android.january2022.ui.WorkoutTimer
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
@@ -39,6 +40,16 @@ class SessionViewModel @Inject constructor(
 
   private val _selectedExercises = MutableStateFlow<List<ExerciseWrapper>>(emptyList())
   val selectedExercises = _selectedExercises.asStateFlow()
+
+  private val _timerState = MutableStateFlow(
+    TimerState(
+      time = workoutTimer.time,
+      isRunning = workoutTimer.isRunning,
+      maxTime = workoutTimer.maxTime,
+      finishedEvent = workoutTimer.finished
+    )
+  )
+  val timerState = _timerState.asStateFlow()
 
   val exercises = combine(
     repo.getExercisesForSession(_session),
