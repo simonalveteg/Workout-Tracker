@@ -5,40 +5,17 @@ import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-
-data class HomeState(
-  val sessions: Flow<List<SessionWrapper>>
-)
-
-data class SessionState(
-  val currentSession: SessionWrapper,
-  val expandedExercise: ExerciseWrapper?,
-  val selectedExercises: List<ExerciseWrapper>
-)
-
-data class PickerState(
-  val exercises: Flow<List<Exercise>>,
-  val selectedExercises: List<Exercise>,
-  val equipmentFilter: List<String>,
-  val muscleFilter: List<String>,
-  val filterUsed: Boolean,
-  val filterSelected: Boolean,
-  val searchText: String
-)
 
 data class SessionWrapper(
   val session: Session,
-  val exercises: StateFlow<List<ExerciseWrapper>>,
-  val muscleGroups: StateFlow<List<String>>
+  val muscleGroups: List<String>
 )
 
 data class ExerciseWrapper(
   val sessionExercise: SessionExercise,
   val exercise: Exercise,
-  val sets: Flow<List<GymSet>>
+  val sets: List<GymSet>
 )
 
 data class TimerState(

@@ -7,20 +7,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.utils.UiEvent
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-  viewModel: MainViewModel = hiltViewModel()
+  viewModel: SettingsViewModel = hiltViewModel()
 ) {
   val mContext = LocalContext.current
   val exportLauncher = rememberLauncherForActivityResult(
@@ -51,7 +51,7 @@ fun SettingsScreen(
     }
   }
 
-  Scaffold() { padding ->
+  Scaffold { padding ->
     Column(
       Modifier
         .fillMaxSize()

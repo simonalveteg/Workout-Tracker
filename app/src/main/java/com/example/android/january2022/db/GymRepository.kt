@@ -3,6 +3,7 @@ package com.example.android.january2022.db
 import com.example.android.january2022.db.entities.*
 import com.example.android.january2022.ui.DatabaseModel
 import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
@@ -11,10 +12,24 @@ class GymRepository(
   private val dao: GymDAO
 ) {
 
+  fun getSessionById(sessionId: Long) = dao.getSessionById(sessionId)
+
   fun getAllSessions() = dao.getAllSessions()
+
+  fun getAllSets() = dao.getAllSets()
   fun getAllExercises() = dao.getAllExercises()
 
   fun getLastSession() = dao.getLastSession()
+
+  fun getAllSessionExercises() = dao.getAllSessionExercises()
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun getExercisesForSession(session: Flow<Session>): Flow<List<SessionExerciseWithExercise>> {
+    return session.flatMapLatest {
+      Timber.d("new value ${it.sessionId}")
+      dao.getExercisesForSession(it.sessionId)
+    }.onEach { Timber.d("new") }
+  }
 
   fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {
     Timber.d("Retrieving exercises for session: $session")

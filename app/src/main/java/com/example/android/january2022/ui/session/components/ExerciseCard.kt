@@ -30,7 +30,6 @@ import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.ui.ExerciseWrapper
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.utils.Event
-import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -44,13 +43,9 @@ fun ExerciseCard(
   onClick: () -> Unit
 ) {
   val exercise = exerciseWrapper.exercise
-  val sets = exerciseWrapper.sets.collectAsState(initial = emptyList())
+  val sets = exerciseWrapper.sets
   val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
   val localHaptic = LocalHapticFeedback.current
-
-  LaunchedEffect(key1 = exercise) {
-    Timber.d("ExerciseCard received new exercise")
-  }
 
   Surface(
     tonalElevation = tonalElevation,
@@ -82,7 +77,7 @@ fun ExerciseCard(
       Spacer(Modifier.height(4.dp))
       AnimatedVisibility(expanded) {
         ExpandedExerciseContent(
-          sets = sets.value,
+          sets = sets,
           onEvent = onEvent,
           onSetCreated = {
             onEvent(SessionEvent.SetCreated(exerciseWrapper))
@@ -129,7 +124,7 @@ fun ExerciseCard(
             item {
               Spacer(Modifier.width(12.dp))
             }
-            items(sets.value) { set ->
+            items(sets) { set ->
               CompactSetCard(set)
             }
           }
