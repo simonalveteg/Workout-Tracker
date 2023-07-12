@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.android.january2022.ui.MainViewModel
 import com.example.android.january2022.ui.exercisepicker.components.EquipmentSheet
 import com.example.android.january2022.ui.exercisepicker.components.ExerciseCard
 import com.example.android.january2022.ui.exercisepicker.components.MuscleSheet
@@ -34,22 +33,19 @@ import com.example.android.january2022.utils.UiEvent
 import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
-  ExperimentalComposeUiApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ExercisePickerScreen(
   navController: NavController,
-  viewModel: MainViewModel = hiltViewModel()
+  viewModel: PickerViewModel = hiltViewModel()
 ) {
-
-  val uiState = viewModel.pickerState.collectAsState()
-  val exercises by viewModel.getFilteredExercises().collectAsState(initial = emptyList())
-  val selectedExercises = uiState.value.selectedExercises
-  val muscleFilter = uiState.value.muscleFilter
-  val equipmentFilter = uiState.value.equipmentFilter
-  val filterSelected = uiState.value.filterSelected
-  val filterUsed = uiState.value.filterUsed
+  val exercises by viewModel.filteredExercises.collectAsState(initial = emptyList())
+  val selectedExercises by viewModel.selectedExercises.collectAsState()
+  val muscleFilter by viewModel.muscleFilter.collectAsState()
+  val equipmentFilter by viewModel.equipmentFilter.collectAsState()
+  val filterSelected by viewModel.filterSelected.collectAsState()
+  val filterUsed by viewModel.filterUsed.collectAsState()
+  val searchText by viewModel.searchText.collectAsState()
 
   val controller = LocalSoftwareKeyboardController.current
   val uriHandler = LocalUriHandler.current
@@ -127,7 +123,7 @@ fun ExercisePickerScreen(
           Column {
             Spacer(Modifier.height(40.dp))
             TextField(
-              value = uiState.value.searchText,
+              value = searchText,
               label = {
                 Text(
                   text = "search for exercise",
@@ -177,7 +173,7 @@ fun ExercisePickerScreen(
                 onClick = {
                   equipmentBottomsheet.value = false
                   coroutineScope.launch {
-                    if (sheetState.isVisible) sheetState.hide() else{
+                    if (sheetState.isVisible) sheetState.hide() else {
                       controller?.hide()
                       sheetState.expand()
                     }

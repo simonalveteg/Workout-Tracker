@@ -18,7 +18,7 @@ import com.example.android.january2022.utils.Event
 
 @Composable
 fun SessionAppBarSelected(
-  onEvent: (Event) -> Unit,
+  onEvent: (SessionEvent) -> Unit,
   onDeleteSession: () -> Unit,
   onDeleteExercise: () -> Unit,
   timerVisible: Boolean,

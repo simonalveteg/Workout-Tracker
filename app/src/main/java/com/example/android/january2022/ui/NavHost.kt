@@ -1,11 +1,12 @@
 package com.example.android.january2022.ui
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.android.january2022.ui.exercisepicker.ExercisePickerScreen
 import com.example.android.january2022.ui.home.HomeScreen
 import com.example.android.january2022.ui.session.SessionScreen
@@ -17,7 +18,6 @@ import com.example.android.january2022.utils.UiEvent
 fun NavHost(
   navController: NavHostController
 ) {
-  val viewModel: MainViewModel = hiltViewModel()
 
   NavHost(
     navController = navController,
@@ -29,20 +29,32 @@ fun NavHost(
         onNavigate = { navController.navigationEvent(event = it) },
       )
     }
-    composable(Routes.SESSION) {
+    composable(
+      route = "${Routes.SESSION}/{session_id}",
+      arguments = listOf(
+        navArgument("session_id") {
+          type = NavType.LongType
+        }
+      )
+    ) {
       SessionScreen(
         onNavigate = { navController.navigationEvent(event = it) },
-        viewModel = viewModel
       )
     }
-    composable(Routes.EXERCISE_PICKER) {
+    composable(
+      route = "${Routes.EXERCISE_PICKER}/{session_id}",
+      arguments = listOf(
+        navArgument("session_id") {
+          type = NavType.LongType
+        }
+      )
+    ) {
       ExercisePickerScreen(
         navController = navController,
-        viewModel = viewModel
       )
     }
     composable(Routes.SETTINGS) {
-      SettingsScreen(viewModel = viewModel)
+      SettingsScreen()
     }
   }
 }

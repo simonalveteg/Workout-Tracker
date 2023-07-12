@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 @Dao
 interface GymDAO {
 
+  @Query("SELECT * FROM sessions WHERE sessionId = :sessionId")
+  fun getSessionById(sessionId: Long): Session
+
+  @Query("SELECT * FROM sets ORDER BY setId ASC")
+  fun getAllSets(): Flow<List<GymSet>>
+
   @Query("SELECT * FROM sessions ORDER BY start DESC")
   fun getAllSessions(): Flow<List<Session>>
 

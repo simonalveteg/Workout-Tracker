@@ -17,7 +17,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.ui.home.components.HomeAppBar
 import com.example.android.january2022.ui.home.components.SessionCard
 import com.example.android.january2022.utils.UiEvent
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -26,9 +25,18 @@ fun HomeScreen(
 ) {
   val sessions by viewModel.sessions.collectAsState(initial = emptyList())
 
+  LaunchedEffect(true) {
+    viewModel.uiEvent.collect { event ->
+      when (event) {
+        is UiEvent.Navigate -> onNavigate(event)
+        else -> Unit
+      }
+    }
+  }
+
   Scaffold(
     bottomBar = {
-      HomeAppBar(onEvent = {})
+      HomeAppBar(onEvent = viewModel::onEvent)
     }
   ) { paddingValues ->
     LazyColumn(
@@ -39,8 +47,10 @@ fun HomeScreen(
       item {
         Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
       }
-      items(sessions, key = { it.first.sessionId }) { session ->
-        SessionCard(sessionWrapper = session) {}
+      items(items = sessions, key = { it.session.sessionId }) { session ->
+        SessionCard(sessionWrapper = session) {
+          viewModel.onEvent(HomeEvent.SessionClicked(session))
+        }
       }
     }
   }

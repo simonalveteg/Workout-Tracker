@@ -8,7 +8,7 @@ import com.example.android.january2022.utils.Event
 
 @Composable
 fun SessionAppBarExpanded(
-  onEvent: (Event) -> Unit,
+  onEvent: (SessionEvent) -> Unit,
   onDeleteSession: () -> Unit,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,

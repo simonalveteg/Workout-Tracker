@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
-import com.example.android.january2022.ui.MainViewModel
+import com.example.android.january2022.ui.SessionWrapper
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
@@ -35,21 +35,11 @@ import java.util.*
 @Composable
 fun SessionScreen(
   onNavigate: (UiEvent.Navigate) -> Unit,
-  viewModel: MainViewModel = hiltViewModel()
+  viewModel: SessionViewModel = hiltViewModel()
 ) {
-
-  val uiState = viewModel.sessionState.collectAsState()
-  val session = uiState.value.currentSession
-  val exercises = session.exercises.collectAsState(initial = emptyList())
-  val expandedExercise = uiState.value.expandedExercise
-  val selectedExercises = uiState.value.selectedExercises
-  val muscleGroups by uiState.value.currentSession.muscleGroups.collectAsState(initial = emptyList())
-  val timerState by viewModel.timerState.collectAsState()
-
   val uriHandler = LocalUriHandler.current
 
   LaunchedEffect(true) {
-    Timber.d(session.toString())
     viewModel.uiEvent.collect { event ->
       Timber.d("UiEvent Received: $event")
       when (event) {
@@ -61,6 +51,11 @@ fun SessionScreen(
       }
     }
   }
+
+  val session by viewModel.session.collectAsState(SessionWrapper(Session(), emptyList()))
+  val exercises by viewModel.exercises.collectAsState(initial = emptyList())
+  val expandedExercise by viewModel.expandedExercise.collectAsState()
+  val selectedExercises by viewModel.selectedExercises.collectAsState()
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
@@ -183,12 +178,12 @@ fun SessionScreen(
             )
           ) {
             Column {
-              TimerBar(timerState, viewModel::onEvent)
+//              TimerBar(timerState, viewModel::onEvent)
               BottomAppBar {}
             }
           }
           AnimatedVisibility(
-            visible = uiState.value.expandedExercise == null,
+            visible = expandedExercise == null,
             exit = fadeOut(tween(500)),
             enter = fadeIn(tween(500))
           ) {
@@ -203,7 +198,7 @@ fun SessionScreen(
             }
           }
           AnimatedVisibility(
-            visible = uiState.value.expandedExercise != null,
+            visible = expandedExercise != null,
             exit = fadeOut(tween(500)),
             enter = fadeIn(tween(500))
           ) {
@@ -217,7 +212,7 @@ fun SessionScreen(
             )
           }
           AnimatedVisibility(
-            visible = uiState.value.selectedExercises.isNotEmpty(),
+            visible = selectedExercises.isNotEmpty(),
             exit = fadeOut(tween(500)),
             enter = fadeIn(tween(500))
           ) {
@@ -242,7 +237,7 @@ fun SessionScreen(
         item {
           SessionHeader(
             sessionWrapper = session,
-            muscleGroups = muscleGroups,
+            muscleGroups = emptyList(),
             scrollState = scrollState,
             height = headerHeight,
             topPadding = paddingValues.calculateTopPadding(),
@@ -251,7 +246,7 @@ fun SessionScreen(
           )
         }
         itemsIndexed(
-          items = exercises.value,
+          items = exercises,
           key = { _, exercise ->
             exercise.sessionExercise.sessionExerciseId
           }
@@ -270,7 +265,7 @@ fun SessionScreen(
             viewModel.onEvent(SessionEvent.ExerciseExpanded(exercise))
             if (!expanded) {
               coroutineScope.launch {
-                scrollState.animateScrollToItem(index = (index - 2).coerceAtLeast(0))
+                scrollState.animateScrollToItem(index = (index - 1).coerceAtLeast(0))
               }
             }
           }
