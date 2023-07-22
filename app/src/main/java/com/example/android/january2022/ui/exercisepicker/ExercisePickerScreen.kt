@@ -1,21 +1,23 @@
 package com.example.android.january2022.ui.exercisepicker
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
@@ -30,10 +32,12 @@ import com.example.android.january2022.ui.modalbottomsheet.ModalBottomSheetValue
 import com.example.android.january2022.ui.modalbottomsheet.rememberModalBottomSheetState
 import com.example.android.january2022.ui.theme.onlyTop
 import com.example.android.january2022.utils.UiEvent
-import com.example.android.january2022.utils.clearFocusOnKeyboardDismiss
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+  ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+  ExperimentalFoundationApi::class
+)
 @Composable
 fun ExercisePickerScreen(
   navController: NavController,
@@ -115,35 +119,30 @@ fun ExercisePickerScreen(
           }
         }
       },
-      topBar = {
-        Surface(
-          shape = CutCornerShape(0.dp),
-          tonalElevation = 2.dp
+    ) { paddingValues ->
+      var active by rememberSaveable { mutableStateOf(false) }
+      SearchBar(
+        modifier = Modifier
+          .fillMaxWidth(),
+        query = searchText,
+        onQueryChange = { viewModel.onEvent(PickerEvent.SearchChanged(it)) },
+        onSearch = { active = false },
+        active = active,
+        onActiveChange = { active = it },
+        placeholder = { Text("Search exercises") },
+        leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+        trailingIcon = { Icon(Icons.Rounded.MoreVert, contentDescription = null) },
+        colors = SearchBarDefaults.colors(
+          containerColor = MaterialTheme.colorScheme.background
+        ),
+        tonalElevation = 0.dp
+      ) {
+        LazyColumn(
+          modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp)
         ) {
-          Column {
-            Spacer(Modifier.height(40.dp))
-            TextField(
-              value = searchText,
-              label = {
-                Text(
-                  text = "search for exercise",
-                  textAlign = TextAlign.Center,
-                  modifier = Modifier.fillMaxWidth()
-                )
-              },
-              onValueChange = { viewModel.onEvent(PickerEvent.SearchChanged(it)) },
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, start = 8.dp, end = 8.dp)
-                .clearFocusOnKeyboardDismiss()
-                .align(Alignment.CenterHorizontally),
-              colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-              ),
-              shape = RoundedCornerShape(8.dp),
-              textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
-            )
+          stickyHeader {
             Row(
               modifier = Modifier
                 .fillMaxWidth()
@@ -225,24 +224,27 @@ fun ExercisePickerScreen(
               )
             }
           }
+          items(exercises) { exercise ->
+            ExerciseCard(
+              exercise = exercise,
+              selected = selectedExercises.contains(exercise),
+              onEvent = viewModel::onEvent
+            ) {
+              viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
+            }
+          }
         }
-      },
-    ) { paddingValues ->
-      LazyColumn(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(horizontal = 8.dp)
+      }
+      LazyRow(
+        modifier = Modifier.padding(top = 110.dp)
       ) {
-        item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 8.dp))
-        }
-        items(exercises) { exercise ->
-          ExerciseCard(
-            exercise = exercise,
-            selected = selectedExercises.contains(exercise),
-            onEvent = viewModel::onEvent
+        items(5) {
+          Surface(
+            onClick = { /*TODO*/ }, modifier = Modifier
+              .size(200.dp)
+              .padding(8.dp)
           ) {
-            viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
+
           }
         }
       }
