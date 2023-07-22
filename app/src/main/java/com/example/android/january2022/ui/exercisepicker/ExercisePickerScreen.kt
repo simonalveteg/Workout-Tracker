@@ -2,6 +2,7 @@ package com.example.android.january2022.ui.exercisepicker
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -132,22 +133,40 @@ fun ExercisePickerScreen(
         placeholder = { Text("Search exercises") },
         leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
         trailingIcon = { Icon(Icons.Rounded.MoreVert, contentDescription = null) },
-        colors = SearchBarDefaults.colors(
-          containerColor = MaterialTheme.colorScheme.background
-        ),
         tonalElevation = 0.dp
       ) {
-        LazyColumn(
+        Box(
           modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
+            .imePadding()
+            .background(MaterialTheme.colorScheme.background),
         ) {
-          stickyHeader {
+          LazyColumn(
+            modifier = Modifier
+              .fillMaxSize()
+              .padding(horizontal = 8.dp)
+          ) {
+            items(exercises) { exercise ->
+              ExerciseCard(
+                exercise = exercise,
+                selected = selectedExercises.contains(exercise),
+                onEvent = viewModel::onEvent
+              ) {
+                viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
+              }
+            }
+          }
+          Surface(
+            modifier = Modifier
+              .align(Alignment.BottomCenter),
+            tonalElevation = 2.dp
+          ) {
             Row(
               modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 8.dp, bottom = 0.dp),
-              horizontalArrangement = Arrangement.End
+                .padding(end = 8.dp, bottom = 0.dp)
+                .navigationBarsPadding(),
+              horizontalArrangement = Arrangement.SpaceEvenly
             ) {
               FilterChip(
                 selected = filterSelected,
@@ -222,15 +241,6 @@ fun ExercisePickerScreen(
                 },
                 colors = filterColors
               )
-            }
-          }
-          items(exercises) { exercise ->
-            ExerciseCard(
-              exercise = exercise,
-              selected = selectedExercises.contains(exercise),
-              onEvent = viewModel::onEvent
-            ) {
-              viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
             }
           }
         }
