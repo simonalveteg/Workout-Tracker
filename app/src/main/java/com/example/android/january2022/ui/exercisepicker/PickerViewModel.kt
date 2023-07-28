@@ -49,10 +49,9 @@ class PickerViewModel @Inject constructor(
   ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, used, text ->
     exercises.filter { exercise ->
       val muscleCondition =
-        (muscleFilter.isEmpty() || exercise.getMuscleGroups().map { muscleFilter.contains(it) }
-          .contains(true))
+        (muscleFilter.isEmpty() || exercise.getMuscleGroups().any { muscleFilter.contains(it) })
       val equipmentCondition =
-        (equipmentFilter.isEmpty() || equipmentFilter.contains(exercise.equipment))
+        (equipmentFilter.isEmpty() || exercise.equipment.any { equipmentFilter.contains(it) })
       val selectedCondition = (!selected || selectedExercises.contains(exercise))
 
       muscleCondition && equipmentCondition && selectedCondition && exercise.getStringMatch(text)

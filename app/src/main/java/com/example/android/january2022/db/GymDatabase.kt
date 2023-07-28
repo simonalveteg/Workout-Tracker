@@ -17,7 +17,7 @@ import com.example.android.january2022.utils.Converters
     ],
     autoMigrations = [
     ],
-    version = 1, exportSchema = true
+    version = 2, exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class GymDatabase : RoomDatabase() {

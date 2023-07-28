@@ -49,7 +49,9 @@ fun ExerciseCard(
       .onGloballyPositioned { coordinates ->
         // Set column height using the LayoutCoordinates
         rowHeightDp = with(localDensity) {
-          coordinates.size.height.minus(95).toDp()
+          coordinates.size.height
+            .minus(95)
+            .toDp()
         }
       },
     verticalAlignment = Alignment.CenterVertically
@@ -64,7 +66,9 @@ fun ExerciseCard(
     Spacer(modifier = Modifier.width(4.dp))
     Surface(
       onClick = onClick,
-      modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .defaultMinSize(minHeight = 80.dp),
       tonalElevation = tonalElevation,
       shape = MaterialTheme.shapes.medium
     ) {
@@ -92,7 +96,9 @@ fun ExerciseCard(
             targets.forEach { target ->
               SmallPill(text = target, modifier = Modifier.padding(end = 4.dp))
             }
-            SmallPill(text = equipment)
+            equipment.forEach { eq ->
+              SmallPill(text = eq)
+            }
           }
         }
         Row(

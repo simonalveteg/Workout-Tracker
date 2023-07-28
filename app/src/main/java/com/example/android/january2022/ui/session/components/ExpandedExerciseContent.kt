@@ -38,8 +38,8 @@ fun ExpandedExerciseContent(
   ) {
     sets.forEach { set ->
       val localFocusManager = LocalFocusManager.current
-      val reps: Int = set.reps
-      val weight: Float = set.weight
+      val reps = set.reps ?: ""
+      val weight = set.weight ?: ""
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
