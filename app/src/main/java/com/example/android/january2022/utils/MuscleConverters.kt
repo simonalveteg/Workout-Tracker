@@ -1,6 +1,8 @@
 package com.example.android.january2022.utils
 
 import com.example.android.january2022.db.MuscleGroup
+import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import timber.log.Timber
 
 fun turnTargetIntoMuscleGroups(targets: List<String>): List<String> {
@@ -8,111 +10,80 @@ fun turnTargetIntoMuscleGroups(targets: List<String>): List<String> {
 }
 
 fun turnTargetIntoMuscleGroups(targets: String): List<String> {
-  return targets.split("|").map {
-    when (it.trim().replace("\n", "").replace(" ", "").lowercase()) {
-      "adductorbrevis" -> MuscleGroup.THIGHS
-      "adductorlongus" -> MuscleGroup.THIGHS
-      "adductormagnus" -> MuscleGroup.THIGHS
-      "adductormagnus,ischialfibers" -> MuscleGroup.THIGHS
-      "adductors" -> MuscleGroup.THIGHS
-      "adductors,hip" -> MuscleGroup.HIPS
-      "aductorbrevis" -> MuscleGroup.THIGHS
-      "back,general" -> MuscleGroup.BACK
-      "bicepsbrachii" -> MuscleGroup.BICEPS
-      "bicepsbrachii,shorthead" -> MuscleGroup.BICEPS
-      "brachialis" -> MuscleGroup.BICEPS
-      "brachioradialis" -> MuscleGroup.FOREARMS
-      "deltoid,anterior" -> MuscleGroup.SHOULDERS
-      "deltoid,lateral" -> MuscleGroup.SHOULDERS
-      "deltoid,posterior" -> MuscleGroup.SHOULDERS
-      "erectorspinae" -> MuscleGroup.BACK
-      "erectorspinae,cervicis&capitisfibers" -> MuscleGroup.BACK
-      "extensorcarpiradialis" -> MuscleGroup.FOREARMS
-      "extensorcarpiulnaris" -> MuscleGroup.FOREARMS
-      "externalhiprotators" -> MuscleGroup.HIPS
-      "flexorcarpiradialis" -> MuscleGroup.FOREARMS
-      "flexorcarpiulnaris" -> MuscleGroup.FOREARMS
-      "gastrocnemius" -> MuscleGroup.CALVES
-      "gemellusinferior" -> MuscleGroup.HIPS
-      "gemellussuperior" -> MuscleGroup.HIPS
-      "general,back" -> MuscleGroup.BACK
-      "gluteusmaximus" -> MuscleGroup.THIGHS
-      "gluteusmaximus,lowerfibers" -> MuscleGroup.THIGHS
-      "gluteusmedius" -> MuscleGroup.THIGHS
-      "gluteusmedius,posteriorfibers" -> MuscleGroup.THIGHS
-      "gluteusminimus" -> MuscleGroup.THIGHS
-      "gluteusminimus,anteriorfibers" -> MuscleGroup.THIGHS
-      "gracilis" -> MuscleGroup.THIGHS
-      "hamstrings" -> MuscleGroup.THIGHS
-      "hipabductors" -> MuscleGroup.HIPS
-      "hipabductors(listedbelow)" -> MuscleGroup.HIPS
-      "hipabductors(opposite)" -> MuscleGroup.HIPS
-      "hipadductors" -> MuscleGroup.HIPS
-      "hipexternalrotators" -> MuscleGroup.HIPS
-      "hipexternalrotators(listedbelow)" -> MuscleGroup.HIPS
-      "hipflexors" -> MuscleGroup.HIPS
-      "hipinternalrotators(listedbelow)" -> MuscleGroup.HIPS
-      "iliocastalislumborum" -> MuscleGroup.BACK
-      "iliocastalisthoracis" -> MuscleGroup.BACK
-      "iliopsoas" -> MuscleGroup.HIPS
-      "infraspinatus" -> MuscleGroup.BACK
-      "latissimusdorsi" -> MuscleGroup.BACK
-      "levatorscapulae" -> MuscleGroup.SHOULDERS
-      "longuscapitis" -> MuscleGroup.NECK
-      "longuscolli" -> MuscleGroup.NECK
-      "obliques" -> MuscleGroup.ABDOMINALS
-      "obturatorexternus" -> MuscleGroup.HIPS
-      "obturatorinternus" -> MuscleGroup.HIPS
-      "pectineus" -> MuscleGroup.HIPS
-      "pectoralismajor" -> MuscleGroup.CHEST
-      "pectoralismajor(sternalhead)" -> MuscleGroup.CHEST
-      "pectoralismajor,clavicular" -> MuscleGroup.CHEST
-      "pectoralismajor,sternal" -> MuscleGroup.CHEST
-      "pectoralisminor" -> MuscleGroup.CHEST
-      "piriformis" -> MuscleGroup.HIPS
-      "popliteus" -> MuscleGroup.CALVES
-      "pronators" -> MuscleGroup.FOREARMS
-      "psoasmajor" -> MuscleGroup.HIPS
-      "quadratusfemoris" -> MuscleGroup.HIPS
-      "quadratuslumborum" -> MuscleGroup.BACK
-      "quadriceps" -> MuscleGroup.THIGHS
-      "rectusabdominis" -> MuscleGroup.ABDOMINALS
-      "rectuscapitus" -> MuscleGroup.NECK
-      "rectusfemoris" -> MuscleGroup.THIGHS
-      "rhomboids" -> MuscleGroup.BACK
-      "sartorius" -> MuscleGroup.THIGHS
-      "serratusanterior" -> MuscleGroup.SHOULDERS
-      "serratusanterior,inferiordigitations" -> MuscleGroup.SHOULDERS
-      "serratusanterior,lowerfibers" -> MuscleGroup.SHOULDERS
-      "soleus" -> MuscleGroup.CALVES
-      "splenius" -> MuscleGroup.NECK
-      "sternocleidomastoid" -> MuscleGroup.NECK
-      "sternocleidomastoid,posteriorfibers" -> MuscleGroup.NECK
-      "subscapularis" -> MuscleGroup.SHOULDERS
-      "supinator" -> MuscleGroup.FOREARMS
-      "supraspinatus" -> MuscleGroup.SHOULDERS
-      "tensorfasciaelatae" -> MuscleGroup.THIGHS
-      "teresmajor" -> MuscleGroup.SHOULDERS
-      "teresminor" -> MuscleGroup.SHOULDERS
-      "tibialisanterior" -> MuscleGroup.CALVES
-      "transverseabdominis" -> MuscleGroup.ABDOMINALS
-      "compressesandsupportsabdominalviscera" -> MuscleGroup.ABDOMINALS
-      "trapezius,lower" -> MuscleGroup.SHOULDERS
-      "trapezius,middle" -> MuscleGroup.SHOULDERS
-      "trapezius,middlefibers" -> MuscleGroup.SHOULDERS
-      "trapezius,upper" -> MuscleGroup.NECK
-      "trapezius,upper(part1)" -> MuscleGroup.NECK
-      "trapezius,upper(parti)" -> MuscleGroup.NECK
-      "trapezius,upper(partii)" -> MuscleGroup.NECK
-      "triceps" -> MuscleGroup.TRICEPS
-      "triceps,longhead" -> MuscleGroup.TRICEPS
-      "tricepsbrachii" -> MuscleGroup.TRICEPS
-      "tricepsbrachii,longhead" -> MuscleGroup.TRICEPS
-      "tricepslonghead" -> MuscleGroup.TRICEPS
-      "wrist/fingerflexors" -> MuscleGroup.FOREARMS
-      "wristextensors" -> MuscleGroup.FOREARMS
-      "wristflexors" -> MuscleGroup.FOREARMS
-      else -> "FAILURE".also { Timber.d("Target: $targets") }
+  return targets.split("|").map { target ->
+    when (target) {
+      "Adductor Magnus, ischial fibers" -> MuscleGroup.HIPS
+      "Adductors, Hip" -> MuscleGroup.HIPS
+      "Back, General" -> MuscleGroup.BACK
+      "Biceps Brachii" -> MuscleGroup.BICEPS
+      "Brachialis" -> MuscleGroup.BICEPS
+      "Brachioradialis" -> MuscleGroup.BICEPS
+      "Deltoid, Anterior" -> MuscleGroup.SHOULDERS
+      "Deltoid, Lateral" -> MuscleGroup.SHOULDERS
+      "Deltoid, Posterior" -> MuscleGroup.SHOULDERS
+      "Erector Spinae" -> MuscleGroup.BACK
+      "Extensor Carpi Radialis" -> MuscleGroup.FOREARMS
+      "Extensor Carpi Ulnaris" -> MuscleGroup.FOREARMS
+      "External Hip Rotators" -> MuscleGroup.HIPS
+      "Flexor Carpi Radialis" -> MuscleGroup.FOREARMS
+      "Flexor Carpi Ulnaris" -> MuscleGroup.FOREARMS
+      "Gastrocnemius" -> MuscleGroup.CALVES
+      "Gluteus Maximus" -> MuscleGroup.GLUTES
+      "Gluteus Medius" -> MuscleGroup.GLUTES
+      "Gluteus Minimus" -> MuscleGroup.GLUTES
+      "Gluteus Minimus, Anterior Fibers" -> MuscleGroup.GLUTES
+      "Hamstrings" -> MuscleGroup.HAMSTRINGS
+      "Hip Abductors" -> MuscleGroup.HIPS
+      "Hip External Rotators" -> MuscleGroup.HIPS
+      "Hip Internal Rotators" -> MuscleGroup.HIPS
+      "Iliopsoas" -> MuscleGroup.HIPS
+      "Infraspinatus" -> MuscleGroup.SHOULDERS
+      "Latissimus Dorsi" -> MuscleGroup.BACK
+      "Longus colli" -> MuscleGroup.BACK
+      "Obliques" -> MuscleGroup.CORE
+      "Pectoralis Major, Clavicular" -> MuscleGroup.CHEST
+      "Pectoralis Major, Sternal" -> MuscleGroup.CHEST
+      "Pectoralis Minor" -> MuscleGroup.CHEST
+      "Piriformis" -> MuscleGroup.HIPS
+      "Pronators" -> MuscleGroup.FOREARMS
+      "Quadratus Femoris" -> MuscleGroup.QUADRICEPS
+      "Quadriceps" -> MuscleGroup.QUADRICEPS
+      "Rectus Abdominis" -> MuscleGroup.CORE
+      "Rectus Femoris" -> MuscleGroup.QUADRICEPS
+      "Rhomboids" -> MuscleGroup.BACK
+      "Serratus Anterior" -> MuscleGroup.BACK
+      "Soleus" -> MuscleGroup.CALVES
+      "Splenius" -> MuscleGroup.BACK
+      "Sternocleidomastoid" -> MuscleGroup.NECK
+      "Subscapularis" -> MuscleGroup.SHOULDERS
+      "Supinator" -> MuscleGroup.FOREARMS
+      "Supraspinatus" -> MuscleGroup.SHOULDERS
+      "Tensor Fasciae Latae" -> MuscleGroup.GLUTES
+      "Teres Major" -> MuscleGroup.SHOULDERS
+      "Teres Minor" -> MuscleGroup.SHOULDERS
+      "Tibialis Anterior" -> MuscleGroup.CALVES
+      "Transverse Abdominis" -> MuscleGroup.CORE
+      "Trapezius, Lower" -> MuscleGroup.BACK
+      "Trapezius, Middle" -> MuscleGroup.BACK
+      "Trapezius, Upper" -> MuscleGroup.BACK
+      "Triceps Brachii" -> MuscleGroup.TRICEPS
+      "Triceps Brachii, Long Head" -> MuscleGroup.TRICEPS
+      "Wrist Extensors" -> MuscleGroup.FOREARMS
+      "Wrist Flexors" -> MuscleGroup.FOREARMS
+      else -> "FAILURE".also { Timber.d("Failed with: $targets") }
     }
   }.distinct().filterNot { it == "FAILURE" }
+}
+
+@JvmName("sortedListOfMuscleGroupsForSessionExercises")
+fun List<SessionExerciseWithExercise>.sortedListOfMuscleGroups(): List<String> {
+  return this.map { it.exercise }.sortedListOfMuscleGroups()
+}
+
+@JvmName("sortedListOfMuscleGroupsForExercises")
+fun List<Exercise>.sortedListOfMuscleGroups(): List<String> {
+  return this.map { turnTargetIntoMuscleGroups(it.targets) }.flatten()
+    .groupingBy { it }.eachCount().toList()
+    .sortedByDescending { it.second }
+    .map { it.first }
 }

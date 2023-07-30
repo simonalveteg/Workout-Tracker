@@ -26,9 +26,8 @@ class GymRepository(
   @OptIn(ExperimentalCoroutinesApi::class)
   fun getExercisesForSession(session: Flow<Session>): Flow<List<SessionExerciseWithExercise>> {
     return session.flatMapLatest {
-      Timber.d("new value ${it.sessionId}")
       dao.getExercisesForSession(it.sessionId)
-    }.onEach { Timber.d("new") }
+    }
   }
 
   fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {

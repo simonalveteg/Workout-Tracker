@@ -29,7 +29,7 @@ fun SessionHeader(
 ) {
   val session = sessionWrapper.session
   val startTime = DateTimeFormatter.ofPattern("HH:mm").format(session.start)
-  val endTime = DateTimeFormatter.ofPattern("HH:mm").format(session.end)
+  val endTime = session.end?.let { DateTimeFormatter.ofPattern("HH:mm").format(it) } ?: "ongoing"
 
   Box(
     modifier = Modifier

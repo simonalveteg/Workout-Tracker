@@ -1,6 +1,5 @@
 package com.example.android.january2022.db.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
@@ -11,16 +10,8 @@ import java.time.LocalDateTime
  */
 @Entity(tableName = "sessions")
 data class Session(
-    @PrimaryKey(autoGenerate = true)
-    var sessionId: Long = 0L,
-
-    @ColumnInfo(name = "start")
-    val start: LocalDateTime = LocalDateTime.now(),
-
-    @ColumnInfo(name = "end")
-    var end: LocalDateTime = start,
-
-    @ColumnInfo(name = "training_type")
-    var trainingType: String = "",
-
-    )
+  @PrimaryKey(autoGenerate = true)
+  val sessionId: Long = 0L,
+  val start: LocalDateTime = LocalDateTime.now(),
+  val end: LocalDateTime? = null
+)

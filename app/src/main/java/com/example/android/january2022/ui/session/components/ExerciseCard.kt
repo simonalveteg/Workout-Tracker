@@ -154,7 +154,9 @@ fun ExerciseCard(
         exercise.getMuscleGroups().forEach {
           SmallPill(text = it, modifier = Modifier.padding(end = 4.dp))
         }
-        SmallPill(text = exercise.equipment, modifier = Modifier.padding(end = 4.dp))
+        exercise.equipment.forEach { eq ->
+          SmallPill(text = eq, modifier = Modifier.padding(end = 4.dp))
+        }
       }
     }
   }

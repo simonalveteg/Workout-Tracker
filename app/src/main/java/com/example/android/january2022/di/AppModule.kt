@@ -32,7 +32,6 @@ object AppModule {
                 GymDatabase::class.java,
                 "gym_database.db"
             )
-            //.createFromAsset("gym_database.db")
             .fallbackToDestructiveMigration()
             .addCallback(callback)
             .build()

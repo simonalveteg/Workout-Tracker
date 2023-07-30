@@ -23,8 +23,8 @@ fun CompactSetCard(
 ) {
   val reps = set.reps
   val weight = set.weight
-  val repsText by remember { derivedStateOf { if (reps > -1) reps.toString() else "0" } }
-  val weightText by remember { derivedStateOf { if (weight > -1) weight.toString() else "0" } }
+  val repsText by remember { derivedStateOf { reps?.toString() ?: "0" } }
+  val weightText by remember { derivedStateOf { weight?.toString() ?: "0" } }
 
   Row(
     Modifier
