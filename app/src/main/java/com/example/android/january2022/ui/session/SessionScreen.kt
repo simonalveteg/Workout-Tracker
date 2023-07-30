@@ -57,6 +57,7 @@ fun SessionScreen(
   val expandedExercise by viewModel.expandedExercise.collectAsState()
   val selectedExercises by viewModel.selectedExercises.collectAsState()
   val timerState by viewModel.timerState.collectAsState()
+  val muscleGroups by viewModel.muscleGroups.collectAsState(emptyList())
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
@@ -238,7 +239,7 @@ fun SessionScreen(
         item {
           SessionHeader(
             sessionWrapper = session,
-            muscleGroups = emptyList(),
+            muscleGroups = muscleGroups,
             scrollState = scrollState,
             height = headerHeight,
             topPadding = paddingValues.calculateTopPadding(),

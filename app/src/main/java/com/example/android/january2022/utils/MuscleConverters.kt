@@ -1,6 +1,8 @@
 package com.example.android.january2022.utils
 
 import com.example.android.january2022.db.MuscleGroup
+import com.example.android.january2022.db.entities.Exercise
+import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import timber.log.Timber
 
 fun turnTargetIntoMuscleGroups(targets: List<String>): List<String> {
@@ -71,4 +73,17 @@ fun turnTargetIntoMuscleGroups(targets: String): List<String> {
       else -> "FAILURE".also { Timber.d("Failed with: $targets") }
     }
   }.distinct().filterNot { it == "FAILURE" }
+}
+
+@JvmName("sortedListOfMuscleGroupsForSessionExercises")
+fun List<SessionExerciseWithExercise>.sortedListOfMuscleGroups(): List<String> {
+  return this.map { it.exercise }.sortedListOfMuscleGroups()
+}
+
+@JvmName("sortedListOfMuscleGroupsForExercises")
+fun List<Exercise>.sortedListOfMuscleGroups(): List<String> {
+  return this.map { turnTargetIntoMuscleGroups(it.targets) }.flatten()
+    .groupingBy { it }.eachCount().toList()
+    .sortedByDescending { it.second }
+    .map { it.first }
 }

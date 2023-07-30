@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.SessionWrapper
-import com.example.android.january2022.utils.Event
-import com.example.android.january2022.utils.Routes
-import com.example.android.january2022.utils.UiEvent
-import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
+import com.example.android.january2022.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,11 +22,8 @@ class HomeViewModel @Inject constructor(
 
   val sessions = combine(repo.getAllSessionExercises(), repo.getAllSessions()) { sewes, sessions ->
     sessions.map { session ->
-      val muscleGroups = sewes.filter { sewe ->
-        sewe.sessionExercise.parentSessionId == session.sessionId
-      }.map { sewe ->
-        turnTargetIntoMuscleGroups(sewe.exercise.targets)
-      }.flatten()
+      val muscleGroups = sewes.filter { it.sessionExercise.parentSessionId == session.sessionId }
+        .sortedListOfMuscleGroups()
       SessionWrapper(session, muscleGroups)
     }
   }

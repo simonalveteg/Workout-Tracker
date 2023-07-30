@@ -13,6 +13,7 @@ import com.example.android.january2022.ui.WorkoutTimer
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
+import com.example.android.january2022.utils.sortedListOfMuscleGroups
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -64,6 +65,10 @@ class SessionViewModel @Inject constructor(
         }
       )
     }
+  }
+
+  val muscleGroups = exercises.map { exercises ->
+    exercises.map { it.exercise }.sortedListOfMuscleGroups()
   }
 
   private val _uiEvent = Channel<UiEvent>()
