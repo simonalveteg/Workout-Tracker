@@ -1,5 +1,14 @@
 package com.example.android.january2022.ui.session
 
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import android.os.VibratorManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +37,7 @@ import javax.inject.Inject
 class SessionViewModel @Inject constructor(
   private val repo: GymRepository,
   private val workoutTimer: WorkoutTimer,
+  application: Application,
   savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -129,7 +139,7 @@ class SessionViewModel @Inject constructor(
           }
         }
       }
-      is SessionEvent.TimerToggled -> workoutTimer.toggle()
+      is SessionEvent.TimerToggled -> sendUiEvent(UiEvent.StartTimer)
       is SessionEvent.TimerReset -> workoutTimer.reset()
       is SessionEvent.TimerIncreased -> workoutTimer.increment()
       is SessionEvent.TimerDecreased -> workoutTimer.decrement()

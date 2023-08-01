@@ -1,5 +1,6 @@
 package com.example.android.january2022.ui.session
 
+import android.content.Intent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -10,11 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.timer.TimerService
 import com.example.android.january2022.ui.SessionWrapper
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
@@ -38,6 +41,7 @@ fun SessionScreen(
   viewModel: SessionViewModel = hiltViewModel()
 ) {
   val uriHandler = LocalUriHandler.current
+  val context = LocalContext.current
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
@@ -47,6 +51,12 @@ fun SessionScreen(
           uriHandler.openUri(event.url)
         }
         is UiEvent.Navigate -> onNavigate(event)
+        is UiEvent.StartTimer -> {
+          Intent(context, TimerService::class.java).also {
+            it.action = TimerService.Actions.START.toString()
+            context.startService(it)
+          }
+        }
         else -> Unit
       }
     }
