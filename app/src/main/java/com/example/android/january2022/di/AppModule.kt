@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.example.android.january2022.db.GymDatabase
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.StartingExercises
-import com.example.android.january2022.ui.WorkoutTimer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,39 +19,33 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideGymDatabase(
-        app: Application,
-        callback: StartingExercises
-    ): GymDatabase {
-        return Room
-            .databaseBuilder(
-                app,
-                GymDatabase::class.java,
-                "gym_database.db"
-            )
-            .fallbackToDestructiveMigration()
-            .addCallback(callback)
-            .build()
-    }
+  @Provides
+  @Singleton
+  fun provideGymDatabase(
+    app: Application,
+    callback: StartingExercises
+  ): GymDatabase {
+    return Room
+      .databaseBuilder(
+        app,
+        GymDatabase::class.java,
+        "gym_database.db"
+      )
+      .fallbackToDestructiveMigration()
+      .addCallback(callback)
+      .build()
+  }
 
-    @Provides
-    @Singleton
-    fun provideGymRepository(db: GymDatabase): GymRepository {
-        return GymRepository(db.dao)
-    }
+  @Provides
+  @Singleton
+  fun provideGymRepository(db: GymDatabase): GymRepository {
+    return GymRepository(db.dao)
+  }
 
-    @Provides
-    @Singleton
-    fun provideWorkoutTimer(): WorkoutTimer {
-        return WorkoutTimer()
-    }
-
-    @ApplicationScope
-    @Provides
-    @Singleton
-    fun provideApplicationScope() = CoroutineScope(SupervisorJob())
+  @ApplicationScope
+  @Provides
+  @Singleton
+  fun provideApplicationScope() = CoroutineScope(SupervisorJob())
 }
 
 // detta används typ för att man ska kunna använda olika provideApplicationScopes

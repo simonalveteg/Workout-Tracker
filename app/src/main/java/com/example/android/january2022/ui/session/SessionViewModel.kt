@@ -1,14 +1,5 @@
 package com.example.android.january2022.ui.session
 
-import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-import android.os.VibratorManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,8 +8,6 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.ExerciseWrapper
 import com.example.android.january2022.ui.SessionWrapper
-import com.example.android.january2022.ui.TimerState
-import com.example.android.january2022.ui.WorkoutTimer
 import com.example.android.january2022.utils.Event
 import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
@@ -36,8 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SessionViewModel @Inject constructor(
   private val repo: GymRepository,
-  private val workoutTimer: WorkoutTimer,
-  application: Application,
   savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -51,16 +38,6 @@ class SessionViewModel @Inject constructor(
 
   private val _selectedExercises = MutableStateFlow<List<ExerciseWrapper>>(emptyList())
   val selectedExercises = _selectedExercises.asStateFlow()
-
-  private val _timerState = MutableStateFlow(
-    TimerState(
-      time = workoutTimer.time,
-      isRunning = workoutTimer.isRunning,
-      maxTime = workoutTimer.maxTime,
-      finishedEvent = workoutTimer.finished
-    )
-  )
-  val timerState = _timerState.asStateFlow()
 
   val exercises = combine(
     repo.getExercisesForSession(_session),
@@ -139,10 +116,10 @@ class SessionViewModel @Inject constructor(
           }
         }
       }
-      is SessionEvent.TimerToggled -> sendUiEvent(UiEvent.StartTimer)
-      is SessionEvent.TimerReset -> workoutTimer.reset()
-      is SessionEvent.TimerIncreased -> workoutTimer.increment()
-      is SessionEvent.TimerDecreased -> workoutTimer.decrement()
+      is SessionEvent.TimerToggled -> sendUiEvent(UiEvent.ToggleTimer)
+      is SessionEvent.TimerReset -> sendUiEvent(UiEvent.ResetTimer)
+      is SessionEvent.TimerIncreased -> sendUiEvent(UiEvent.IncrementTimer)
+      is SessionEvent.TimerDecreased -> sendUiEvent(UiEvent.DecrementTimer)
       is SessionEvent.OpenGuide -> {
         expandedExercise.value?.exercise?.let { openGuide(it) }
       }
