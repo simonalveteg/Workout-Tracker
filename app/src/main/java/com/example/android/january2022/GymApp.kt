@@ -23,7 +23,9 @@ class GymApp: Application() {
       TimerService.ALERT_CHANNEL_ID,
       "Workout Timer Alerts",
       NotificationManager.IMPORTANCE_HIGH
-    )
+    ).also {
+      it.enableVibration(true)
+    }
     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     notificationManager.createNotificationChannel(channel)
     notificationManager.createNotificationChannel(alertChannel)
