@@ -75,7 +75,6 @@ fun SessionScreen(
   var timerState by remember { mutableStateOf(TimerState(0L, false, 0L)) }
   val receiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-      Timber.d("Timer Broadcast Received")
       intent?.let {
         timerState = TimerState(
           time = it.getLongExtra(TimerService.Intents.Extras.TIME.toString(), 0L),

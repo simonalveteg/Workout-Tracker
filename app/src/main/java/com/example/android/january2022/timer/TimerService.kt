@@ -71,6 +71,7 @@ class TimerService : Service() {
   private fun start() {
     running = true
     timer?.cancel()
+    Timber.d("maxTime: $maxTime")
     timer = WorkoutTimer(maxTime).apply { start() }
     sendStatus()
   }
@@ -142,9 +143,7 @@ class TimerService : Service() {
     contentText = "Timer finished, tap to return.",
     progressBar = false,
     channelId = ALERT_CHANNEL_ID
-  ).also {
-    Timber.d("Built finished notification!")
-  }
+  )
 
   private fun notification(
     contentText: String? = null,
@@ -177,7 +176,6 @@ class TimerService : Service() {
   }
 
   private fun notify(notification: Notification) {
-    Timber.d("Notifying: $notification, $running")
     notificationManager.notify(1, notification)
   }
 
@@ -212,7 +210,6 @@ class TimerService : Service() {
       time = maxTime
       alert(buildFinishedNotification())
       reset()
-      stopSelf()
     }
   }
 
