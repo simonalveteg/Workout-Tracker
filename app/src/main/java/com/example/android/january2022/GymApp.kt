@@ -15,8 +15,10 @@ class GymApp: Application() {
     val channel = NotificationChannel(
       TimerService.CHANNEL_ID,
       "Workout Timer",
-      NotificationManager.IMPORTANCE_LOW
-    )
+      NotificationManager.IMPORTANCE_DEFAULT
+    ).also {
+      it.setSound(null, null)
+    }
     val alertChannel = NotificationChannel(
       TimerService.ALERT_CHANNEL_ID,
       "Workout Timer Alerts",
