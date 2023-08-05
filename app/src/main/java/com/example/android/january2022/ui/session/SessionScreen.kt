@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.animation.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -227,6 +229,7 @@ fun SessionScreen(
             SessionAppBar(
               onDeleteSession = { deleteSessionDialog.value = true },
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               }
@@ -241,6 +244,7 @@ fun SessionScreen(
           ) {
             SessionAppBarExpanded(
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               },
@@ -255,6 +259,7 @@ fun SessionScreen(
           ) {
             SessionAppBarSelected(
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               },

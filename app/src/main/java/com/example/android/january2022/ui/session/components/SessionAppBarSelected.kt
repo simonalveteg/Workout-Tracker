@@ -9,6 +9,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import com.example.android.january2022.ui.TimerState
 import com.example.android.january2022.ui.session.SessionEvent
 import com.example.android.january2022.ui.session.actions.ActionSpacer
 import com.example.android.january2022.ui.session.actions.ActionSpacerStart
@@ -21,6 +22,7 @@ fun SessionAppBarSelected(
   onEvent: (SessionEvent) -> Unit,
   onDeleteSession: () -> Unit,
   onDeleteExercise: () -> Unit,
+  timerState: TimerState,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
 ) {
@@ -31,7 +33,7 @@ fun SessionAppBarSelected(
         onDelete = onDeleteSession,
       )
       ActionSpacer()
-      TimerAction(timerVisible = timerVisible) { onTimerPress() }
+      TimerAction(timerState = timerState, timerVisible = timerVisible) { onTimerPress() }
       ActionSpacer()
       IconButton(onClick = onDeleteExercise) {
         Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Toggle set deletion mode.")

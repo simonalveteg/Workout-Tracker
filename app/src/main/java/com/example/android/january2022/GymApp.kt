@@ -4,12 +4,11 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.media.AudioAttributes
 import com.example.android.january2022.timer.TimerService
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class GymApp: Application() {
+class GymApp : Application() {
   override fun onCreate() {
     super.onCreate()
     val channel = NotificationChannel(

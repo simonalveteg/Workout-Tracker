@@ -7,6 +7,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import com.example.android.january2022.ui.TimerState
 import com.example.android.january2022.ui.session.actions.ActionSpacer
 import com.example.android.january2022.ui.session.actions.ActionSpacerStart
 import com.example.android.january2022.ui.session.actions.MenuAction
@@ -16,6 +18,7 @@ import com.example.android.january2022.utils.Event
 @Composable
 fun SessionAppBar(
   onDeleteSession: () -> Unit,
+  timerState: TimerState,
   timerVisible: Boolean,
   onTimerPress: () -> Unit,
   onFAB: () -> Unit
@@ -27,7 +30,7 @@ fun SessionAppBar(
         onDelete = onDeleteSession,
       )
       ActionSpacer()
-      TimerAction(timerVisible, onTimerPress)
+      TimerAction(timerState, timerVisible, onTimerPress)
     },
     floatingActionButton = {
       FloatingActionButton(
