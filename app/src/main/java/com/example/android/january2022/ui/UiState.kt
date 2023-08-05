@@ -4,8 +4,6 @@ import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SessionWrapper(
   val session: Session,
@@ -19,10 +17,9 @@ data class ExerciseWrapper(
 )
 
 data class TimerState(
-  val time: MutableStateFlow<Long>,
-  val isRunning: MutableStateFlow<Boolean>,
-  val maxTime: MutableStateFlow<Long>,
-  val finishedEvent: Channel<Boolean>
+  val time: Long,
+  val running: Boolean,
+  val maxTime: Long
 )
 
 data class DatabaseModel(

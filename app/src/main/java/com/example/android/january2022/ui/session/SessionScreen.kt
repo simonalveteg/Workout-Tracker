@@ -1,6 +1,12 @@
 package com.example.android.january2022.ui.session
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.animation.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,12 +16,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android.january2022.db.entities.GymSet
 import com.example.android.january2022.db.entities.Session
+import com.example.android.january2022.timer.TimerService
+import com.example.android.january2022.timer.sendTimerAction
 import com.example.android.january2022.ui.SessionWrapper
+import com.example.android.january2022.ui.TimerState
 import com.example.android.january2022.ui.datetimedialog.MaterialDialog
 import com.example.android.january2022.ui.datetimedialog.rememberMaterialDialogState
 import com.example.android.january2022.ui.datetimedialog.time.timepicker
@@ -38,6 +49,7 @@ fun SessionScreen(
   viewModel: SessionViewModel = hiltViewModel()
 ) {
   val uriHandler = LocalUriHandler.current
+  val context = LocalContext.current
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
@@ -47,6 +59,10 @@ fun SessionScreen(
           uriHandler.openUri(event.url)
         }
         is UiEvent.Navigate -> onNavigate(event)
+        is UiEvent.ToggleTimer -> context.sendTimerAction(TimerService.Actions.TOGGLE)
+        is UiEvent.ResetTimer -> context.sendTimerAction(TimerService.Actions.RESET)
+        is UiEvent.IncrementTimer -> context.sendTimerAction(TimerService.Actions.INCREMENT)
+        is UiEvent.DecrementTimer -> context.sendTimerAction(TimerService.Actions.DECREMENT)
         else -> Unit
       }
     }
@@ -56,8 +72,29 @@ fun SessionScreen(
   val exercises by viewModel.exercises.collectAsState(initial = emptyList())
   val expandedExercise by viewModel.expandedExercise.collectAsState()
   val selectedExercises by viewModel.selectedExercises.collectAsState()
-  val timerState by viewModel.timerState.collectAsState()
   val muscleGroups by viewModel.muscleGroups.collectAsState(emptyList())
+
+  var timerState by remember { mutableStateOf(TimerState(0L, false, 0L)) }
+  val receiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+      intent?.let {
+        timerState = TimerState(
+          time = it.getLongExtra(TimerService.Intents.Extras.TIME.toString(), 0L),
+          running = it.getBooleanExtra(TimerService.Intents.Extras.IS_RUNNING.toString(), false),
+          maxTime = it.getLongExtra(TimerService.Intents.Extras.MAX_TIME.toString(), 0L)
+        )
+      }
+    }
+  }
+  // Register local broadcast manager to update Timer State when Intents are received
+  ContextCompat.registerReceiver(
+    context,
+    receiver,
+    IntentFilter(TimerService.Intents.STATUS.toString()),
+    ContextCompat.RECEIVER_NOT_EXPORTED
+  ).also {
+    context.sendTimerAction(TimerService.Actions.QUERY)
+  }
 
   val scrollState = rememberLazyListState()
   val headerHeight = 240.dp
@@ -192,6 +229,7 @@ fun SessionScreen(
             SessionAppBar(
               onDeleteSession = { deleteSessionDialog.value = true },
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               }
@@ -206,6 +244,7 @@ fun SessionScreen(
           ) {
             SessionAppBarExpanded(
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               },
@@ -220,6 +259,7 @@ fun SessionScreen(
           ) {
             SessionAppBarSelected(
               timerVisible = timerVisible.value,
+              timerState = timerState,
               onTimerPress = {
                 timerVisible.value = !timerVisible.value
               },
