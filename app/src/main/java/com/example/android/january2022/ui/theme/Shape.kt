@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.dp
 val Shapes = Shapes(
     small = RoundedCornerShape(5.dp),
     medium = RoundedCornerShape(10.dp),
-    large = RoundedCornerShape(20.dp)
+    large = RoundedCornerShape(20.dp),
 )
 
-fun CornerBasedShape.onlyTop() : CornerBasedShape {
+fun CornerBasedShape.onlyTop(): CornerBasedShape {
     return copy(
         bottomStart = CornerSize(0.dp),
-        bottomEnd = CornerSize(0.dp)
+        bottomEnd = CornerSize(0.dp),
     )
 }

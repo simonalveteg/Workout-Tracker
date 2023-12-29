@@ -7,12 +7,11 @@ object SetType {
     const val HARD = "Hard"
     const val DROP = "Drop"
 
-
-    private val order by lazy { listOf(WARMUP, EASY, NORMAL, HARD, DROP)}
+    private val order by lazy { listOf(WARMUP, EASY, NORMAL, HARD, DROP) }
 
     fun add(current: String): String {
         val currentIndex: Int = order.indexOf(current)
-        val nextIndex = (currentIndex+1) % order.size
+        val nextIndex = (currentIndex + 1) % order.size
         return order[nextIndex]
     }
     fun next(current: String): String = add(current)

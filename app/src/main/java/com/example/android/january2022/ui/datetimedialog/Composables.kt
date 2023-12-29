@@ -1,6 +1,5 @@
 package com.example.android.january2022.ui.datetimedialog
 
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
@@ -15,23 +14,23 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 internal fun DialogTitle(text: String, modifier: Modifier = Modifier) {
-  Text(
-    text,
-    modifier = modifier
-      .fillMaxWidth()
-      .wrapContentWidth(Alignment.CenterHorizontally),
-    color = MaterialTheme.colors.onBackground,
-    fontSize = 20.sp,
-    style = TextStyle(fontWeight = FontWeight.W600)
-  )
+    Text(
+        text,
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally),
+        color = MaterialTheme.colors.onBackground,
+        fontSize = 20.sp,
+        style = TextStyle(fontWeight = FontWeight.W600),
+    )
 }
 
 @Composable
 internal fun isSmallDevice(): Boolean {
-  return LocalConfiguration.current.screenWidthDp <= 360
+    return LocalConfiguration.current.screenWidthDp <= 360
 }
 
 @Composable
 internal fun isLargeDevice(): Boolean {
-  return LocalConfiguration.current.screenWidthDp <= 600
+    return LocalConfiguration.current.screenWidthDp <= 600
 }

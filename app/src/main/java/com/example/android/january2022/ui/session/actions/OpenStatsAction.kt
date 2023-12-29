@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun OpenStatsAction(
-  onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-  IconButton(onClick = onClick) {
-    Icon(imageVector = Icons.Outlined.Analytics, contentDescription = "Open exercise guide.")
-  }
+    IconButton(onClick = onClick) {
+        Icon(imageVector = Icons.Outlined.Analytics, contentDescription = "Open exercise guide.")
+    }
 }

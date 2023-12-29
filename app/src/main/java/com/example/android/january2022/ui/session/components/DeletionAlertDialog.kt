@@ -8,24 +8,24 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun DeletionAlertDialog(
-  onDismiss: () -> Unit,
-  onDelete: () -> Unit,
-  title: @Composable () -> Unit,
-  text: @Composable () -> Unit
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit,
+    title: @Composable () -> Unit,
+    text: @Composable () -> Unit,
 ) {
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    confirmButton = {
-      Button(onClick = onDelete) {
-        Text(text = "Delete")
-      }
-    },
-    dismissButton = {
-      TextButton(onClick = onDismiss) {
-        Text(text = "Cancel")
-      }
-    },
-    title = title,
-    text = text
-  )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(onClick = onDelete) {
+                Text(text = "Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+        title = title,
+        text = text,
+    )
 }

@@ -14,38 +14,37 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-  @Provides
-  @Singleton
-  fun provideGymDatabase(
-    app: Application,
-    callback: StartingExercises
-  ): GymDatabase {
-    return Room
-      .databaseBuilder(
-        app,
-        GymDatabase::class.java,
-        "gym_database.db"
-      )
-      .fallbackToDestructiveMigration()
-      .addCallback(callback)
-      .build()
-  }
+    @Provides
+    @Singleton
+    fun provideGymDatabase(
+        app: Application,
+        callback: StartingExercises,
+    ): GymDatabase {
+        return Room
+            .databaseBuilder(
+                app,
+                GymDatabase::class.java,
+                "gym_database.db",
+            )
+            .fallbackToDestructiveMigration()
+            .addCallback(callback)
+            .build()
+    }
 
-  @Provides
-  @Singleton
-  fun provideGymRepository(db: GymDatabase): GymRepository {
-    return GymRepository(db.dao)
-  }
+    @Provides
+    @Singleton
+    fun provideGymRepository(db: GymDatabase): GymRepository {
+        return GymRepository(db.dao)
+    }
 
-  @ApplicationScope
-  @Provides
-  @Singleton
-  fun provideApplicationScope() = CoroutineScope(SupervisorJob())
+    @ApplicationScope
+    @Provides
+    @Singleton
+    fun provideApplicationScope() = CoroutineScope(SupervisorJob())
 }
 
 // detta används typ för att man ska kunna använda olika provideApplicationScopes

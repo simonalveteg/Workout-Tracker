@@ -12,15 +12,15 @@ import com.example.android.january2022.ui.theme.Shapes
 
 @Composable
 fun SmallPill(text: String, modifier: Modifier = Modifier) {
-  Surface(
-    shape = Shapes.small,
-    tonalElevation = LocalAbsoluteTonalElevation.current + 1.dp,
-    modifier = modifier
-  ) {
-    Text(
-      text = text.uppercase(),
-      style = MaterialTheme.typography.labelSmall,
-      modifier = Modifier.padding(4.dp)
-    )
-  }
+    Surface(
+        shape = Shapes.small,
+        tonalElevation = LocalAbsoluteTonalElevation.current + 1.dp,
+        modifier = modifier,
+    ) {
+        Text(
+            text = text.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(4.dp),
+        )
+    }
 }

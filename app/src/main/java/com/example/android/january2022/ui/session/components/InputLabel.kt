@@ -11,12 +11,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun InputLabel(text: String) {
-  Text(
-    text = text,
-    color = LocalContentColor.current.copy(alpha = 0.8f),
-    style = MaterialTheme.typography.labelSmall,
-    modifier = Modifier
-      .padding(start = 4.dp, top = 6.dp)
-      .fillMaxHeight()
-  )
+    Text(
+        text = text,
+        color = LocalContentColor.current.copy(alpha = 0.8f),
+        style = MaterialTheme.typography.labelSmall,
+        modifier = Modifier
+            .padding(start = 4.dp, top = 6.dp)
+            .fillMaxHeight(),
+    )
 }

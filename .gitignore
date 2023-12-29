@@ -68,3 +68,5 @@ fastlane/readme.md
 app/schemas/com.example.android.january2022.db.GymDatabase/1.json
 *.json
 /app/signing/
+.idea
+.DS_Store

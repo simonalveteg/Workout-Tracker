@@ -22,12 +22,23 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -37,7 +48,12 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.semantics.*
+import androidx.compose.ui.semantics.collapse
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.dismiss
+import androidx.compose.ui.semantics.expand
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -52,21 +68,21 @@ import kotlin.math.roundToInt
  */
 @ExperimentalMaterial3Api
 enum class ModalBottomSheetValue {
-  /**
-   * The bottom sheet is not visible.
-   */
-  Hidden,
+    /**
+     * The bottom sheet is not visible.
+     */
+    Hidden,
 
-  /**
-   * The bottom sheet is visible at full height.
-   */
-  Expanded,
+    /**
+     * The bottom sheet is visible at full height.
+     */
+    Expanded,
 
-  /**
-   * The bottom sheet is partially visible at 50% of the screen height. This state is only
-   * enabled if the height of the bottom sheet is more than 50% of the screen height.
-   */
-  HalfExpanded
+    /**
+     * The bottom sheet is partially visible at 50% of the screen height. This state is only
+     * enabled if the height of the bottom sheet is more than 50% of the screen height.
+     */
+    HalfExpanded,
 }
 
 /**
@@ -78,85 +94,88 @@ enum class ModalBottomSheetValue {
  */
 @ExperimentalMaterial3Api
 class ModalBottomSheetState(
-  initialValue: ModalBottomSheetValue,
-  animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-  confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
+    initialValue: ModalBottomSheetValue,
+    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
+    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
 ) : SwipeableState<ModalBottomSheetValue>(
-  initialValue = initialValue,
-  animationSpec = animationSpec,
-  confirmStateChange = confirmStateChange
+    initialValue = initialValue,
+    animationSpec = animationSpec,
+    confirmStateChange = confirmStateChange,
 ) {
-  /**
-   * Whether the bottom sheet is visible.
-   */
-  val isVisible: Boolean
-    get() = currentValue != ModalBottomSheetValue.Hidden
-
-  internal val isHalfExpandedEnabled: Boolean
-    get() = anchors.values.contains(ModalBottomSheetValue.HalfExpanded)
-
-  /**
-   * Show the bottom sheet with animation and suspend until it's shown. If half expand is
-   * enabled, the bottom sheet will be half expanded. Otherwise it will be fully expanded.
-   *
-   * @throws [CancellationException] if the animation is interrupted
-   */
-  suspend fun show() {
-    val targetValue =
-      if (isHalfExpandedEnabled) ModalBottomSheetValue.HalfExpanded
-      else ModalBottomSheetValue.Expanded
-    animateTo(targetValue = targetValue)
-  }
-
-  /**
-   * Half expand the bottom sheet if half expand is enabled with animation and suspend until it
-   * animation is complete or cancelled
-   *
-   * @throws [CancellationException] if the animation is interrupted
-   */
-  internal suspend fun halfExpand() {
-    if (!isHalfExpandedEnabled) {
-      return
-    }
-    animateTo(ModalBottomSheetValue.HalfExpanded)
-  }
-
-  /**
-   * Fully expand the bottom sheet with animation and suspend until it if fully expanded or
-   * animation has been cancelled.
-   * *
-   * @throws [CancellationException] if the animation is interrupted
-   */
-  internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
-
-  /**
-   * Hide the bottom sheet with animation and suspend until it if fully hidden or animation has
-   * been cancelled.
-   *
-   * @throws [CancellationException] if the animation is interrupted
-   */
-  suspend fun hide() = animateTo(ModalBottomSheetValue.Hidden)
-
-  internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection
-
-  companion object {
     /**
-     * The default [Saver] implementation for [ModalBottomSheetState].
+     * Whether the bottom sheet is visible.
      */
-    fun Saver(
-      animationSpec: AnimationSpec<Float>,
-      confirmStateChange: (ModalBottomSheetValue) -> Boolean
-    ): Saver<ModalBottomSheetState, *> = Saver(
-      save = { it.currentValue },
-      restore = {
-        ModalBottomSheetState(
-          initialValue = it,
-          animationSpec = animationSpec,
-          confirmStateChange = confirmStateChange
+    val isVisible: Boolean
+        get() = currentValue != ModalBottomSheetValue.Hidden
+
+    internal val isHalfExpandedEnabled: Boolean
+        get() = anchors.values.contains(ModalBottomSheetValue.HalfExpanded)
+
+    /**
+     * Show the bottom sheet with animation and suspend until it's shown. If half expand is
+     * enabled, the bottom sheet will be half expanded. Otherwise it will be fully expanded.
+     *
+     * @throws [CancellationException] if the animation is interrupted
+     */
+    suspend fun show() {
+        val targetValue =
+            if (isHalfExpandedEnabled) {
+                ModalBottomSheetValue.HalfExpanded
+            } else {
+                ModalBottomSheetValue.Expanded
+            }
+        animateTo(targetValue = targetValue)
+    }
+
+    /**
+     * Half expand the bottom sheet if half expand is enabled with animation and suspend until it
+     * animation is complete or cancelled
+     *
+     * @throws [CancellationException] if the animation is interrupted
+     */
+    internal suspend fun halfExpand() {
+        if (!isHalfExpandedEnabled) {
+            return
+        }
+        animateTo(ModalBottomSheetValue.HalfExpanded)
+    }
+
+    /**
+     * Fully expand the bottom sheet with animation and suspend until it if fully expanded or
+     * animation has been cancelled.
+     * *
+     * @throws [CancellationException] if the animation is interrupted
+     */
+    internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
+
+    /**
+     * Hide the bottom sheet with animation and suspend until it if fully hidden or animation has
+     * been cancelled.
+     *
+     * @throws [CancellationException] if the animation is interrupted
+     */
+    suspend fun hide() = animateTo(ModalBottomSheetValue.Hidden)
+
+    internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection
+
+    companion object {
+        /**
+         * The default [Saver] implementation for [ModalBottomSheetState].
+         */
+        fun Saver(
+            animationSpec: AnimationSpec<Float>,
+            confirmStateChange: (ModalBottomSheetValue) -> Boolean,
+        ): Saver<ModalBottomSheetState, *> = Saver(
+            save = { it.currentValue },
+            restore = {
+                ModalBottomSheetState(
+                    initialValue = it,
+                    animationSpec = animationSpec,
+                    confirmStateChange = confirmStateChange,
+                )
+            },
         )
-      }
-    )
-  }
+    }
 }
 
 /**
@@ -169,22 +188,22 @@ class ModalBottomSheetState(
 @Composable
 @ExperimentalMaterial3Api
 fun rememberModalBottomSheetState(
-  initialValue: ModalBottomSheetValue,
-  animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-  confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
+    initialValue: ModalBottomSheetValue,
+    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
+    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
 ): ModalBottomSheetState {
-  return rememberSaveable(
-    saver = ModalBottomSheetState.Saver(
-      animationSpec = animationSpec,
-      confirmStateChange = confirmStateChange
-    )
-  ) {
-    ModalBottomSheetState(
-      initialValue = initialValue,
-      animationSpec = animationSpec,
-      confirmStateChange = confirmStateChange
-    )
-  }
+    return rememberSaveable(
+        saver = ModalBottomSheetState.Saver(
+            animationSpec = animationSpec,
+            confirmStateChange = confirmStateChange,
+        ),
+    ) {
+        ModalBottomSheetState(
+            initialValue = initialValue,
+            animationSpec = animationSpec,
+            confirmStateChange = confirmStateChange,
+        )
+    }
 }
 
 /**
@@ -218,152 +237,152 @@ fun rememberModalBottomSheetState(
 @Composable
 @ExperimentalMaterial3Api
 fun ModalBottomSheetLayout(
-  sheetContent: @Composable ColumnScope.() -> Unit,
-  modifier: Modifier = Modifier,
-  sheetState: ModalBottomSheetState =
-    rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
-  sheetShape: Shape = MaterialTheme.shapes.large,
-  sheetElevation: Dp = ModalBottomSheetDefaults.Elevation,
-  sheetBackgroundColor: Color = MaterialTheme.colorScheme.surface,
-  sheetContentColor: Color = contentColorFor(sheetBackgroundColor),
-  scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
-  content: @Composable () -> Unit
+    sheetContent: @Composable ColumnScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    sheetState: ModalBottomSheetState =
+        rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
+    sheetShape: Shape = MaterialTheme.shapes.large,
+    sheetElevation: Dp = ModalBottomSheetDefaults.Elevation,
+    sheetBackgroundColor: Color = MaterialTheme.colorScheme.surface,
+    sheetContentColor: Color = contentColorFor(sheetBackgroundColor),
+    scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
+    content: @Composable () -> Unit,
 ) {
-  val scope = rememberCoroutineScope()
-  BoxWithConstraints(modifier) {
-    val fullHeight = constraints.maxHeight.toFloat()
-    val sheetHeightState = remember { mutableStateOf<Float?>(null) }
-    Box(Modifier.fillMaxSize()) {
-      content()
-      Scrim(
-        color = scrimColor,
-        onDismiss = {
-          if (sheetState.confirmStateChange(ModalBottomSheetValue.Hidden)) {
-            scope.launch { sheetState.hide() }
-          }
-        },
-        visible = sheetState.targetValue != ModalBottomSheetValue.Hidden
-      )
-    }
-    Surface(
-      modifier = Modifier
-        .fillMaxWidth()
-        .nestedScroll(sheetState.nestedScrollConnection)
-        .offset {
-          val y = if (sheetState.anchors.isEmpty()) {
-            // if we don't know our anchors yet, render the sheet as hidden
-            fullHeight.roundToInt()
-          } else {
-            // if we do know our anchors, respect them
-            sheetState.offset.value.roundToInt()
-          }
-          IntOffset(0, y)
+    val scope = rememberCoroutineScope()
+    BoxWithConstraints(modifier) {
+        val fullHeight = constraints.maxHeight.toFloat()
+        val sheetHeightState = remember { mutableStateOf<Float?>(null) }
+        Box(Modifier.fillMaxSize()) {
+            content()
+            Scrim(
+                color = scrimColor,
+                onDismiss = {
+                    if (sheetState.confirmStateChange(ModalBottomSheetValue.Hidden)) {
+                        scope.launch { sheetState.hide() }
+                    }
+                },
+                visible = sheetState.targetValue != ModalBottomSheetValue.Hidden,
+            )
         }
-        .bottomSheetSwipeable(sheetState, fullHeight, sheetHeightState)
-        .onGloballyPositioned {
-          sheetHeightState.value = it.size.height.toFloat()
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .nestedScroll(sheetState.nestedScrollConnection)
+                .offset {
+                    val y = if (sheetState.anchors.isEmpty()) {
+                        // if we don't know our anchors yet, render the sheet as hidden
+                        fullHeight.roundToInt()
+                    } else {
+                        // if we do know our anchors, respect them
+                        sheetState.offset.value.roundToInt()
+                    }
+                    IntOffset(0, y)
+                }
+                .bottomSheetSwipeable(sheetState, fullHeight, sheetHeightState)
+                .onGloballyPositioned {
+                    sheetHeightState.value = it.size.height.toFloat()
+                }
+                .semantics {
+                    if (sheetState.isVisible) {
+                        dismiss {
+                            if (sheetState.confirmStateChange(ModalBottomSheetValue.Hidden)) {
+                                scope.launch { sheetState.hide() }
+                            }
+                            true
+                        }
+                        if (sheetState.currentValue == ModalBottomSheetValue.HalfExpanded) {
+                            expand {
+                                if (sheetState.confirmStateChange(ModalBottomSheetValue.Expanded)) {
+                                    scope.launch { sheetState.expand() }
+                                }
+                                true
+                            }
+                        } else if (sheetState.isHalfExpandedEnabled) {
+                            collapse {
+                                if (sheetState.confirmStateChange(ModalBottomSheetValue.HalfExpanded)) {
+                                    scope.launch { sheetState.halfExpand() }
+                                }
+                                true
+                            }
+                        }
+                    }
+                },
+            shape = sheetShape,
+            tonalElevation = sheetElevation,
+            color = sheetBackgroundColor,
+            contentColor = sheetContentColor,
+        ) {
+            Column(content = sheetContent)
         }
-        .semantics {
-          if (sheetState.isVisible) {
-            dismiss {
-              if (sheetState.confirmStateChange(ModalBottomSheetValue.Hidden)) {
-                scope.launch { sheetState.hide() }
-              }
-              true
-            }
-            if (sheetState.currentValue == ModalBottomSheetValue.HalfExpanded) {
-              expand {
-                if (sheetState.confirmStateChange(ModalBottomSheetValue.Expanded)) {
-                  scope.launch { sheetState.expand() }
-                }
-                true
-              }
-            } else if (sheetState.isHalfExpandedEnabled) {
-              collapse {
-                if (sheetState.confirmStateChange(ModalBottomSheetValue.HalfExpanded)) {
-                  scope.launch { sheetState.halfExpand() }
-                }
-                true
-              }
-            }
-          }
-        },
-      shape = sheetShape,
-      tonalElevation = sheetElevation,
-      color = sheetBackgroundColor,
-      contentColor = sheetContentColor
-    ) {
-      Column(content = sheetContent)
     }
-  }
 }
 
 @Suppress("ModifierInspectorInfo")
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Modifier.bottomSheetSwipeable(
-  sheetState: ModalBottomSheetState,
-  fullHeight: Float,
-  sheetHeightState: State<Float?>
+    sheetState: ModalBottomSheetState,
+    fullHeight: Float,
+    sheetHeightState: State<Float?>,
 ): Modifier {
-  val sheetHeight = sheetHeightState.value
-  val modifier = if (sheetHeight != null) {
-    val anchors = if (sheetHeight < fullHeight / 2) {
-      mapOf(
-        fullHeight to ModalBottomSheetValue.Hidden,
-        fullHeight - sheetHeight to ModalBottomSheetValue.Expanded
-      )
+    val sheetHeight = sheetHeightState.value
+    val modifier = if (sheetHeight != null) {
+        val anchors = if (sheetHeight < fullHeight / 2) {
+            mapOf(
+                fullHeight to ModalBottomSheetValue.Hidden,
+                fullHeight - sheetHeight to ModalBottomSheetValue.Expanded,
+            )
+        } else {
+            mapOf(
+                fullHeight to ModalBottomSheetValue.Hidden,
+                fullHeight / 2 to ModalBottomSheetValue.HalfExpanded,
+                max(0f, fullHeight - sheetHeight) to ModalBottomSheetValue.Expanded,
+            )
+        }
+        Modifier.swipeable(
+            state = sheetState,
+            anchors = anchors,
+            orientation = Orientation.Vertical,
+            enabled = sheetState.currentValue != ModalBottomSheetValue.Hidden,
+            resistance = null,
+        )
     } else {
-      mapOf(
-        fullHeight to ModalBottomSheetValue.Hidden,
-        fullHeight / 2 to ModalBottomSheetValue.HalfExpanded,
-        max(0f, fullHeight - sheetHeight) to ModalBottomSheetValue.Expanded
-      )
+        Modifier
     }
-    Modifier.swipeable(
-      state = sheetState,
-      anchors = anchors,
-      orientation = Orientation.Vertical,
-      enabled = sheetState.currentValue != ModalBottomSheetValue.Hidden,
-      resistance = null
-    )
-  } else {
-    Modifier
-  }
 
-  return this.then(modifier)
+    return this.then(modifier)
 }
 
 @Composable
 private fun Scrim(
-  color: Color,
-  onDismiss: () -> Unit,
-  visible: Boolean
+    color: Color,
+    onDismiss: () -> Unit,
+    visible: Boolean,
 ) {
-  if (color.isSpecified) {
-    val alpha by animateFloatAsState(
-      targetValue = if (visible) 1f else 0f,
-      animationSpec = TweenSpec()
-    )
-    val closeSheet = getString(CloseSheet)
-    val dismissModifier = if (visible) {
-      Modifier
-        .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
-        .semantics(mergeDescendants = true) {
-          contentDescription = closeSheet
-          onClick { onDismiss(); true }
+    if (color.isSpecified) {
+        val alpha by animateFloatAsState(
+            targetValue = if (visible) 1f else 0f,
+            animationSpec = TweenSpec(),
+        )
+        val closeSheet = getString(CloseSheet)
+        val dismissModifier = if (visible) {
+            Modifier
+                .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
+                .semantics(mergeDescendants = true) {
+                    contentDescription = closeSheet
+                    onClick { onDismiss(); true }
+                }
+        } else {
+            Modifier
         }
-    } else {
-      Modifier
-    }
 
-    Canvas(
-      Modifier
-        .fillMaxSize()
-        .then(dismissModifier)
-    ) {
-      drawRect(color = color, alpha = alpha)
+        Canvas(
+            Modifier
+                .fillMaxSize()
+                .then(dismissModifier),
+        ) {
+            drawRect(color = color, alpha = alpha)
+        }
     }
-  }
 }
 
 /**
@@ -371,15 +390,15 @@ private fun Scrim(
  */
 object ModalBottomSheetDefaults {
 
-  /**
-   * The default elevation used by [ModalBottomSheetLayout].
-   */
-  val Elevation = 2.dp
+    /**
+     * The default elevation used by [ModalBottomSheetLayout].
+     */
+    val Elevation = 2.dp
 
-  /**
-   * The default scrim color used by [ModalBottomSheetLayout].
-   */
-  val scrimColor: Color
-    @Composable
-    get() = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
+    /**
+     * The default scrim color used by [ModalBottomSheetLayout].
+     */
+    val scrimColor: Color
+        @Composable
+        get() = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
 }

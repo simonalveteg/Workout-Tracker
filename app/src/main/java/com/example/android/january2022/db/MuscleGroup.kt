@@ -33,7 +33,7 @@ object MuscleGroup {
             FOREARMS,
             TRICEPS,
             CHEST,
-            SHOULDERS
+            SHOULDERS,
         )
     }
 }

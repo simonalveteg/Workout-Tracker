@@ -7,15 +7,15 @@ import com.example.android.january2022.utils.Event
 
 @Composable
 fun EquipmentSheet(
-  selectedEquipment: List<String>,
-  onEvent: (Event) -> Unit
+    selectedEquipment: List<String>,
+    onEvent: (Event) -> Unit,
 ) {
-  Sheet(
-    items = Equipment.getAllEquipment().sorted(),
-    selectedItems = selectedEquipment,
-    title = "Filter by Equipment",
-    onSelect = { onEvent(PickerEvent.SelectEquipment(it)) }
-  ) {
-    onEvent(PickerEvent.DeselectEquipment)
-  }
+    Sheet(
+        items = Equipment.getAllEquipment().sorted(),
+        selectedItems = selectedEquipment,
+        title = "Filter by Equipment",
+        onSelect = { onEvent(PickerEvent.SelectEquipment(it)) },
+    ) {
+        onEvent(PickerEvent.DeselectEquipment)
+    }
 }
