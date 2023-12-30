@@ -44,7 +44,10 @@ fun TimerBar(
     val timerToggleIcon = if (timerRunning) Icons.Default.Pause else Icons.Default.PlayArrow
     val timerTimeText =
         if (timerTime > 0L) timerTime.toTimerString() else timerMaxTime.toTimerString()
-    val timerTonalElevation by animateDpAsState(targetValue = if (timerRunning) 140.dp else 14.dp)
+    val timerTonalElevation by animateDpAsState(
+        targetValue = if (timerRunning) 140.dp else 14.dp,
+        label = "",
+    )
 
     Surface(
         modifier = Modifier

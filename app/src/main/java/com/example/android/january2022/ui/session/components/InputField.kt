@@ -53,6 +53,7 @@ fun InputField(
     }
     val textColor by animateColorAsState(
         targetValue = if (textValidation) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error,
+        label = "",
     )
     DisposableEffect(Unit) {
         if (autoRequestFocus && initialText.isEmpty()) requester.requestFocus()

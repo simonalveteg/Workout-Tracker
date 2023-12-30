@@ -25,9 +25,3 @@ data class SessionExerciseWithExercise(
     @Embedded
     val exercise: Exercise,
 )
-
-data class SessionWithSessionExerciseWithExercise(
-    @Embedded val session: Session,
-    @Embedded val sessionExercise: SessionExercise,
-    @Embedded val exercise: Exercise,
-)

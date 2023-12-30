@@ -6,12 +6,9 @@ import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 import com.example.android.january2022.db.entities.SessionExerciseWithExercise
 import com.example.android.january2022.ui.DatabaseModel
-import com.example.android.january2022.utils.turnTargetIntoMuscleGroups
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapNotNull
-import timber.log.Timber
 
 class GymRepository(
     private val dao: GymDAO,
@@ -33,26 +30,6 @@ class GymRepository(
         return session.flatMapLatest {
             dao.getExercisesForSession(it.sessionId)
         }
-    }
-
-    fun getExercisesForSession(session: Session): Flow<List<SessionExerciseWithExercise>> {
-        Timber.d("Retrieving exercises for session: $session")
-        return dao.getExercisesForSession(session.sessionId)
-    }
-
-    fun getSetsForExercise(sessionExerciseId: Long) = dao.getSetsForExercise(sessionExerciseId)
-
-    fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
-        val list = dao.getMuscleGroupsForSession(session.sessionId).mapNotNull {
-            Timber.d("MuscleGroup flow created.")
-            try {
-                turnTargetIntoMuscleGroups(it)
-            } catch (_: Exception) {
-                Timber.d("Error when converting target.")
-                emptyList()
-            }
-        }
-        return list
     }
 
     suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,7 +33,6 @@ import com.example.android.january2022.ui.session.actions.OpenStatsAction
 import com.example.android.january2022.ui.session.components.SmallPill
 import com.example.android.january2022.utils.Event
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseCard(
     exercise: Exercise,
@@ -44,15 +42,18 @@ fun ExerciseCard(
 ) {
     val targets = exercise.getMuscleGroups()
     val equipment = exercise.equipment
-    val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
+    val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp, label = "")
     val indicatorColor by
-        animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+        animateColorAsState(
+            if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+            label = "",
+        )
 
     val localDensity = LocalDensity.current
     var rowHeightDp by remember { mutableStateOf(0.dp) }
 
     val indicatorHeight by
-        animateDpAsState(targetValue = if (selected) rowHeightDp else 0.dp)
+        animateDpAsState(targetValue = if (selected) rowHeightDp else 0.dp, label = "")
 
     Row(
         modifier = Modifier

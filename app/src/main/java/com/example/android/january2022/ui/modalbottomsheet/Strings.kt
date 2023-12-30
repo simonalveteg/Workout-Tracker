@@ -23,8 +23,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
 @Immutable
-@kotlin.jvm.JvmInline
-value class Strings private constructor(@Suppress("unused") private val value: Int) {
+@JvmInline
+value class Strings private constructor(private val value: Int) {
     companion object {
         val NavigationMenu = Strings(0)
         val CloseDrawer = Strings(1)

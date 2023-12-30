@@ -63,7 +63,7 @@ fun ExerciseCard(
 ) {
     val exercise = exerciseWrapper.exercise
     val sets = exerciseWrapper.sets
-    val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp)
+    val tonalElevation by animateDpAsState(targetValue = if (selected) 2.dp else 0.dp, label = "")
     val localHaptic = LocalHapticFeedback.current
 
     Surface(
@@ -112,6 +112,7 @@ fun ExerciseCard(
                 val startWidth = 50f
                 val endWidth by animateFloatAsState(
                     targetValue = width.toFloat() - if (listState.canScrollForward) 225f else startWidth,
+                    label = "",
                 )
                 Box(
                     contentAlignment = Alignment.CenterEnd,

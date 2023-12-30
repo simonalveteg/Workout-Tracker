@@ -362,6 +362,7 @@ private fun Scrim(
         val alpha by animateFloatAsState(
             targetValue = if (visible) 1f else 0f,
             animationSpec = TweenSpec(),
+            label = "",
         )
         val closeSheet = getString(CloseSheet)
         val dismissModifier = if (visible) {

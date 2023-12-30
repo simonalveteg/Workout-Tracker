@@ -27,7 +27,6 @@ internal class TimePickerState(
     var timeRange by mutableStateOf(timeRange)
     var is24Hour by mutableStateOf(is24Hour)
     var currentScreen by mutableStateOf(currentScreen)
-    var clockInput by mutableStateOf(clockInput)
 
     private fun minimumMinute(isAM: Boolean, hour: Int): Int {
         return when {

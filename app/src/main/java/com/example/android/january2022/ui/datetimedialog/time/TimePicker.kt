@@ -117,46 +117,6 @@ fun MaterialDialogScope.Timepicker(
 }
 
 @Composable
-internal fun TimePickerExpandedImpl(
-    modifier: Modifier = Modifier,
-    title: String,
-    state: TimePickerState,
-) {
-    Column(modifier.padding(start = 24.dp, end = 24.dp)) {
-        Box(Modifier.align(Alignment.Start)) {
-            TimePickerTitle(Modifier.height(36.dp), title, state)
-        }
-
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Column(
-                Modifier
-                    .padding(top = 72.dp, bottom = 50.dp)
-                    .width(216.dp),
-            ) {
-                TimeLayout(state = state)
-                Spacer(modifier = Modifier.height(12.dp))
-                HorizontalPeriodPicker(state = state)
-            }
-
-      /* This isn't an exact match to the material spec as there is a contradiction it.
-      Dialogs should be limited to the size of 560 dp but given sizes for extended
-      time picker go over this limit */
-            Spacer(modifier = Modifier.width(40.dp))
-            Crossfade(state.currentScreen) {
-                when (it) {
-                    ClockScreen.Hour -> if (state.is24Hour) {
-                        ExtendedClockHourLayout(state = state)
-                    } else {
-                        ClockHourLayout(state = state)
-                    }
-                    ClockScreen.Minute -> ClockMinuteLayout(state = state)
-                }
-            }
-        }
-    }
-}
-
-@Composable
 internal fun TimePickerImpl(
     modifier: Modifier = Modifier,
     title: String,
@@ -175,7 +135,7 @@ internal fun TimePickerImpl(
         TimeLayout(state = state)
 
         Spacer(modifier = Modifier.height(if (isSmallDevice()) 24.dp else 36.dp))
-        Crossfade(state.currentScreen) {
+        Crossfade(state.currentScreen, label = "") {
             when (it) {
                 ClockScreen.Hour -> if (state.is24Hour) {
                     ExtendedClockHourLayout(state = state)
@@ -616,7 +576,7 @@ private fun ClockLayout(
 
                         anchoredOffset.value = anchors[minAnchor]
                         namedAnchor.value = isNamedAnchor(minAnchor)
-                        selectedAnchor.value = minAnchor
+                        selectedAnchor.intValue = minAnchor
                     }
                     true
                 } else {
@@ -698,7 +658,7 @@ private fun ClockLayout(
                     alpha: Int = 255,
                 ) {
                     val textOuter = label(anchor)
-                    val textColor = if (selectedAnchor.value == anchor) {
+                    val textColor = if (selectedAnchor.intValue == anchor) {
                         selectorTextColor
                     } else {
                         inactiveTextColor
