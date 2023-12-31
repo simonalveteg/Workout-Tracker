@@ -18,43 +18,43 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Sheet(
-  items: List<String>,
-  title: String,
-  selectedItems: List<String>,
-  onSelect: (String) -> Unit,
-  onDeselectAll: () -> Unit
+    items: List<String>,
+    title: String,
+    selectedItems: List<String>,
+    onSelect: (String) -> Unit,
+    onDeselectAll: () -> Unit,
 ) {
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(top = 16.dp, bottom = 20.dp)
-      .padding(horizontal = 16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-  ) {
-    Text(
-      text = title,
-      textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.titleLarge,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 12.dp)
-    )
-    LazyVerticalGrid(
-      columns = GridCells.Adaptive(120.dp),
-      horizontalArrangement = Arrangement.Center
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 20.dp)
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      items(items) { item ->
-        MuscleButton(
-          muscle = item,
-          selected = selectedItems.contains(item)
-        ) { onSelect(item) }
-      }
+        Text(
+            text = title,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(120.dp),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            items(items) { item ->
+                MuscleButton(
+                    muscle = item,
+                    selected = selectedItems.contains(item),
+                ) { onSelect(item) }
+            }
+        }
+        TextButton(onClick = { onDeselectAll() }) {
+            Text(
+                text = "Deselect All".uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
     }
-    TextButton(onClick = { onDeselectAll() }) {
-      Text(
-        text = "Deselect All".uppercase(),
-        style = MaterialTheme.typography.labelLarge
-      )
-    }
-  }
 }

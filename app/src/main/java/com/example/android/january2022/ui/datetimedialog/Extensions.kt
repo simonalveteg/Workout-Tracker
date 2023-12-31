@@ -1,35 +1,38 @@
 package com.example.android.january2022.ui.datetimedialog
 
-
 import androidx.compose.ui.geometry.Offset
-import java.time.*
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.Month
+import java.time.YearMonth
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
 internal fun Float.getOffset(angle: Double): Offset =
-  Offset((this * cos(angle)).toFloat(), (this * sin(angle)).toFloat())
+    Offset((this * cos(angle)).toFloat(), (this * sin(angle)).toFloat())
 
 internal val LocalDate.yearMonth: YearMonth
-  get() = YearMonth.of(this.year, this.month)
+    get() = YearMonth.of(this.year, this.month)
 
 internal val LocalTime.isAM: Boolean
-  get() = this.hour in 0..11
+    get() = this.hour in 0..11
 
 internal val LocalTime.simpleHour: Int
-  get() {
-    val tempHour = this.hour % 12
-    return if (tempHour == 0) 12 else tempHour
-  }
+    get() {
+        val tempHour = this.hour % 12
+        return if (tempHour == 0) 12 else tempHour
+    }
 
 internal fun Month.getShortLocalName(locale: Locale): String =
-  this.getDisplayName(java.time.format.TextStyle.SHORT, locale)
+    this.getDisplayName(java.time.format.TextStyle.SHORT, locale)
 
 internal fun Month.getFullLocalName(locale: Locale) =
-  this.getDisplayName(java.time.format.TextStyle.FULL_STANDALONE, locale)
+    this.getDisplayName(java.time.format.TextStyle.FULL_STANDALONE, locale)
 
 internal fun DayOfWeek.getShortLocalName(locale: Locale) =
-  this.getDisplayName(java.time.format.TextStyle.SHORT, locale)
+    this.getDisplayName(java.time.format.TextStyle.SHORT, locale)
 
 internal fun LocalTime.toAM(): LocalTime = if (this.isAM) this else this.minusHours(12)
 internal fun LocalTime.toPM(): LocalTime = if (!this.isAM) this else this.plusHours(12)

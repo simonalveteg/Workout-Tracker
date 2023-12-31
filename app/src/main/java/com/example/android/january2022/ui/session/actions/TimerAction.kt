@@ -1,7 +1,6 @@
 package com.example.android.january2022.ui.session.actions
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -18,27 +17,27 @@ import com.example.android.january2022.ui.TimerState
 
 @Composable
 fun TimerAction(
-  timerState: TimerState,
-  timerVisible: Boolean,
-  onClick: () -> Unit
+    timerState: TimerState,
+    timerVisible: Boolean,
+    onClick: () -> Unit,
 ) {
-  val infiniteTransition = rememberInfiniteTransition()
-  val activeColor by infiniteTransition.animateColor(
-    initialValue = LocalContentColor.current,
-    targetValue = MaterialTheme.colorScheme.primary,
-    animationSpec = infiniteRepeatable(
-      animation = tween(durationMillis = 1500),
-      repeatMode = RepeatMode.Reverse
+    val infiniteTransition = rememberInfiniteTransition()
+    val activeColor by infiniteTransition.animateColor(
+        initialValue = LocalContentColor.current,
+        targetValue = MaterialTheme.colorScheme.primary,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1500),
+            repeatMode = RepeatMode.Reverse,
+        ),
     )
-  )
 
-  IconButton(onClick = {
-    onClick()
-  }) {
-    Icon(
-      imageVector = Icons.Outlined.Timer,
-      contentDescription = "Timer",
-      tint = if (!timerVisible && timerState.running) activeColor else LocalContentColor.current
-    )
-  }
+    IconButton(onClick = {
+        onClick()
+    }) {
+        Icon(
+            imageVector = Icons.Outlined.Timer,
+            contentDescription = "Timer",
+            tint = if (!timerVisible && timerState.running) activeColor else LocalContentColor.current,
+        )
+    }
 }

@@ -6,25 +6,25 @@ import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.db.entities.SessionExercise
 
 data class SessionWrapper(
-  val session: Session,
-  val muscleGroups: List<String>
+    val session: Session,
+    val muscleGroups: List<String>,
 )
 
 data class ExerciseWrapper(
-  val sessionExercise: SessionExercise,
-  val exercise: Exercise,
-  val sets: List<GymSet>
+    val sessionExercise: SessionExercise,
+    val exercise: Exercise,
+    val sets: List<GymSet>,
 )
 
 data class TimerState(
-  val time: Long,
-  val running: Boolean,
-  val maxTime: Long
+    val time: Long,
+    val running: Boolean,
+    val maxTime: Long,
 )
 
 data class DatabaseModel(
-  val sessions: List<Session>,
-  val exercises: List<Exercise>,
-  val sessionExercises: List<SessionExercise>,
-  val sets: List<GymSet>
+    val sessions: List<Session>,
+    val exercises: List<Exercise>,
+    val sessionExercises: List<SessionExercise>,
+    val sets: List<GymSet>,
 )

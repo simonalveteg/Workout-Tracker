@@ -16,42 +16,41 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    if (BuildConfig.DEBUG) {
-      Timber.plant(DebugTree())
-    }
-    setContent {
-      WorkoutTheme {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-          ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-            0
-          )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (BuildConfig.DEBUG) {
+            Timber.plant(DebugTree())
         }
-        val navController = rememberNavController()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        NavHost(navController)
-      }
+        setContent {
+            WorkoutTheme {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        0,
+                    )
+                }
+                val navController = rememberNavController()
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                NavHost(navController)
+            }
+        }
     }
-  }
 
-  override fun onStart() {
-    super.onStart()
-    this.sendTimerIntent {
-      it.action = TimerService.Actions.MOVE_TO_BACKGROUND.toString()
+    override fun onStart() {
+        super.onStart()
+        this.sendTimerIntent {
+            it.action = TimerService.Actions.MOVE_TO_BACKGROUND.toString()
+        }
     }
-  }
 
-  override fun onPause() {
-    super.onPause()
-    this.sendTimerIntent {
-      it.action = TimerService.Actions.MOVE_TO_FOREGROUND.toString()
+    override fun onPause() {
+        super.onPause()
+        this.sendTimerIntent {
+            it.action = TimerService.Actions.MOVE_TO_FOREGROUND.toString()
+        }
     }
-  }
 }

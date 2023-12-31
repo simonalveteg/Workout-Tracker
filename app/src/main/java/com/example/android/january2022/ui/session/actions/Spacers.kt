@@ -8,10 +8,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ActionSpacer() {
-  Spacer(modifier = Modifier.width(8.dp))
+    Spacer(modifier = Modifier.width(8.dp))
 }
 
 @Composable
 fun ActionSpacerStart() {
-  Spacer(modifier = Modifier.width(4.dp))
+    Spacer(modifier = Modifier.width(4.dp))
 }

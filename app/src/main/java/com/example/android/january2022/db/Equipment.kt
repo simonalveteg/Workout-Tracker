@@ -1,6 +1,5 @@
 package com.example.android.january2022.db
 
-
 object Equipment {
     const val ATLAS_STONE = "Atlas Stone"
     const val BARBELL = "Barbell"
@@ -40,7 +39,7 @@ object Equipment {
             SMITH_MACHINE,
             STABILITY_BALL,
             SUSPENSION,
-            WEIGHT
+            WEIGHT,
         )
     }
 }

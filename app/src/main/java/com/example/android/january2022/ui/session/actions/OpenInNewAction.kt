@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun OpenInNewAction(
-  onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-  IconButton(onClick = onClick) {
-    Icon(imageVector = Icons.Outlined.OpenInNew, contentDescription = "Open exercise guide.")
-  }
+    IconButton(onClick = onClick) {
+        Icon(imageVector = Icons.Outlined.OpenInNew, contentDescription = "Open exercise guide.")
+    }
 }
