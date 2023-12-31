@@ -8,7 +8,7 @@ import com.example.android.january2022.timer.TimerService
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class GymApp : Application() {
+class Workouts : Application() {
     override fun onCreate() {
         super.onCreate()
         val channel = NotificationChannel(

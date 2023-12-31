@@ -3,13 +3,13 @@ package com.example.android.january2022.ui.session
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cloud.pablos.overload.ui.navigation.WorkoutsRoute
 import com.example.android.january2022.db.GymRepository
 import com.example.android.january2022.db.entities.Exercise
 import com.example.android.january2022.db.entities.Session
 import com.example.android.january2022.ui.ExerciseWrapper
 import com.example.android.january2022.ui.SessionWrapper
 import com.example.android.january2022.utils.Event
-import com.example.android.january2022.utils.Routes
 import com.example.android.january2022.utils.UiEvent
 import com.example.android.january2022.utils.sortedListOfMuscleGroups
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -129,7 +129,7 @@ class SessionViewModel @Inject constructor(
             }
             is SessionEvent.AddExercise -> {
                 _session.value.sessionId.let { id ->
-                    sendUiEvent(UiEvent.Navigate("${Routes.EXERCISE_PICKER}/$id"))
+                    sendUiEvent(UiEvent.Navigate("${WorkoutsRoute.EXERCISE_PICKER}/$id"))
                 }
             }
             is SessionEvent.RemoveSelectedExercises -> {
@@ -141,7 +141,7 @@ class SessionViewModel @Inject constructor(
                 }
             }
             is SessionEvent.RemoveSession -> {
-                sendUiEvent(UiEvent.Navigate(Routes.HOME, popBackStack = true))
+                sendUiEvent(UiEvent.Navigate(WorkoutsRoute.HOME, popBackStack = true))
                 viewModelScope.launch {
                     repo.removeSession(_session.value)
                 }

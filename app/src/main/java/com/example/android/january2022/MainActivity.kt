@@ -5,12 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.example.android.january2022.timer.TimerService
 import com.example.android.january2022.timer.sendTimerIntent
-import com.example.android.january2022.ui.NavHost
+import com.example.android.january2022.ui.WorkoutsApp
 import com.example.android.january2022.ui.theme.WorkoutTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -19,11 +19,15 @@ import timber.log.Timber.DebugTree
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             WorkoutTheme {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -33,9 +37,8 @@ class MainActivity : ComponentActivity() {
                         0,
                     )
                 }
-                val navController = rememberNavController()
-                WindowCompat.setDecorFitsSystemWindows(window, false)
-                NavHost(navController)
+
+                WorkoutsApp()
             }
         }
     }

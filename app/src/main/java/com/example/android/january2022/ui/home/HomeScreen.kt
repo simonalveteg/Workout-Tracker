@@ -14,7 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android.january2022.ui.home.components.HomeAppBar
+import com.example.android.january2022.ui.home.components.HomeFab
+import com.example.android.january2022.ui.home.components.HomeTopAppBar
 import com.example.android.january2022.ui.home.components.SessionCard
 import com.example.android.january2022.utils.UiEvent
 
@@ -35,14 +36,17 @@ fun HomeScreen(
     }
 
     Scaffold(
-        bottomBar = {
-            HomeAppBar(onEvent = viewModel::onEvent)
+        topBar = {
+            HomeTopAppBar(onEvent = viewModel::onEvent)
+        },
+        floatingActionButton = {
+            HomeFab(onEvent = viewModel::onEvent)
         },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 2.dp),
+                .padding(8.dp),
         ) {
             item {
                 Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
