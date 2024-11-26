@@ -13,9 +13,5 @@ I got into android app development in order to make a workout tracking app that 
 </span>
 <img src="https://user-images.githubusercontent.com/41792248/221199377-623988a9-29fe-4f5a-bf1a-f3ffed4f9aed.png" width="200" />
 
-# Planned Functionality
-- [ ] Statistics screen
-- [ ] Exercise Presets
-- [ ] 5/3/1 support
-- [ ] More Exercises
+
 
