@@ -45,13 +45,8 @@ fun SessionCard(
     }
   }
 
-  Surface(
-    onClick = { onClick() },
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(vertical = 6.dp)
-      .height(74.dp),
-    shape = MaterialTheme.shapes.medium
+  HomeContainer(
+    onClick = { onClick() }
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
