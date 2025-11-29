@@ -125,7 +125,7 @@ fun HomeScreen(
             shape = MaterialTheme.shapes.extraLarge,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             colors = ButtonDefaults.buttonColors(
-              containerColor = MaterialTheme.colorScheme.surface,
+              containerColor = MaterialTheme.colorScheme.surfaceContainer,
               contentColor = MaterialTheme.colorScheme.onSurface
             )
           ) {

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeContainer(
   modifier: Modifier = Modifier,
-  color: Color = MaterialTheme.colorScheme.surface,
+  color: Color = MaterialTheme.colorScheme.surfaceContainer,
   onClick: () -> Unit,
   content: @Composable () -> Unit
 ) {
