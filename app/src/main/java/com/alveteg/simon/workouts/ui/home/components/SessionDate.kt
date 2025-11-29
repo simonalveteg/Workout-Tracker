@@ -1,6 +1,7 @@
 package com.alveteg.simon.workouts.ui.home.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +41,6 @@ fun DateText(text: String) {
   Text(
     text = text,
     style = MaterialTheme.typography.bodyMedium,
-    fontWeight = FontWeight.SemiBold
+    color = LocalContentColor.current.copy(alpha = 0.85f)
   )
 }
