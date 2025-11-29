@@ -98,7 +98,6 @@ dependencies {
 
 
     // ACCOMPANIST (Note: Many are deprecated in favor of official APIs)
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.34.0"
     implementation "com.google.accompanist:accompanist-flowlayout:0.34.0"
 
     // CORE & LIFECYCLE
