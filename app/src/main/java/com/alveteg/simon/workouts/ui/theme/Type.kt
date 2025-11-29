@@ -4,8 +4,29 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
-//Replace with your font locations
+import com.alveteg.simon.workouts.R
+
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val archivoFontName = GoogleFont("Archivo")
+val archivoBlackFontName = GoogleFont("Archivo Black")
+
+
+val Archivo = FontFamily(
+    Font(googleFont = archivoFontName, fontProvider = provider)
+)
+
+val ArchivoBlack = FontFamily(
+    Font(googleFont = archivoBlackFontName, fontProvider = provider)
+)
+
 val Roboto = FontFamily.Default
 
 val AppTypography = Typography(
@@ -14,7 +35,7 @@ val AppTypography = Typography(
 		fontWeight = FontWeight.W400,
 		fontSize = 57.sp,
 		lineHeight = 64.sp,
-		letterSpacing = -0.25.sp,
+		letterSpacing = (-0.25).sp,
 	),
 	displayMedium = TextStyle(
 		fontFamily = Roboto,
