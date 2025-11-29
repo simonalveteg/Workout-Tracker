@@ -15,7 +15,7 @@ import com.alveteg.simon.workouts.utils.Event
 fun HomeAppBar(
   onEvent: (Event) -> Unit
 ) {
-  BottomAppBar(
+  BottomAppBar (
     actions = {
       ActionSpacerStart()
       IconButton(onClick = { /*TODO*/ }) {

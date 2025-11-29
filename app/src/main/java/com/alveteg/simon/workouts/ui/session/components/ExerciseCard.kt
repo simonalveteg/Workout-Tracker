@@ -56,7 +56,7 @@ fun ExerciseCard(
       .clip(MaterialTheme.shapes.medium)
       .combinedClickable(
         interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(bounded = true),
+        //indication = rememberRipple(bounded = true),
         onLongClick = {
           localHaptic.performHapticFeedback(HapticFeedbackType.LongPress)
           onLongClick()

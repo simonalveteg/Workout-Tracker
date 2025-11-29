@@ -137,7 +137,7 @@ fun ExercisePickerScreen(
                 .padding(top = 4.dp, start = 8.dp, end = 8.dp)
                 .clearFocusOnKeyboardDismiss()
                 .align(Alignment.CenterHorizontally),
-              colors = TextFieldDefaults.textFieldColors(
+              colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
               ),
