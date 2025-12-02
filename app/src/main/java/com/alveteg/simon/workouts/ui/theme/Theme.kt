@@ -62,6 +62,10 @@ private val DarkColors = darkColorScheme(
   surface = md_theme_dark_surface,
   onSurface = md_theme_dark_onSurface,
   surfaceContainer = md_theme_dark_surface_container,
+  surfaceContainerLow = md_theme_dark_surface_container_low,
+  surfaceContainerLowest = md_theme_dark_surface_container_lowest,
+  surfaceContainerHigh = md_theme_dark_surface_container_high,
+  surfaceContainerHighest = md_theme_dark_surface_container_highest,
   surfaceVariant = md_theme_dark_surfaceVariant,
   onSurfaceVariant = md_theme_dark_onSurfaceVariant,
   outline = md_theme_dark_outline,
@@ -73,24 +77,27 @@ private val DarkColors = darkColorScheme(
   scrim = md_theme_dark_scrim,
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WorkoutTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
-    content: @Composable() () -> Unit
+  useDarkTheme: Boolean = isSystemInDarkTheme(),
+  dynamicColor: Boolean = false,
+  content: @Composable() () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        useDarkTheme -> DarkColors
-        else -> LightColors
+  val colorScheme = when {
+    dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+      val context = LocalContext.current
+      if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     }
+
+    useDarkTheme -> DarkColors
+    else -> LightColors
+  }
 
   MaterialTheme(
     colorScheme = colorScheme,
-      typography = AppTypography,
+    typography = AppTypography,
+    motionScheme = MotionScheme.expressive(),
     content = content
   )
 }

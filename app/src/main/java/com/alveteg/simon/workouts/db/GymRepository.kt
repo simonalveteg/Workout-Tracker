@@ -13,6 +13,7 @@ class GymRepository(
 ) {
 
   fun getSessionById(sessionId: Long) = dao.getSessionById(sessionId)
+  fun getSetById(setId: Long) = dao.getSetById(setId)
 
   fun getAllSessions() = dao.getAllSessions()
 

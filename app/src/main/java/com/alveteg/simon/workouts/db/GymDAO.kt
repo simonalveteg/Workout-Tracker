@@ -11,6 +11,9 @@ interface GymDAO {
   @Query("SELECT * FROM sessions WHERE sessionId = :sessionId")
   fun getSessionById(sessionId: Long): Session
 
+  @Query("SELECT * FROM sets WHERE setId = :setId")
+  fun getSetById(setId: Long): GymSet
+
   @Query("SELECT * FROM sets ORDER BY setId ASC")
   fun getAllSets(): Flow<List<GymSet>>
 

@@ -6,24 +6,20 @@ import com.alveteg.simon.workouts.utils.Event
 import java.time.LocalTime
 
 sealed class SessionEvent : Event {
-  data class ExerciseExpanded(val exercise: ExerciseWrapper) : SessionEvent()
-  data class ExerciseSelected(val exercise: ExerciseWrapper) : SessionEvent()
-  data class SetChanged(val updatedSet: GymSet) : SessionEvent()
-  data class SetCreated(val sessionExercise: ExerciseWrapper) : SessionEvent()
-  data class SetDeleted(val set: GymSet) : SessionEvent()
+  data class ChangeSet(val updatedSet: GymSet) : SessionEvent()
+  data class CreateSet(val sessionExercise: ExerciseWrapper) : SessionEvent()
+  data class DeleteSet(val set: GymSet) : SessionEvent()
+  data class OpenGuide(val exercise: ExerciseWrapper) : SessionEvent()
 
-  object RemoveSelectedExercises : SessionEvent()
+  data class RemoveExercise(val exercise: ExerciseWrapper) : SessionEvent()
   object RemoveSession : SessionEvent()
-  object DeselectExercises : SessionEvent()
-
   object TimerToggled : SessionEvent()
   object TimerReset : SessionEvent()
   object TimerIncreased : SessionEvent()
   object TimerDecreased : SessionEvent()
 
-  object OpenGuide : SessionEvent()
   object AddExercise : SessionEvent()
 
-  data class StartTimeChanged(val newTime: LocalTime) : SessionEvent()
-  data class EndTimeChanged(val newTime: LocalTime) : SessionEvent()
+  data class SetStartTime(val newTime: LocalTime) : SessionEvent()
+  data class SetEndTime(val newTime: LocalTime) : SessionEvent()
 }

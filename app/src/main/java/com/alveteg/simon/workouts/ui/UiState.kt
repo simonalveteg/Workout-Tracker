@@ -10,6 +10,11 @@ data class SessionWrapper(
   val muscleGroups: List<String>
 )
 
+data class SetWrapper(
+  val set: GymSet,
+  val exerciseWrapper: ExerciseWrapper
+)
+
 data class ExerciseWrapper(
   val sessionExercise: SessionExercise,
   val exercise: Exercise,

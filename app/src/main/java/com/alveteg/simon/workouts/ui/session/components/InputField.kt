@@ -1,90 +1,42 @@
 package com.alveteg.simon.workouts.ui.session.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun InputField(
-  label: String,
-  initialValue: String,
-  onValueChange: (TextFieldValue) -> Boolean,
-  keyboardActions: KeyboardActions,
-  keyboardOptions: KeyboardOptions,
-  autoRequestFocus: Boolean = false
+  textFieldState: TextFieldState,
+  isValid: Boolean,
+  inputTransformation: InputTransformation? = null,
+  imeAction: ImeAction,
+  labelText: String,
+  modifier: Modifier = Modifier
 ) {
-  val initialText = initialValue.toFloatOrNull().let {
-    if (it == null || it < 0) "" else initialValue
-  }
-  val requester = remember { FocusRequester() }
-  var textValidation by remember { mutableStateOf(true) }
-  val selection = remember { mutableStateOf(TextRange(100)) }
-  var textFieldValue by remember {
-    val tfv = TextFieldValue(text = initialText, selection = selection.value)
-    mutableStateOf(tfv)
-  }
-  val textColor by animateColorAsState(
-    targetValue = if (textValidation) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error
-  )
-  DisposableEffect(Unit) {
-    if (autoRequestFocus && initialText.isEmpty()) requester.requestFocus()
-    onDispose { }
-  }
-
-  Row(
-    modifier = Modifier
-      .clickable {
-        requester.requestFocus()
+  OutlinedTextField(
+    state = textFieldState,
+    inputTransformation = inputTransformation,
+    keyboardOptions = KeyboardOptions(
+      keyboardType = KeyboardType.Number,
+      imeAction = imeAction
+    ),
+    lineLimits = TextFieldLineLimits.SingleLine,
+    isError = isValid,
+    supportingText = {
+      if (isValid) {
+        Text(text = "Invalid input")
       }
-      .height(40.dp)
-      .defaultMinSize(minWidth = 60.dp)
-      .padding(start = 8.dp, end = 6.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.Center
-  ) {
-    BasicTextField(
-      value = textFieldValue,
-      onValueChange = {
-        textFieldValue = it
-        textValidation = onValueChange(textFieldValue)
-      },
-      textStyle = TextStyle(
-        color = textColor,
-        fontSize = 21.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.End
-      ),
-      keyboardOptions = keyboardOptions,
-      keyboardActions = keyboardActions,
-      cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-      modifier = Modifier
-        .width(60.dp)
-        .focusRequester(requester)
-        .onFocusChanged {
-          // reset cursor position when receiving focus
-          if (it.hasFocus || it.isFocused) {
-            textFieldValue = TextFieldValue(text = textFieldValue.text, selection = selection.value)
-          }
-        }
-    )
-    InputLabel(text = label)
-  }
+    },
+    label = {
+      Text(text = labelText)
+    },
+    modifier = modifier
+  )
 }

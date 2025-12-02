@@ -19,8 +19,8 @@ class TimerService : Service() {
 
   private var running = false
   private var time = 0L
-  private var maxTime = 60000L
-  private val increment = 30 * 1000L
+  private var maxTime = 60 * 1000L
+  private val increment = 15 * 1000L
 
   private var showNotification = false
 
@@ -126,6 +126,7 @@ class TimerService : Service() {
   private fun sendStatus() {
     val statusIntent = Intent().also {
       it.action = Intents.STATUS.toString()
+      it.setPackage(packageName)
       it.putExtra(Intents.Extras.IS_RUNNING.toString(), running)
       it.putExtra(Intents.Extras.TIME.toString(), time)
       it.putExtra(Intents.Extras.MAX_TIME.toString(), maxTime)
