@@ -1,6 +1,7 @@
 package com.alveteg.simon.workouts.utils
 
 import androidx.room.TypeConverter
+import com.alveteg.simon.workouts.db.entities.Rpe
 import java.time.LocalDateTime
 
 class Converters {
@@ -27,5 +28,15 @@ class Converters {
     } catch (e: Exception) {
       null
     }
+  }
+
+  @TypeConverter
+  fun rpeToInt(rpe: Rpe?): Int? {
+    return rpe?.value
+  }
+
+  @TypeConverter
+  fun intToRpe(value: Int?): Rpe? {
+    return Rpe.fromInt(value)
   }
 }

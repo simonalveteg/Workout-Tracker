@@ -1,7 +1,6 @@
 package com.alveteg.simon.workouts.ui.session.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alveteg.simon.workouts.db.SetType
 import com.alveteg.simon.workouts.db.entities.GymSet
+import com.alveteg.simon.workouts.db.entities.Rpe
 import com.alveteg.simon.workouts.ui.theme.ArchivoBlack
-import com.alveteg.simon.workouts.utils.ignoreTouchEvents
 
 
 @Composable
@@ -78,13 +75,13 @@ fun SetCard(
 
 @Composable
 fun SetIndicator(set: GymSet, modifier: Modifier = Modifier) {
-  val color = setTypeColor(set.setType, MaterialTheme.colorScheme)
+  val color = getSetColorFromRPE(set.rpe, MaterialTheme.colorScheme)
   Row(
     modifier = modifier,
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
-      text = "4",
+      text = set.rpe?.value?.toString() ?: "",
       style = MaterialTheme.typography.labelSmall.copy(fontFamily = ArchivoBlack),
       color = color,
       modifier = Modifier.padding(end = 2.dp)
@@ -119,13 +116,23 @@ fun SetText(
   }
 }
 
-fun setTypeColor(setType: String, colorScheme: ColorScheme): Color {
-  return when (setType) {
-    SetType.WARMUP -> Color(0xFF7A7272)
-    SetType.EASY -> Color(0xFF6A9E44)
-    SetType.NORMAL -> colorScheme.primary
-    SetType.HARD -> Color(0xFFB84733)
-    SetType.DROP -> Color(0xFFAD49A8)
-    else -> Color.White
+fun getSetColorFromRPE(setRpe: Rpe?, colorScheme: ColorScheme): Color {
+  val veryLowExhaustion = Color(0xFF7A7272)
+  val lowExhaustion = Color(0xFF6A9E44)
+  val mediumExhaustion = colorScheme.primary
+  val highExhaustion = Color(0xFFB84733)
+
+  return when (setRpe) {
+    Rpe.Level1 -> veryLowExhaustion
+    Rpe.Level2 -> veryLowExhaustion
+    Rpe.Level3 -> veryLowExhaustion
+    Rpe.Level4 -> veryLowExhaustion
+    Rpe.Level5 -> lowExhaustion
+    Rpe.Level6 -> lowExhaustion
+    Rpe.Level7 -> mediumExhaustion
+    Rpe.Level8 -> mediumExhaustion
+    Rpe.Level9 -> highExhaustion
+    Rpe.Level10 -> highExhaustion
+    else -> colorScheme.primary
   }
 }

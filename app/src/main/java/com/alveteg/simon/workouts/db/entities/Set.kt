@@ -3,7 +3,6 @@ package com.alveteg.simon.workouts.db.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.alveteg.simon.workouts.db.SetType
 
 
 /**
@@ -20,5 +19,5 @@ data class GymSet(
   val weight: Float? = null,
   val time: Long? = null,
   val distance: Float? = null,
-  val setType: String = SetType.NORMAL
+  val rpe: Rpe? = null
 )
