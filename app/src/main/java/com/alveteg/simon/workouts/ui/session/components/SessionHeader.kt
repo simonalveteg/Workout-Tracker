@@ -1,9 +1,9 @@
 package com.alveteg.simon.workouts.ui.session.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,8 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.ui.TimerState
 import com.alveteg.simon.workouts.ui.home.components.SessionDate
+import com.alveteg.simon.workouts.utils.ScaleAndSlideVisibility
+import com.alveteg.simon.workouts.utils.ScaleVisibility
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -54,6 +57,7 @@ fun SessionHeader(
   sessionWrapper: SessionWrapper,
   screenUnlocked: Boolean,
   muscleGroups: List<String>,
+  onDeleteSession: () -> Unit,
   onEndTime: () -> Unit,
   onStartTime: () -> Unit,
   onToggleEdit: () -> Unit,
@@ -167,7 +171,8 @@ fun SessionHeader(
     Row(
       modifier = modifier
         .fillMaxWidth()
-        .padding(top = 4.dp, bottom = 16.dp),
+        .padding(top = 4.dp, bottom = 16.dp)
+        .padding(horizontal = 6.dp),
     ) {
       HeaderItem(
         modifier = Modifier
@@ -185,7 +190,26 @@ fun SessionHeader(
             .size(18.dp),
         )
       }
-      AnimatedVisibility(visible = screenUnlocked) {
+      ScaleAndSlideVisibility(visible = screenUnlocked) {
+        HeaderItem(
+          modifier = Modifier
+            .padding(end = 8.dp)
+            .width(42.dp),
+          color = MaterialTheme.colorScheme.error,
+          onClick = onDeleteSession
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = "Delete Session.",
+            modifier = Modifier
+              .size(18.dp),
+          )
+        }
+      }
+      Spacer(modifier = Modifier
+        .weight(1f)
+        .padding(end = 8.dp))
+      ScaleVisibility(visible = screenUnlocked) {
         HeaderItem(
           modifier = Modifier
             .padding(end = 8.dp)
@@ -194,14 +218,13 @@ fun SessionHeader(
           onClick = onTimerButtonClick
         ) {
           Icon(
-            imageVector = Icons.Default.Timer,
+            imageVector = Icons.Outlined.Timer,
             contentDescription = "Toggle visibility of timer.",
             modifier = Modifier
               .size(18.dp),
           )
         }
       }
-      HeaderItem(modifier = Modifier.weight(1f).padding(end = 8.dp))
       TimeCard(
         time = sessionWrapper.session.start,
         modifier = Modifier.padding(end = 8.dp),

@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -32,4 +33,12 @@ fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
       }
     }
   }
+}
+
+fun Modifier.ignoreTouchEvents(
+  condition: Boolean = true
+): Modifier = composed {
+  if (condition) {
+    pointerInput(Unit) {}
+  } else Modifier
 }

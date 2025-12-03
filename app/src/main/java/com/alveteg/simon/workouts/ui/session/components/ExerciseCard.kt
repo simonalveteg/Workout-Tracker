@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,8 +36,11 @@ import com.alveteg.simon.workouts.ui.SetWrapper
 import com.alveteg.simon.workouts.ui.session.SessionEvent
 import com.alveteg.simon.workouts.ui.theme.ArchivoBlack
 import com.alveteg.simon.workouts.utils.Event
+import com.alveteg.simon.workouts.utils.ScaleVisibility
+import com.alveteg.simon.workouts.utils.ignoreTouchEvents
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExerciseCard(
   modifier: Modifier = Modifier,
@@ -109,13 +113,12 @@ fun ExerciseCard(
         items(sets) { set ->
           SetCard(
             set = set,
-            onClick = {
-              onSetClicked(SetWrapper(set, exerciseWrapper))
-            }
+            isClickable = editable,
+            onClick = { onSetClicked(SetWrapper(set, exerciseWrapper)) }
           )
         }
         item {
-          if (editable) {
+          ScaleVisibility(visible = editable) {
             IconButton(
               onClick = {
                 onEvent(SessionEvent.CreateSet(exerciseWrapper))

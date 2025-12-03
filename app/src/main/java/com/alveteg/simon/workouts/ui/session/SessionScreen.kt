@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,6 +66,7 @@ import com.alveteg.simon.workouts.ui.session.components.SetHistoryCard
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
 import com.alveteg.simon.workouts.utils.FloatInputTransformation
 import com.alveteg.simon.workouts.utils.IntegerInputTransformation
+import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -113,7 +111,7 @@ fun SessionScreen(
 
   var screenUnlocked by remember(session) { mutableStateOf(session.session.end == null) }
   var timerState by remember { mutableStateOf(TimerState(0L, false, 0L)) }
-  var timerVisible by remember { mutableStateOf(false) }
+  var timerVisible by remember(timerState.running) { mutableStateOf(timerState.running) }
 
   DisposableEffect(context) {
     val receiver = object : BroadcastReceiver() {
@@ -272,7 +270,7 @@ fun SessionScreen(
           items(setHistory) { pair ->
             val (sessionWrapper, exerciseWrapper) = pair
             SetHistoryCard(
-              modifier = Modifier.padding(horizontal = 4.dp),
+              modifier = Modifier.padding(horizontal = 4.dp).animateItem(),
               sessionWrapper = sessionWrapper,
               exerciseWrapper = exerciseWrapper
             )
@@ -328,11 +326,7 @@ fun SessionScreen(
 
   Scaffold(
     floatingActionButton = {
-      AnimatedVisibility(
-        visible = screenUnlocked,
-        enter = scaleIn(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()),
-        exit = scaleOut(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec())
-      ) {
+      ScaleVisibility(visible = screenUnlocked) {
         FloatingActionButton(
           onClick = {
             viewModel.onEvent(SessionEvent.AddExercise)
@@ -359,6 +353,7 @@ fun SessionScreen(
           sessionWrapper = session,
           screenUnlocked = screenUnlocked,
           muscleGroups = muscleGroups,
+          onDeleteSession = { deleteSessionDialog.value = true },
           onEndTime = { endTimeDialogState.show() },
           onStartTime = { startTimeDialogState.show() },
           timerState = timerState,

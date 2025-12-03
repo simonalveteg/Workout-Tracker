@@ -37,6 +37,7 @@ import com.alveteg.simon.workouts.timer.toTimerString
 import com.alveteg.simon.workouts.ui.TimerState
 import com.alveteg.simon.workouts.ui.session.SessionEvent
 import com.alveteg.simon.workouts.utils.Event
+import com.alveteg.simon.workouts.utils.ignoreTouchEvents
 import timber.log.Timber
 
 @Composable
@@ -95,7 +96,7 @@ fun TimerBar(
       TimerControls(
         modifier = Modifier
           .clip(TimerClipShape(timerWidth))
-          .pointerInput(Unit) {},
+          .ignoreTouchEvents(),
         timerTimeText = timerTimeText,
         timerToggleIcon = timerToggleIcon,
         baseColor = textColor,
