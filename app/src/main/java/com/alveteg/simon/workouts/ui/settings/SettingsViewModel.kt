@@ -6,7 +6,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
+import com.alveteg.simon.workouts.db.entities.GymSet
+import com.alveteg.simon.workouts.db.entities.Rpe
 import com.alveteg.simon.workouts.ui.DatabaseModel
+import com.alveteg.simon.workouts.ui.OldDatabaseModel
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
 import com.fatboyindustrial.gsonjavatime.Converters
@@ -37,15 +40,18 @@ class SettingsViewModel @Inject constructor(
           importDatabase(event.uri, event.context)
         }
       }
+
       is SettingsEvent.ExportDatabase -> {
         viewModelScope.launch(Dispatchers.IO) {
           exportDatabase(event.uri, event.context)
         }
       }
+
       is SettingsEvent.CreateFile -> {
         val date = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
         sendUiEvent(UiEvent.FileCreated("workout_db_$date.json"))
       }
+
       is SettingsEvent.ClearDatabase -> {
         viewModelScope.launch(Dispatchers.IO) {
           repo.clearDatabase()
@@ -74,7 +80,7 @@ class SettingsViewModel @Inject constructor(
     viewModelScope.launch {
       val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
       loadFromFile(uri, context.contentResolver)?.let {
-        val importedDatabase = gson.fromJson(it, DatabaseModel::class.java)
+        val importedDatabase = gson.fromJson(it, OldDatabaseModel::class.java)
         Timber.d("$importedDatabase")
         importedDatabase.sessions.forEach { session ->
           repo.insertSession(session)
@@ -82,11 +88,30 @@ class SettingsViewModel @Inject constructor(
         importedDatabase.exercises.forEach { exercise ->
           repo.insertExercise(exercise)
         }
-        importedDatabase.sessionExercises.forEach { sessionExercise ->
+        importedDatabase.sessionExercises.filter { sessionExercise ->
+          sessionExercise.parentSessionId in importedDatabase.sessions.map { session -> session.sessionId }
+        }.forEach { sessionExercise ->
           repo.insertSessionExercise(sessionExercise)
         }
-        importedDatabase.sets.forEach { set ->
-          repo.insertSet(set)
+        importedDatabase.sets.filter { set ->
+          set.parentSessionExerciseId in importedDatabase.sessionExercises.map { sessionExercise -> sessionExercise.sessionExerciseId }
+        }.forEach { set ->
+          repo.insertSet(
+            GymSet(
+              parentSessionExerciseId = set.parentSessionExerciseId,
+              reps = set.reps,
+              weight = set.weight,
+              time = set.time,
+              distance = set.distance,
+              rpe = when (set.setType) {
+                "Warmup" -> Rpe.Level4
+                "Easy" -> Rpe.Level6
+                "Normal" -> Rpe.Level8
+                "Hard" -> Rpe.Level10
+                else -> null
+              }
+            )
+          )
         }
       }
     }

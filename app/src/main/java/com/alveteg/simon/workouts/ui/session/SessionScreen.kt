@@ -62,6 +62,7 @@ import com.alveteg.simon.workouts.ui.session.components.DeletionAlertDialog
 import com.alveteg.simon.workouts.ui.session.components.ExerciseCard
 import com.alveteg.simon.workouts.ui.session.components.InputField
 import com.alveteg.simon.workouts.ui.session.components.SessionHeader
+import com.alveteg.simon.workouts.ui.session.components.SetBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.SetHistoryCard
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
 import com.alveteg.simon.workouts.utils.FloatInputTransformation
@@ -192,124 +193,38 @@ fun SessionScreen(
     rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
   if (openSetBottomSheet != null) {
-    val setWrapper = openSetBottomSheet!!
-    val exerciseName = setWrapper.exerciseWrapper.exercise.title
-    val setNumber = setWrapper.exerciseWrapper.sets.indexOf(setWrapper.set).let { index ->
-      if (index == -1) {
-        setWrapper.exerciseWrapper.sets.size
-      } else {
-        index
+    val setWrapper = remember(exercises, openSetBottomSheet) {
+      val updatedExerciseWrapper = exercises.find {
+        it.exercise.id == openSetBottomSheet?.exerciseWrapper?.exercise?.id
       }
-    } + 1
+      val updatedSet = updatedExerciseWrapper?.sets?.find {
+        it.setId == openSetBottomSheet?.set?.setId
+      }
+      if (updatedExerciseWrapper != null && updatedSet != null) {
+        SetWrapper(set = updatedSet, exerciseWrapper = updatedExerciseWrapper)
+      } else {
+        openSetBottomSheet!!
+      }
+    }
+
+
     var setHistory by remember {
       mutableStateOf<List<Pair<SessionWrapper, ExerciseWrapper>>>(emptyList())
     }
 
 
-    val repsTextFieldState =
-      rememberTextFieldState(initialText = setWrapper.set.reps?.toString() ?: "")
-    val weightTextFieldState =
-      rememberTextFieldState(initialText = setWrapper.set.weight?.toString() ?: "")
 
     LaunchedEffect(setWrapper) {
       setHistory = viewModel.getHistoryForExercise(setWrapper.exerciseWrapper.exercise)
         .filter { it.first.session.sessionId != session.session.sessionId }
     }
 
-    LaunchedEffect(repsTextFieldState, weightTextFieldState) {
-      snapshotFlow { repsTextFieldState.text.toString() to weightTextFieldState.text.toString() }
-        .collectLatest { (repsText, weightText) ->
-          val reps = repsText.toIntOrNull()
-          val weight = weightText.toFloatOrNull()
-          Timber.d("Reps: $reps, Weight: $weight")
-
-          var updatedSet = setWrapper.set
-
-          reps?.let { updatedSet = updatedSet.copy(reps = it) }
-          weight?.let { updatedSet = updatedSet.copy(weight = it) }
-
-          if (updatedSet != setWrapper.set) {
-            viewModel.onEvent(SessionEvent.ChangeSet(updatedSet))
-          }
-        }
-    }
-
-    ModalBottomSheet(
-      onDismissRequest = { openSetBottomSheet = null },
+    SetBottomSheet(
+      setWrapper = setWrapper,
+      setHistory = setHistory,
       sheetState = setBottomSheetState,
-      dragHandle = {
-        Column(
-          horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-          ) {
-            Column(
-              horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)
-            ) {
-              Text(
-                text = "SET $setNumber", style = MaterialTheme.typography.titleLarge
-              )
-              Text(
-                text = exerciseName, style = MaterialTheme.typography.titleSmall
-              )
-            }
-          }
-          HorizontalDivider()
-        }
-      }) {
-      Column() {
-        LazyRow(
-          modifier = Modifier
-            .padding(vertical = 8.dp)
-            .height(60.dp)
-        ) {
-          items(setHistory) { pair ->
-            val (sessionWrapper, exerciseWrapper) = pair
-            SetHistoryCard(
-              modifier = Modifier.padding(horizontal = 4.dp).animateItem(),
-              sessionWrapper = sessionWrapper,
-              exerciseWrapper = exerciseWrapper
-            )
-          }
-        }
-        Spacer(modifier = Modifier.height(80.dp))
-        HorizontalDivider()
-        Row(
-          horizontalArrangement = Arrangement.SpaceAround,
-          modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-        ) {
-          InputField(
-            textFieldState = repsTextFieldState,
-            inputTransformation = IntegerInputTransformation(),
-            isValid = repsTextFieldState.text.toString()
-              .let { it.isNotEmpty() && it.toIntOrNull() == null },
-            imeAction = ImeAction.Next,
-            labelText = "Reps",
-            modifier = Modifier
-              .weight(1f)
-              .padding(horizontal = 4.dp)
-          )
-          InputField(
-            textFieldState = weightTextFieldState,
-            inputTransformation = FloatInputTransformation(),
-            isValid = weightTextFieldState.text.toString()
-              .let { it.isNotEmpty() && it.toFloatOrNull() == null },
-            imeAction = ImeAction.Done,
-            labelText = "Weight",
-            modifier = Modifier
-              .weight(1f)
-              .padding(horizontal = 4.dp)
-          )
-        }
-        Spacer(modifier = Modifier.height(120.dp))
-      }
-    }
+      onEvent = viewModel::onEvent,
+    ) { openSetBottomSheet = null }
   }
   if (openExerciseBottomSheet != null) {
     ModalBottomSheet(

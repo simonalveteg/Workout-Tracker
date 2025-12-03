@@ -31,7 +31,7 @@ object AppModule {
         GymDatabase::class.java,
         "gym_database.db"
       )
-      .addMigrations(GymDatabase.MIGRATION_TO_RPE)
+      .addMigrations(GymDatabase.MIGRATION_TO_RPE, GymDatabase.MIGRATION_3_4)
       .addCallback(callback)
       .build()
   }

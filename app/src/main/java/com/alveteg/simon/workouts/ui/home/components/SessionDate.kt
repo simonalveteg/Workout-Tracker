@@ -20,12 +20,12 @@ fun SessionDate(
   session: Session,
   modifier: Modifier = Modifier
 ) {
-  val month by remember {
+  val month by remember(session) {
     derivedStateOf {
       session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
     }
   }
-  val day by remember { derivedStateOf { session.start.dayOfMonth.toString() } }
+  val day by remember(session) { derivedStateOf { session.start.dayOfMonth.toString() } }
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,

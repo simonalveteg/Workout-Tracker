@@ -13,12 +13,14 @@ sealed class Rpe(val value: Int) {
   data object Level10 : Rpe(10)
 
   companion object {
-    private val levels = listOf(
-      Level1, Level2, Level3, Level4, Level5,
-      Level6, Level7, Level8, Level9, Level10
-    )
+    private val levels by lazy {
+      listOf(
+        Level1, Level2, Level3, Level4, Level5,
+        Level6, Level7, Level8, Level9, Level10
+      )
+    }
 
-    private val valueMap = levels.associateBy { it.value }
+    private val valueMap by lazy { levels.associateBy { it.value } }
 
     /**
      * Converts an integer from the database into a type-safe [Rpe] object.
@@ -31,7 +33,7 @@ sealed class Rpe(val value: Int) {
     /**
      * Returns all possible RPE levels.
      */
-    fun getLevels(): List<Rpe> = levels
+    fun getRpeLevels(): List<Rpe> = levels
   }
 }
 

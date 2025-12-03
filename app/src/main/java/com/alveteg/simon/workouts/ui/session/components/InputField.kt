@@ -2,6 +2,7 @@ package com.alveteg.simon.workouts.ui.session.components
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.OutlinedTextField
@@ -16,6 +17,7 @@ fun InputField(
   textFieldState: TextFieldState,
   isValid: Boolean,
   inputTransformation: InputTransformation? = null,
+  outputTransformation: OutputTransformation? = null,
   imeAction: ImeAction,
   labelText: String,
   modifier: Modifier = Modifier
@@ -23,6 +25,7 @@ fun InputField(
   OutlinedTextField(
     state = textFieldState,
     inputTransformation = inputTransformation,
+    outputTransformation = outputTransformation,
     keyboardOptions = KeyboardOptions(
       keyboardType = KeyboardType.Number,
       imeAction = imeAction

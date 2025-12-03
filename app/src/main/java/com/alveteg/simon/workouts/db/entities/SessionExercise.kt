@@ -3,9 +3,20 @@ package com.alveteg.simon.workouts.db.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "sessionExercises")
+@Entity(
+  tableName = "sessionExercises",
+  foreignKeys = [
+    ForeignKey(
+      entity = Session::class,
+      parentColumns = ["sessionId"],
+      childColumns = ["parentSessionId"],
+      onDelete = ForeignKey.CASCADE
+    )
+  ]
+)
 data class SessionExercise(
   @PrimaryKey(autoGenerate = true)
   val sessionExerciseId: Long = 0,

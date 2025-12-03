@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.db
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -21,7 +22,7 @@ import com.alveteg.simon.workouts.utils.Converters
   ],
   autoMigrations = [
   ],
-  version = 3,
+  version = 4,
   exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -67,6 +68,43 @@ abstract class GymDatabase : RoomDatabase() {
         db.execSQL("DROP TABLE sets")
         db.execSQL("ALTER TABLE sets_new RENAME TO sets")
         db.execSQL("CREATE INDEX index_sets_parentSessionExerciseId ON sets (parentSessionExerciseId)")
+      }
+    }
+
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+      override fun migrate(db: SupportSQLiteDatabase) {
+        // STEP 1: Clean up the orphaned rows BEFORE applying new constraints.
+        db.execSQL("""
+            DELETE FROM sessionExercises 
+            WHERE parentSessionId NOT IN (SELECT sessionId FROM sessions)
+        """)
+
+        // Create a new temporary table that matches the desired final structure
+        db.execSQL("""
+            CREATE TABLE sessionExercises_new (
+                sessionExerciseId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                parentSessionId INTEGER NOT NULL, 
+                parentExerciseId INTEGER NOT NULL, 
+                comment TEXT, 
+                FOREIGN KEY(parentSessionId) REFERENCES sessions(sessionId) ON UPDATE NO ACTION ON DELETE CASCADE
+            )
+        """)
+
+        // Copy the (now clean) data from the old table to the new one
+        db.execSQL("""
+            INSERT INTO sessionExercises_new (sessionExerciseId, parentSessionId, parentExerciseId, comment)
+            SELECT sessionExerciseId, parentSessionId, parentExerciseId, comment FROM sessionExercises
+        """)
+
+        // Drop the old table
+        db.execSQL("DROP TABLE sessionExercises")
+
+        // Rename the new table to the original name
+        db.execSQL("ALTER TABLE sessionExercises_new RENAME TO sessionExercises")
+
+        // Re-create the indices on the new table
+        db.execSQL("CREATE INDEX index_sessionExercises_parentSessionId ON sessionExercises (parentSessionId)")
+        db.execSQL("CREATE INDEX index_sessionExercises_parentExerciseId ON sessionExercises (parentExerciseId)")
       }
     }
   }

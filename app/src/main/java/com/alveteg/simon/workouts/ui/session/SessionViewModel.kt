@@ -72,16 +72,17 @@ class SessionViewModel @Inject constructor(
       val relevantSessionExercises = allSessionExercises.filter { it.exercise.id == exercise.id }
 
       relevantSessionExercises
-        .map { sessionExercise ->
-          val session = repo.getSessionById(sessionExercise.sessionExercise.parentSessionId)
-          val sets =
-            repo.getSetsForExercise(sessionExercise.sessionExercise.sessionExerciseId).first()
-          val sessionWrapper = SessionWrapper(session, emptyList())
-          val exerciseWrapper = ExerciseWrapper(
-            sessionExercise = sessionExercise.sessionExercise, exercise = exercise, sets = sets
-          )
+        .mapNotNull { sessionExercise ->
+          repo.getSessionById(sessionExercise.sessionExercise.parentSessionId)?.let { session ->
+            val sets =
+              repo.getSetsForExercise(sessionExercise.sessionExercise.sessionExerciseId).first()
+            val sessionWrapper = SessionWrapper(session, emptyList())
+            val exerciseWrapper = ExerciseWrapper(
+              sessionExercise = sessionExercise.sessionExercise, exercise = exercise, sets = sets
+            )
 
-          sessionWrapper to exerciseWrapper
+            sessionWrapper to exerciseWrapper
+          }
         }
         .sortedByDescending { it.first.session.start }
     }
