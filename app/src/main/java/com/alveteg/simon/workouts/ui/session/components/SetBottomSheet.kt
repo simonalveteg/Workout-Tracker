@@ -160,9 +160,7 @@ fun SetBottomSheet(
         setHistory = setHistory,
         modifier = Modifier.padding(vertical = 8.dp)
       )
-      HorizontalDivider(
-        color = if (setHistory.isNotEmpty()) MaterialTheme.colorScheme.outlineVariant else Color.Transparent
-      )
+      HorizontalDivider()
       RpeInput(
         setWrapper = setWrapper,
         onEvent = onEvent,
