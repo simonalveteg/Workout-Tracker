@@ -30,6 +30,9 @@ import java.time.LocalDate
 @Composable
 fun SessionCard(
   sessionWrapper: SessionWrapper,
+  modifier: Modifier = Modifier,
+  dateModifier: Modifier = Modifier,
+  titleModifier: Modifier = Modifier,
   onClick: () -> Unit
 ) {
   val session = sessionWrapper.session
@@ -46,7 +49,8 @@ fun SessionCard(
   }
 
   HomeContainer(
-    onClick = { onClick() }
+    onClick = { onClick() },
+    modifier = modifier
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -56,14 +60,18 @@ fun SessionCard(
         modifier = Modifier.fillMaxHeight(),
         verticalAlignment = Alignment.CenterVertically
       ) {
-        SessionDate(session, Modifier.padding(start = 20.dp, end = 16.dp))
+        SessionDate(session, Modifier
+          .padding(start = 20.dp, end = 16.dp)
+          .then(dateModifier)
+        )
         Column(
           modifier = Modifier.padding(bottom = 2.dp),
           verticalArrangement = Arrangement.Center
         ) {
           Text(
             text = muscleTitle,
-            style = MaterialTheme.typography.headlineSmall.copy(fontFamily = ArchivoBlack)
+            style = MaterialTheme.typography.headlineSmall.copy(fontFamily = ArchivoBlack),
+            modifier = titleModifier
           )
           if (muscleSubtitle.isNotEmpty()) {
             Text(

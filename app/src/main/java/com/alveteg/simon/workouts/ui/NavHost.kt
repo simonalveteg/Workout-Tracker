@@ -1,6 +1,12 @@
 package com.alveteg.simon.workouts.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,47 +20,55 @@ import com.alveteg.simon.workouts.ui.settings.SettingsScreen
 import com.alveteg.simon.workouts.utils.Routes
 import com.alveteg.simon.workouts.utils.UiEvent
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NavHost(
   navController: NavHostController
 ) {
 
-  NavHost(
-    navController = navController,
-    startDestination = Routes.HOME
-  ) {
+  SharedTransitionLayout {
+    NavHost(
+      navController = navController,
+      startDestination = Routes.HOME,
 
-    composable(Routes.HOME) {
-      HomeScreen(
-        onNavigate = { navController.navigationEvent(event = it) },
-      )
-    }
-    composable(
-      route = "${Routes.SESSION}/{session_id}",
-      arguments = listOf(
-        navArgument("session_id") {
-          type = NavType.LongType
-        }
-      )
     ) {
-      SessionScreen(
-        onNavigate = { navController.navigationEvent(event = it) },
-      )
-    }
-    composable(
-      route = "${Routes.EXERCISE_PICKER}/{session_id}",
-      arguments = listOf(
-        navArgument("session_id") {
-          type = NavType.LongType
-        }
-      )
-    ) {
-      ExercisePickerScreen(
-        navController = navController,
-      )
-    }
-    composable(Routes.SETTINGS) {
-      SettingsScreen()
+
+      composable(Routes.HOME) {
+        HomeScreen(
+          onNavigate = { navController.navigationEvent(event = it) },
+          animatedVisibilityScope = this@composable,
+          sharedTransitionScope = this@SharedTransitionLayout
+        )
+      }
+      composable(
+        route = "${Routes.SESSION}/{session_id}",
+        arguments = listOf(
+          navArgument("session_id") {
+            type = NavType.LongType
+          }
+        )
+      ) {
+        SessionScreen(
+          onNavigate = { navController.navigationEvent(event = it) },
+          animatedVisibilityScope = this@composable,
+          sharedTransitionScope = this@SharedTransitionLayout
+        )
+      }
+      composable(
+        route = "${Routes.EXERCISE_PICKER}/{session_id}",
+        arguments = listOf(
+          navArgument("session_id") {
+            type = NavType.LongType
+          }
+        )
+      ) {
+        ExercisePickerScreen(
+          navController = navController,
+        )
+      }
+      composable(Routes.SETTINGS) {
+        SettingsScreen()
+      }
     }
   }
 }

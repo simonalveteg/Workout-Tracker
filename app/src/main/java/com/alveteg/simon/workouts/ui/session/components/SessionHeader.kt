@@ -64,6 +64,8 @@ fun SessionHeader(
   timerState: TimerState,
   timerVisible: Boolean,
   onTimerButtonClick: () -> Unit,
+  dateModifier: Modifier = Modifier,
+  titleModifier: Modifier = Modifier,
   modifier: Modifier = Modifier
 ) {
 
@@ -136,7 +138,10 @@ fun SessionHeader(
           .padding(horizontal = 12.dp)
       ) {
         SessionDate(
-          session = sessionWrapper.session, modifier = Modifier.padding(top = 10.dp)
+          session = sessionWrapper.session,
+          modifier = Modifier
+            .padding(top = 10.dp)
+            .then(dateModifier),
         )
         Text(
           text = sessionWrapper.session.start.year.toString(),
@@ -157,7 +162,8 @@ fun SessionHeader(
           autoSize = TextAutoSize.StepBased(
             maxFontSize = MaterialTheme.typography.displayMedium.fontSize,
             minFontSize = 10.sp,
-          )
+          ),
+          modifier = titleModifier,
         )
         if (muscleSubtitle.isNotBlank()) {
           Text(
@@ -206,9 +212,11 @@ fun SessionHeader(
           )
         }
       }
-      Spacer(modifier = Modifier
-        .weight(1f)
-        .padding(end = 8.dp))
+      Spacer(
+        modifier = Modifier
+          .weight(1f)
+          .padding(end = 8.dp)
+      )
       ScaleVisibility(visible = screenUnlocked) {
         HeaderItem(
           modifier = Modifier
