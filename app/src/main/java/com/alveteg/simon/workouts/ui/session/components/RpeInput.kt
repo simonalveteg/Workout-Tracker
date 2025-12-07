@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.ui.session.components
 
+import androidx.activity.result.launch
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -16,12 +21,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.alveteg.simon.workouts.db.entities.Rpe
 import com.alveteg.simon.workouts.ui.SetWrapper
 import com.alveteg.simon.workouts.ui.session.SessionEvent
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -34,16 +42,24 @@ fun RpeInput(
     text = "RPE",
     modifier = modifier.animateContentSize()
   ) {
-    Row(
+    val rpeLevels = Rpe.getRpeLevels()
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+      coroutineScope.launch {
+        listState.animateScrollToItem(index = rpeLevels.lastIndex)
+      }
+    }
+
+    LazyRow(
       horizontalArrangement = Arrangement.spacedBy(2.dp),
+      state = listState,
       modifier = Modifier
         .fillMaxWidth()
-        .horizontalScroll(rememberScrollState())
         .padding(vertical = 4.dp)
     ) {
-      val rpeLevels = Rpe.getRpeLevels()
-      Spacer(modifier = Modifier.width(8.dp))
-      rpeLevels.forEachIndexed { index, label ->
+      itemsIndexed(rpeLevels) { index, label ->
         val selected = remember(setWrapper) { setWrapper.set.rpe == label }
         val colors = getSetColorFromRPE(label, MaterialTheme.colorScheme)
         ToggleButton(
@@ -75,7 +91,6 @@ fun RpeInput(
           )
         }
       }
-      Spacer(modifier = Modifier.width(8.dp))
     }
     if (setWrapper.set.rpe != null) {
       val text = when (setWrapper.set.rpe) {
