@@ -34,6 +34,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -112,7 +113,13 @@ fun SessionScreen(
 
   var screenUnlocked by remember(session) { mutableStateOf(session.session.end == null) }
   var timerState by remember { mutableStateOf(TimerState(0L, false, 0L)) }
-  var timerVisible by remember(timerState.running) { mutableStateOf(timerState.running) }
+  var timerVisible by remember { mutableStateOf(false) }
+
+  LaunchedEffect(timerState.running) {
+    if (timerState.running) {
+      timerVisible = true
+    }
+  }
 
   DisposableEffect(context) {
     val receiver = object : BroadcastReceiver() {
