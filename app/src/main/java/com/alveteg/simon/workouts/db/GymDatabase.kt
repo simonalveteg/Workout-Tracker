@@ -40,7 +40,6 @@ abstract class GymDatabase : RoomDatabase() {
 
         db.execSQL("UPDATE sets SET rpe = 4 WHERE setType = 'Warmup'")
         db.execSQL("UPDATE sets SET rpe = 6 WHERE setType = 'Easy'")
-        db.execSQL("UPDATE sets SET rpe = 8 WHERE setType = 'Normal'")
         db.execSQL("UPDATE sets SET rpe = 10 WHERE setType = 'Hard'")
 
         db.execSQL(

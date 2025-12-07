@@ -1,10 +1,12 @@
 package com.alveteg.simon.workouts.db.entities
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
 @Entity(
   tableName = "sessionExercises",
@@ -17,6 +19,7 @@ import androidx.room.PrimaryKey
     )
   ]
 )
+@Parcelize
 data class SessionExercise(
   @PrimaryKey(autoGenerate = true)
   val sessionExerciseId: Long = 0,
@@ -25,7 +28,7 @@ data class SessionExercise(
   @ColumnInfo(index = true)
   val parentExerciseId: Long,
   val comment: String? = null
-)
+) : Parcelable
 
 /**
  * Holds a sessionExercise and it's associated exercise. Embedded = bad? it works though.

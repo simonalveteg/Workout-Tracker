@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.ui.theme
 
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -27,6 +28,7 @@ val ArchivoBlack = FontFamily(
   Font(googleFont = archivoBlackFontName, fontProvider = provider)
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 val AppTypography = Typography(
   displayLarge = TextStyle(
     fontFamily = ArchivoBlack,
@@ -77,8 +79,22 @@ val AppTypography = Typography(
     lineHeight = 28.sp,
     letterSpacing = 0.sp,
   ),
+  titleLargeEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.W400,
+    fontSize = 22.sp,
+    lineHeight = 28.sp,
+    letterSpacing = 0.sp,
+  ),
   titleMedium = TextStyle(
     fontFamily = Archivo,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.1.sp,
+  ),
+  titleMediumEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
     fontWeight = FontWeight.Medium,
     fontSize = 16.sp,
     lineHeight = 24.sp,
@@ -91,8 +107,22 @@ val AppTypography = Typography(
     lineHeight = 20.sp,
     letterSpacing = 0.1.sp,
   ),
+  titleSmallEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.1.sp,
+  ),
   bodyLarge = TextStyle(
     fontFamily = Archivo,
+    fontWeight = FontWeight.W400,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.5.sp,
+  ),
+  bodyLargeEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp,
     lineHeight = 24.sp,
@@ -105,6 +135,13 @@ val AppTypography = Typography(
     lineHeight = 20.sp,
     letterSpacing = 0.25.sp,
   ),
+  bodyMediumEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.W400,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.25.sp,
+  ),
   bodySmall = TextStyle(
     fontFamily = Archivo,
     fontWeight = FontWeight.W400,
@@ -112,7 +149,21 @@ val AppTypography = Typography(
     lineHeight = 16.sp,
     letterSpacing = 0.4.sp,
   ),
+  bodySmallEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.W400,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.4.sp,
+  ),
   labelLarge = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.1.sp,
+  ),
+  labelLargeEmphasized = TextStyle(
     fontFamily = ArchivoBlack,
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
@@ -126,8 +177,22 @@ val AppTypography = Typography(
     lineHeight = 16.sp,
     letterSpacing = 0.5.sp,
   ),
+  labelMediumEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.5.sp,
+  ),
   labelSmall = TextStyle(
     fontFamily = Archivo,
+    fontWeight = FontWeight.Medium,
+    fontSize = 11.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.5.sp,
+  ),
+  labelSmallEmphasized = TextStyle(
+    fontFamily = ArchivoBlack,
     fontWeight = FontWeight.Medium,
     fontSize = 11.sp,
     lineHeight = 16.sp,

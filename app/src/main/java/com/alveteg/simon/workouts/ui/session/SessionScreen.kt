@@ -212,9 +212,7 @@ fun SessionScreen(
       mutableStateOf<List<Pair<SessionWrapper, ExerciseWrapper>>>(emptyList())
     }
 
-
-
-    LaunchedEffect(setWrapper) {
+    LaunchedEffect(Unit, setWrapper) {
       setHistory = viewModel.getHistoryForExercise(setWrapper.exerciseWrapper.exercise)
         .filter { it.first.session.sessionId != session.session.sessionId }
     }

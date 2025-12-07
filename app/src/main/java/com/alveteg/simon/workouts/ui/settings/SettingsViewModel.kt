@@ -106,7 +106,6 @@ class SettingsViewModel @Inject constructor(
               rpe = when (set.setType) {
                 "Warmup" -> Rpe.Level4
                 "Easy" -> Rpe.Level6
-                "Normal" -> Rpe.Level8
                 "Hard" -> Rpe.Level10
                 else -> null
               }

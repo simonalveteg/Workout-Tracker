@@ -1,6 +1,10 @@
 package com.alveteg.simon.workouts.db.entities
 
-sealed class Rpe(val value: Int) {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+sealed class Rpe(val value: Int) : Parcelable {
   data object Level1 : Rpe(1)
   data object Level2 : Rpe(2)
   data object Level3 : Rpe(3)

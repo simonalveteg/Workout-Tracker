@@ -1,12 +1,15 @@
 package com.alveteg.simon.workouts.db.entities
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alveteg.simon.workouts.utils.FuzzySearch
 import com.alveteg.simon.workouts.utils.turnTargetIntoMuscleGroups
+import kotlinx.parcelize.Parcelize
 
 
 @Entity(tableName = "exercises")
+@Parcelize
 data class Exercise(
   @PrimaryKey(autoGenerate = true)
   var id: Long = 0L,
@@ -17,7 +20,7 @@ data class Exercise(
   var targets: List<String> = emptyList(),
   var synergists: List<String> = emptyList(),
   var stabilizers: List<String> = emptyList()
-) {
+) : Parcelable {
   fun getMuscleGroups(exercise: Exercise = this): List<String> {
     return exercise.targets.flatMap {
       turnTargetIntoMuscleGroups(it)

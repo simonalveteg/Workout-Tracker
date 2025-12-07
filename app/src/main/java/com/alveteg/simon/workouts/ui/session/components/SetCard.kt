@@ -1,5 +1,7 @@
 package com.alveteg.simon.workouts.ui.session.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,11 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +32,7 @@ import com.alveteg.simon.workouts.db.entities.Rpe
 import com.alveteg.simon.workouts.ui.theme.ArchivoBlack
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetCard(
   set: GymSet,
@@ -73,9 +78,14 @@ fun SetCard(
   }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetIndicator(set: GymSet, modifier: Modifier = Modifier) {
-  val color = getSetColorFromRPE(set.rpe, MaterialTheme.colorScheme)
+  val color by animateColorAsState(
+    targetValue = getSetColorFromRPE(set.rpe, MaterialTheme.colorScheme).containerColor,
+    animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+    label = "SetIndicatorColorAnimation"
+  )
   Row(
     modifier = modifier,
     verticalAlignment = Alignment.CenterVertically
@@ -84,7 +94,9 @@ fun SetIndicator(set: GymSet, modifier: Modifier = Modifier) {
       text = set.rpe?.value?.toString() ?: "",
       style = MaterialTheme.typography.labelSmall.copy(fontFamily = ArchivoBlack),
       color = color,
-      modifier = Modifier.padding(end = 2.dp)
+      modifier = Modifier
+        .padding(end = 2.dp)
+        .animateContentSize(MaterialTheme.motionScheme.defaultSpatialSpec())
     )
     Surface(
       modifier = Modifier
@@ -116,11 +128,28 @@ fun SetText(
   }
 }
 
-fun getSetColorFromRPE(setRpe: Rpe?, colorScheme: ColorScheme): Color {
-  val veryLowExhaustion = Color(0xFF7A7272)
-  val lowExhaustion = Color(0xFF6A9E44)
-  val mediumExhaustion = colorScheme.primary
-  val highExhaustion = Color(0xFFB84733)
+data class SetIndicatorColors(
+  val containerColor: Color,
+  val onContainerColor: Color
+)
+
+fun getSetColorFromRPE(setRpe: Rpe?, colorScheme: ColorScheme): SetIndicatorColors {
+  val veryLowExhaustion = SetIndicatorColors(
+    containerColor = Color(0xFF7A7272),
+    onContainerColor = Color(0xFFFFFFFF)
+  )
+  val lowExhaustion = SetIndicatorColors(
+    containerColor = Color(0xFF6A9E44),
+    onContainerColor = Color(0xFFFFFFFF)
+  )
+  val mediumExhaustion = SetIndicatorColors(
+    containerColor = colorScheme.primary,
+    onContainerColor = colorScheme.onPrimary,
+  )
+  val highExhaustion = SetIndicatorColors(
+    containerColor = Color(0xFFB84733),
+    onContainerColor = Color(0xFFFFFFFF)
+  )
 
   return when (setRpe) {
     Rpe.Level1 -> veryLowExhaustion
@@ -133,6 +162,6 @@ fun getSetColorFromRPE(setRpe: Rpe?, colorScheme: ColorScheme): Color {
     Rpe.Level8 -> mediumExhaustion
     Rpe.Level9 -> highExhaustion
     Rpe.Level10 -> highExhaustion
-    else -> colorScheme.primary
+    else -> mediumExhaustion
   }
 }
