@@ -79,7 +79,7 @@ fun RpeInput(
     }
     if (setWrapper.set.rpe != null) {
       val text = when (setWrapper.set.rpe) {
-        Rpe.Level10 -> "You have 0 reps in reserve. This is maximum effort and you reach failure on the rep you just did."
+        Rpe.Level10 -> "You have 0 reps in reserve. This is maximum effort and you reached failure on the last rep."
         Rpe.Level9 -> "You have 1 rep in reserve. You could have done one more if pushed."
         Rpe.Level8 -> "You have 2 reps in reserve. The set is hard but still controlled."
         Rpe.Level7 -> "You have 3 reps in reserve. The weight feels challenging but manageable."

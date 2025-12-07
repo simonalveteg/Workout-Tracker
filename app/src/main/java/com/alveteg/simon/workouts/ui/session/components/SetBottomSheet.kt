@@ -101,7 +101,7 @@ fun SetBottomSheet(
       else float.toString()
     } ?: "")
 
-  LaunchedEffect(repsTextFieldState, weightTextFieldState) {
+  LaunchedEffect(repsTextFieldState, weightTextFieldState, setWrapper) {
     snapshotFlow { repsTextFieldState.text.toString() to weightTextFieldState.text.toString() }
       .collectLatest { (repsText, weightText) ->
         val reps = repsText.toIntOrNull()
