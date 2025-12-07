@@ -24,6 +24,8 @@ class GymRepository(
 
   fun getAllSessionExercises() = dao.getAllSessionExercises()
 
+  suspend fun updateSessionExercises(exercises: List<SessionExercise>) = dao.updateSessionExercises(exercises)
+
   @OptIn(ExperimentalCoroutinesApi::class)
   fun getExercisesForSession(session: Flow<Session>): Flow<List<SessionExerciseWithExercise>> {
     return session.flatMapLatest {

@@ -27,6 +27,8 @@ data class SessionExercise(
   val parentSessionId: Long,
   @ColumnInfo(index = true)
   val parentExerciseId: Long,
+  @ColumnInfo(defaultValue = "-1")
+  val exerciseOrder: Int = -1,
   val comment: String? = null
 ) : Parcelable
 

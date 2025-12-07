@@ -7,16 +7,15 @@ import android.content.IntentFilter
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.ArcMode
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -61,6 +63,11 @@ import com.alveteg.simon.workouts.ui.session.components.SetBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import timber.log.Timber
 import java.time.LocalTime
 
@@ -146,6 +153,26 @@ fun SessionScreen(
       context.unregisterReceiver(receiver)
     }
   }
+
+  val listUpdatedChannel = remember { Channel<Unit>() }
+  val hapticFeedback = LocalHapticFeedback.current
+  val lazyListState = rememberLazyListState()
+  val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+    listUpdatedChannel.tryReceive()
+    Timber.d("Reorder exercise ${from.key} to ${to.key}")
+    val numberOfItemsAbove = 2
+    val fromIndex = from.index - numberOfItemsAbove
+    val toIndex = to.index - numberOfItemsAbove
+    viewModel.onEvent(SessionEvent.ReorderExercises(fromIndex, toIndex))
+    listUpdatedChannel.receive()
+    hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+  }
+
+  LaunchedEffect(exercises) {
+    Timber.d("Exercise list: ${exercises.map { it.sessionExercise.sessionExerciseId }}")
+    listUpdatedChannel.trySend(Unit)
+  }
+
 
   val deleteSessionDialog = remember { mutableStateOf(false) }
   if (deleteSessionDialog.value) {
@@ -266,6 +293,7 @@ fun SessionScreen(
       },
     ) { innerPadding ->
       LazyColumn(
+        state = lazyListState,
         modifier = Modifier
           .fillMaxSize()
           .padding(top = innerPadding.calculateTopPadding()),
@@ -309,23 +337,36 @@ fun SessionScreen(
             TimerBar(
               modifier = Modifier
                 .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
-                .animateItem(), timerState = timerState, onEvent = viewModel::onEvent
+                .animateItem(),
+              timerState = timerState,
+              onEvent = viewModel::onEvent
             )
           }
         }
-        itemsIndexed(
-          items = exercises, key = { _, exercise ->
-            exercise.sessionExercise.sessionExerciseId
-          }) { index, exercise ->
-          ExerciseCard(
-            modifier = Modifier
-              .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
-              .animateItem(),
-            exerciseWrapper = exercise,
-            editable = screenUnlocked,
-            onEvent = viewModel::onEvent,
-            onClick = { openExerciseBottomSheet = it.sessionExercise },
-            onSetClicked = { openSetBottomSheet = it })
+        items(
+          items = exercises, key = { it.sessionExercise.sessionExerciseId }
+        ) { exercise ->
+          ReorderableItem(
+            state = reorderableLazyListState,
+            key = exercise.sessionExercise.sessionExerciseId
+          ) {
+            ExerciseCard(
+              modifier = Modifier
+                .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
+                .longPressDraggableHandle(
+                  onDragStarted = {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                  },
+                  onDragStopped = {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                  },
+                ),
+              exerciseWrapper = exercise,
+              editable = screenUnlocked,
+              onEvent = viewModel::onEvent,
+              onClick = { openExerciseBottomSheet = it.sessionExercise },
+              onSetClicked = { openSetBottomSheet = it })
+          }
         }
         item {
           Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))

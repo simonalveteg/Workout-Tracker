@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
-import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerIntent
@@ -37,7 +36,6 @@ class MainActivity : ComponentActivity() {
           )
         }
         val navController = rememberNavController()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         NavHost(navController)
       }
     }

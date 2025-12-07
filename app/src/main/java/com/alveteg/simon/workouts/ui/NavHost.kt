@@ -1,12 +1,8 @@
 package com.alveteg.simon.workouts.ui
 
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType

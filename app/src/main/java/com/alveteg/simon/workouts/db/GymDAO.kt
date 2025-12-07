@@ -29,7 +29,19 @@ interface GymDAO {
   @Query("SELECT * FROM sessionExercises join exercises ON sessionExercises.parentExerciseId = exercises.id")
   fun getAllSessionExercises(): Flow<List<SessionExerciseWithExercise>>
 
-  @Query("SELECT * FROM sessionExercises JOIN exercises ON sessionExercises.parentExerciseId = exercises.id WHERE parentSessionId = :sessionId")
+  @Update
+  suspend fun updateSessionExercises(exercises: List<SessionExercise>)
+
+  @Query("""
+    SELECT * FROM sessionExercises 
+    JOIN exercises ON sessionExercises.parentExerciseId = exercises.id 
+    WHERE parentSessionId = :sessionId
+    ORDER BY
+        CASE
+            WHEN exerciseOrder != -1 THEN exerciseOrder
+            ELSE sessionExercises.sessionExerciseId
+        END ASC
+    """)
   fun getExercisesForSession(sessionId: Long): Flow<List<SessionExerciseWithExercise>>
 
   @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId ASC")

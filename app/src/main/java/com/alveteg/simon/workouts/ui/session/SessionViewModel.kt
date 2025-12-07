@@ -29,23 +29,12 @@ class SessionViewModel @Inject constructor(
   private val repo: GymRepository, savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-  private val _session = MutableStateFlow(Session())
+  val _session = MutableStateFlow(Session())
   val session = _session.asStateFlow().map {
     SessionWrapper(it, emptyList())
   }
-
-  val exercises = combine(
-    repo.getExercisesForSession(_session), repo.getAllSets()
-  ) { exercises, sets ->
-    exercises.map { sewe ->
-      ExerciseWrapper(
-        sessionExercise = sewe.sessionExercise,
-        exercise = sewe.exercise,
-        sets = sets.filter { set ->
-          set.parentSessionExerciseId == sewe.sessionExercise.sessionExerciseId
-        })
-    }
-  }
+  private val _exercises = MutableStateFlow<List<ExerciseWrapper>>(emptyList())
+  val exercises = _exercises.asStateFlow()
 
   val muscleGroups = exercises.map { exercises ->
     exercises.map { it.exercise }.sortedListOfMuscleGroups()
@@ -60,6 +49,21 @@ class SessionViewModel @Inject constructor(
       viewModelScope.launch {
         withContext(Dispatchers.IO) {
           _session.value = repo.getSessionById(sessionId)
+
+          combine(
+            repo.getExercisesForSession(_session), repo.getAllSets()
+          ) { exercises, sets ->
+            exercises.map { sewe ->
+              ExerciseWrapper(
+                sessionExercise = sewe.sessionExercise,
+                exercise = sewe.exercise,
+                sets = sets.filter { set ->
+                  set.parentSessionExerciseId == sewe.sessionExercise.sessionExerciseId
+                })
+            }
+          }.collect { exerciseList ->
+            _exercises.value = exerciseList
+          }
         }
       }
     }
@@ -175,6 +179,21 @@ class SessionViewModel @Inject constructor(
           withContext(Dispatchers.IO) {
             _session.value = repo.getSessionById(_session.value.sessionId)
           }
+        }
+      }
+
+      is SessionEvent.ReorderExercises -> {
+        val currentList = _exercises.value.toMutableList()
+        val reorderedItem = currentList.removeAt(event.from)
+        currentList.add(event.to, reorderedItem)
+
+        _exercises.value = currentList
+
+        viewModelScope.launch(Dispatchers.IO) {
+          val updatedList = currentList.mapIndexed { index, wrapper ->
+            wrapper.sessionExercise.copy(exerciseOrder = index)
+          }
+          repo.updateSessionExercises(updatedList)
         }
       }
 

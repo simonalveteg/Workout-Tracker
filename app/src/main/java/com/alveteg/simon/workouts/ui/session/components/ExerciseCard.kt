@@ -65,8 +65,9 @@ fun ExerciseCard(
   Surface(
     onClick = { onClick(exerciseWrapper) },
     color = MaterialTheme.colorScheme.surfaceContainer,
-    modifier = modifier
-      .fillMaxWidth(),
+    modifier = Modifier
+      .fillMaxWidth()
+      .then(modifier),
     shape = MaterialTheme.shapes.medium
   ) {
     Column {
