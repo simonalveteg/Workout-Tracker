@@ -174,15 +174,28 @@ fun SessionScreen(
   }
 
 
-  val deleteSessionDialog = remember { mutableStateOf(false) }
-  if (deleteSessionDialog.value) {
-    DeletionAlertDialog(onDismiss = { deleteSessionDialog.value = false }, onDelete = {
+  var deleteSessionDialog by remember { mutableStateOf(false) }
+  if (deleteSessionDialog) {
+    DeletionAlertDialog(onDismiss = { deleteSessionDialog = false }, onDelete = {
       viewModel.onEvent(SessionEvent.RemoveSession)
-      deleteSessionDialog.value = false
+      deleteSessionDialog = false
     }, title = {
       Text(text = "Delete Session?")
     }, text = {
       Text(text = "Are you sure you want to delete this session and all of its contents? This action can not be undone.")
+    })
+  }
+
+  var deleteSetDialog by remember { mutableStateOf(false) }
+  if (deleteSetDialog) {
+    DeletionAlertDialog(onDismiss = { deleteSetDialog = false }, onDelete = {
+      openSetBottomSheet?.set?.let { viewModel.onEvent(SessionEvent.DeleteSet(it)) }
+      deleteSetDialog = false
+      openSetBottomSheet = null
+    }, title = {
+      Text(text = "Delete Set?")
+    }, text = {
+      Text(text = "Are you sure you want to delete this set? This action can not be undone.")
     })
   }
 
@@ -253,6 +266,7 @@ fun SessionScreen(
       setWrapper = setWrapper,
       setHistory = setHistory,
       sheetState = setBottomSheetState,
+      onDeleteSet = { deleteSetDialog = true },
       onEvent = viewModel::onEvent,
     ) { openSetBottomSheet = null }
   }
@@ -318,7 +332,7 @@ fun SessionScreen(
             sessionWrapper = session,
             screenUnlocked = screenUnlocked,
             muscleGroups = muscleGroups,
-            onDeleteSession = { deleteSessionDialog.value = true },
+            onDeleteSession = { deleteSessionDialog = true },
             onEndTime = { endTimeDialogState.show() },
             onStartTime = { startTimeDialogState.show() },
             timerState = timerState,
