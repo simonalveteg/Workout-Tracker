@@ -7,6 +7,9 @@ import android.content.IntentFilter
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.ArcMode
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -280,9 +283,9 @@ fun SessionScreen(
                 animatedVisibilityScope = animatedVisibilityScope
               ),
             titleModifier = Modifier
-              .sharedElement(
+              .sharedBounds(
                 sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-title-${session.session.sessionId}"),
-                animatedVisibilityScope = animatedVisibilityScope
+                animatedVisibilityScope = animatedVisibilityScope,
               ),
             sessionWrapper = session,
             screenUnlocked = screenUnlocked,
