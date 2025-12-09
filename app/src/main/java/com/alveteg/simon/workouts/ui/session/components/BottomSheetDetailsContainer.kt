@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 fun BottomSheetDetailsContainer(
   text: String = "",
   modifier: Modifier = Modifier,
+  titleInset: Dp = 0.dp,
   content: @Composable () -> Unit
 ) {
   Column(
@@ -23,7 +25,7 @@ fun BottomSheetDetailsContainer(
       Text(
         text = text,
         style = MaterialTheme.typography.titleMediumEmphasized,
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = titleInset)
       )
     }
     content()

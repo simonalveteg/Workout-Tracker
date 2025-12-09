@@ -33,7 +33,8 @@ fun RpeInput(
 ) {
   BottomSheetDetailsContainer(
     text = "RPE",
-    modifier = modifier.animateContentSize()
+    modifier = modifier.animateContentSize(),
+    titleInset = 16.dp
   ) {
     val rpeLevels = Rpe.getRpeLevels()
     val listState = rememberLazyListState()

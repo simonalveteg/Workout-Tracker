@@ -4,14 +4,12 @@ import com.alveteg.simon.workouts.db.entities.Exercise
 import com.alveteg.simon.workouts.utils.Event
 
 sealed class PickerEvent : Event {
-  data class ExerciseSelected(val exercise: Exercise) : PickerEvent()
   data class OpenGuide(val exercise: Exercise) : PickerEvent()
+  data class ToggleSelectExercise(val exercise: Exercise) : PickerEvent()
+  data class ToggleSelectMuscle(val muscle: String) : PickerEvent()
+  data class ToggleSelectEquipment(val equipment: String) : PickerEvent()
+  data class UpdateSearchText(val text: String) : PickerEvent()
   object FilterSelected : PickerEvent()
-  object FilterUsed : PickerEvent()
-  data class SelectMuscle(val muscle: String) : PickerEvent()
-  object DeselectMuscles : PickerEvent()
-  data class SelectEquipment(val equipment: String) : PickerEvent()
-  object DeselectEquipment : PickerEvent()
+  object DeselectFilters : PickerEvent()
   object AddExercises : PickerEvent()
-  data class SearchChanged(val text: String) : PickerEvent()
 }

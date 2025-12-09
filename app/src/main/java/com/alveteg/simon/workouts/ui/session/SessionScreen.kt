@@ -286,6 +286,7 @@ fun SessionScreen(
         it.sessionExercise.sessionExerciseId == openExerciseBottomSheet?.sessionExercise?.sessionExerciseId
       }!!
     }
+
     SessionBottomSheet(
       onDismissRequest = { openExerciseBottomSheet = null },
       title = exerciseWrapper.exercise.title,

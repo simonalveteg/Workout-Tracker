@@ -3,7 +3,6 @@ package com.alveteg.simon.workouts.ui.session.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.ui.TimerState
 import com.alveteg.simon.workouts.ui.home.components.SessionDate
-import com.alveteg.simon.workouts.utils.ScaleAndSlideVisibility
+import com.alveteg.simon.workouts.utils.ScaleAndSlideHorizontallyVisibility
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -196,7 +195,7 @@ fun SessionHeader(
             .size(18.dp),
         )
       }
-      ScaleAndSlideVisibility(visible = screenUnlocked) {
+      ScaleAndSlideHorizontallyVisibility(visible = screenUnlocked) {
         HeaderItem(
           modifier = Modifier
             .padding(end = 8.dp)

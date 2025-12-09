@@ -2,10 +2,17 @@ package com.alveteg.simon.workouts.db
 
 import com.alveteg.simon.workouts.db.entities.*
 import com.alveteg.simon.workouts.ui.DatabaseModel
+import com.alveteg.simon.workouts.ui.ExerciseWrapper
+import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.utils.turnTargetIntoMuscleGroups
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.collections.filter
+import kotlin.collections.mapNotNull
+import kotlin.collections.sortedByDescending
 
 
 class GymRepository(
@@ -30,6 +37,28 @@ class GymRepository(
   fun getExercisesForSession(session: Flow<Session>): Flow<List<SessionExerciseWithExercise>> {
     return session.flatMapLatest {
       dao.getExercisesForSession(it.sessionId)
+    }
+  }
+
+  suspend fun getHistoryForExercise(exercise: Exercise): List<Pair<SessionWrapper, ExerciseWrapper>>  {
+    return withContext(Dispatchers.IO) {
+      val allSessionExercises = getAllSessionExercises().first()
+      val relevantSessionExercises = allSessionExercises.filter { it.exercise.id == exercise.id }
+
+      relevantSessionExercises
+        .mapNotNull { sessionExercise ->
+          getSessionById(sessionExercise.sessionExercise.parentSessionId)?.let { session ->
+            val sets =
+              getSetsForExercise(sessionExercise.sessionExercise.sessionExerciseId).first()
+            val sessionWrapper = SessionWrapper(session, emptyList())
+            val exerciseWrapper = ExerciseWrapper(
+              sessionExercise = sessionExercise.sessionExercise, exercise = exercise, sets = sets
+            )
+
+            sessionWrapper to exerciseWrapper
+          }
+        }
+        .sortedByDescending { it.first.session.start }
     }
   }
 

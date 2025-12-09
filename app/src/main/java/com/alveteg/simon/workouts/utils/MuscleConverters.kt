@@ -10,7 +10,7 @@ fun turnTargetIntoMuscleGroups(targets: List<String>): List<String> {
 }
 
 fun turnTargetIntoMuscleGroups(targets: String): List<String> {
-  return targets.split("|").map { target ->
+  return targets.split("|").filterNot { it.isBlank() }.map { target ->
     when (target) {
       "Adductor Magnus, ischial fibers" -> MuscleGroup.HIPS
       "Adductors, Hip" -> MuscleGroup.HIPS

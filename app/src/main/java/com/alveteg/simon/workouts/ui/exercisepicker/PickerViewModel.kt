@@ -32,8 +32,6 @@ class PickerViewModel @Inject constructor(
   private val _filterSelected = MutableStateFlow(false)
   val filterSelected = _filterSelected.asStateFlow()
 
-  private val _filterUsed = MutableStateFlow(false)
-  val filterUsed = _filterUsed.asStateFlow()
 
   private val _searchText = MutableStateFlow("")
   val searchText = _searchText.asStateFlow()
@@ -44,9 +42,8 @@ class PickerViewModel @Inject constructor(
     equipmentFilter,
     muscleFilter,
     filterSelected,
-    filterUsed,
     searchText
-  ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, used, text ->
+  ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, text ->
     exercises.filter { exercise ->
       val muscleCondition =
         (muscleFilter.isEmpty() || exercise.getMuscleGroups().any { muscleFilter.contains(it) })
@@ -64,10 +61,12 @@ class PickerViewModel @Inject constructor(
     }
   }
 
+  suspend fun getHistoryForExercise(exercise: Exercise) = repo.getHistoryForExercise(exercise)
+
   fun onEvent(event: Event) {
     when (event) {
       is PickerEvent.OpenGuide -> openGuide(event.exercise)
-      is PickerEvent.ExerciseSelected -> {
+      is PickerEvent.ToggleSelectExercise -> {
         _selectedExercises.value = buildList {
           if (_selectedExercises.value.contains(event.exercise)) {
             addAll(_selectedExercises.value.minusElement(event.exercise))
@@ -80,28 +79,23 @@ class PickerViewModel @Inject constructor(
       is PickerEvent.FilterSelected -> {
         _filterSelected.value = !_filterSelected.value
       }
-      is PickerEvent.FilterUsed -> {
-        _filterUsed.value = !_filterUsed.value
-      }
-      is PickerEvent.SelectMuscle -> {
+      is PickerEvent.ToggleSelectMuscle -> {
         _muscleFilter.value = if (_muscleFilter.value.contains(event.muscle)) {
           _muscleFilter.value.minus(event.muscle)
         } else {
           _muscleFilter.value.plus(event.muscle)
         }
       }
-      is PickerEvent.DeselectMuscles -> {
+      is PickerEvent.DeselectFilters -> {
         _muscleFilter.value = emptyList()
+        _equipmentFilter.value = emptyList()
       }
-      is PickerEvent.SelectEquipment -> {
+      is PickerEvent.ToggleSelectEquipment -> {
         _equipmentFilter.value = if (_equipmentFilter.value.contains(event.equipment)) {
           _equipmentFilter.value.minus(event.equipment)
         } else {
           _equipmentFilter.value.plus(event.equipment)
         }
-      }
-      is PickerEvent.DeselectEquipment -> {
-        _equipmentFilter.value = emptyList()
       }
       is PickerEvent.AddExercises -> {
         viewModelScope.launch {
@@ -117,7 +111,7 @@ class PickerViewModel @Inject constructor(
           }
         }
       }
-      is PickerEvent.SearchChanged -> {
+      is PickerEvent.UpdateSearchText -> {
         _searchText.value = event.text
       }
     }
@@ -137,15 +131,14 @@ class PickerViewModel @Inject constructor(
   }
 }
 
-inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
+inline fun <T1, T2, T3, T4, T5, T6, R> combine(
   flow: Flow<T1>,
   flow2: Flow<T2>,
   flow3: Flow<T3>,
   flow4: Flow<T4>,
   flow5: Flow<T5>,
   flow6: Flow<T6>,
-  flow7: Flow<T7>,
-  crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7) -> R
+  crossinline transform: suspend (T1, T2, T3, T4, T5, T6) -> R
 ): Flow<R> {
   return combine(
     flow,
@@ -154,7 +147,6 @@ inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     flow4,
     flow5,
     flow6,
-    flow7
   ) { args: Array<*> ->
     @Suppress("UNCHECKED_CAST")
     transform(
@@ -164,7 +156,6 @@ inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
       args[3] as T4,
       args[4] as T5,
       args[5] as T6,
-      args[6] as T7,
     )
   }
 }

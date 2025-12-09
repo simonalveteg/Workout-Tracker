@@ -27,7 +27,8 @@ fun SetHistory(
 ) {
 
   BottomSheetDetailsContainer(
-    modifier = modifier
+    modifier = modifier,
+    titleInset = 16.dp
   ) {
     LazyRow(
       modifier = modifier

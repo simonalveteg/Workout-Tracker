@@ -69,29 +69,7 @@ class SessionViewModel @Inject constructor(
     }
   }
 
-  suspend fun getHistoryForExercise(exercise: Exercise): List<Pair<SessionWrapper, ExerciseWrapper>> {
-    return withContext(Dispatchers.IO) {
-
-      val allSessionExercises = repo.getAllSessionExercises().first()
-      val relevantSessionExercises = allSessionExercises.filter { it.exercise.id == exercise.id }
-
-      relevantSessionExercises
-        .mapNotNull { sessionExercise ->
-          repo.getSessionById(sessionExercise.sessionExercise.parentSessionId)?.let { session ->
-            val sets =
-              repo.getSetsForExercise(sessionExercise.sessionExercise.sessionExerciseId).first()
-            val sessionWrapper = SessionWrapper(session, emptyList())
-            val exerciseWrapper = ExerciseWrapper(
-              sessionExercise = sessionExercise.sessionExercise, exercise = exercise, sets = sets
-            )
-
-            sessionWrapper to exerciseWrapper
-          }
-        }
-        .sortedByDescending { it.first.session.start }
-    }
-  }
-
+  suspend fun getHistoryForExercise(exercise: Exercise) = repo.getHistoryForExercise(exercise)
 
   fun onEvent(event: Event) {
     when (event) {

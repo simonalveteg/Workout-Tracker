@@ -1,39 +1,71 @@
 package com.alveteg.simon.workouts.ui.exercisepicker
 
-import androidx.compose.animation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessibilityNew
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalFloatingToolbar
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.alveteg.simon.workouts.ui.exercisepicker.components.EquipmentSheet
+import com.alveteg.simon.workouts.db.Equipment
+import com.alveteg.simon.workouts.db.MuscleGroup
 import com.alveteg.simon.workouts.ui.exercisepicker.components.ExerciseCard
-import com.alveteg.simon.workouts.ui.exercisepicker.components.MuscleSheet
-import com.alveteg.simon.workouts.ui.modalbottomsheet.ModalBottomSheetLayout
-import com.alveteg.simon.workouts.ui.modalbottomsheet.ModalBottomSheetValue
-import com.alveteg.simon.workouts.ui.modalbottomsheet.rememberModalBottomSheetState
-import com.alveteg.simon.workouts.ui.theme.onlyTop
+import com.alveteg.simon.workouts.ui.exercisepicker.components.FilterSection
+import com.alveteg.simon.workouts.utils.ScaleAndSlideVerticallyVisibility
+import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
-import com.alveteg.simon.workouts.utils.clearFocusOnKeyboardDismiss
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+  ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+  ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 fun ExercisePickerScreen(
   navController: NavController,
@@ -44,11 +76,11 @@ fun ExercisePickerScreen(
   val muscleFilter by viewModel.muscleFilter.collectAsState()
   val equipmentFilter by viewModel.equipmentFilter.collectAsState()
   val filterSelected by viewModel.filterSelected.collectAsState()
-  val filterUsed by viewModel.filterUsed.collectAsState()
   val searchText by viewModel.searchText.collectAsState()
 
   val controller = LocalSoftwareKeyboardController.current
   val uriHandler = LocalUriHandler.current
+  val filterActive = equipmentFilter.isNotEmpty() || muscleFilter.isNotEmpty()
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
@@ -56,194 +88,191 @@ fun ExercisePickerScreen(
         is UiEvent.OpenWebsite -> {
           uriHandler.openUri(event.url)
         }
+
         else -> Unit
       }
     }
   }
 
-  val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-  val coroutineScope = rememberCoroutineScope()
-  val equipmentBottomsheet = remember { mutableStateOf(false) }
-  val filterColors = FilterChipDefaults.filterChipColors(
-    selectedContainerColor = MaterialTheme.colorScheme.primary,
-    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-    selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    iconColor = MaterialTheme.colorScheme.onSurfaceVariant
-  )
+  var openFilterSheet by rememberSaveable { mutableStateOf(false) }
+  var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
+  val filterSheetState =
+    rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
-  ModalBottomSheetLayout(
-    sheetContent = {
-      if (equipmentBottomsheet.value) {
-        EquipmentSheet(equipmentFilter, viewModel::onEvent)
-      } else {
-        MuscleSheet(muscleFilter, viewModel::onEvent)
+  val coroutineScope = rememberCoroutineScope()
+
+  if (openFilterSheet) {
+    ModalBottomSheet(
+      sheetState = filterSheetState,
+      onDismissRequest = { openFilterSheet = false },
+    ) {
+      Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.padding(horizontal = 8.dp)
+      ) {
+        IconButton(
+          onClick = {
+            viewModel.onEvent(PickerEvent.DeselectFilters)
+          }
+        ) {
+          Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = "Clear filter selection"
+          )
+        }
+        FilterSection(
+          title = "Muscle Group",
+          filterOptions = MuscleGroup.getAllMuscleGroups().sorted(),
+          onFilterClicked = { viewModel.onEvent(PickerEvent.ToggleSelectMuscle(it)) },
+          selectedFilterOptions = muscleFilter
+        )
+        FilterSection(
+          title = "Equipment",
+          filterOptions = Equipment.getAllEquipment().sorted(),
+          onFilterClicked = { viewModel.onEvent(PickerEvent.ToggleSelectEquipment(it)) },
+          selectedFilterOptions = equipmentFilter
+        )
+      }
+    }
+  }
+
+  val lazyListState = rememberLazyListState()
+  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+  val searchBarFocusRequester = remember { FocusRequester() }
+
+  Scaffold(
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      TopAppBar(
+        title = {
+          SearchBar(
+            inputField = {
+              SearchBarDefaults.InputField(
+                query = searchText,
+                onQueryChange = {
+                  viewModel.onEvent(PickerEvent.UpdateSearchText(it))
+                },
+                onSearch = {
+                  controller?.hide()
+                },
+                expanded = true,
+                onExpandedChange = { },
+                placeholder = { Text(text = "Search exercises") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                trailingIcon = {
+                  ScaleVisibility(visible = searchText.isNotEmpty()) {
+                    IconButton(
+                      onClick = {
+                        viewModel.onEvent(PickerEvent.UpdateSearchText(""))
+                      }) {
+                      Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear search bar."
+                      )
+                    }
+                  }
+                },
+                modifier = Modifier.focusRequester(searchBarFocusRequester)
+              )
+            },
+            expanded = false,
+            onExpandedChange = { },
+            modifier = Modifier.padding(bottom = 8.dp),
+          ) { }
+        },
+        contentPadding = PaddingValues(horizontal = 8.dp),
+        scrollBehavior = scrollBehavior
+      )
+    },
+    floatingActionButton = {
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        VerticalFloatingToolbar(
+          modifier = Modifier
+            .zIndex(1f),
+          expanded = scrollBehavior.state.collapsedFraction < 1f,
+          leadingContent = {
+            ScaleVisibility(visible = selectedExercises.isNotEmpty()) {
+              val containerColor by animateColorAsState(
+                targetValue =
+                  if (filterSelected) MaterialTheme.colorScheme.secondaryContainer
+                  else MaterialTheme.colorScheme.surfaceContainer
+              )
+              val contentColor by animateColorAsState(
+                targetValue =
+                  if (filterSelected) MaterialTheme.colorScheme.onSecondaryContainer
+                  else MaterialTheme.colorScheme.onSurface
+              )
+              FilledTonalIconButton(
+                onClick = {
+                  viewModel.onEvent(PickerEvent.FilterSelected)
+                },
+                colors = IconButtonDefaults.filledTonalIconButtonColors(
+                  contentColor = contentColor,
+                  containerColor = containerColor
+                )
+              ) {
+                Text(
+                  text = selectedExercises.size.toString()
+                )
+              }
+            }
+
+            IconButton(
+              colors = IconButtonDefaults.iconButtonColors(
+                containerColor = if (filterActive) MaterialTheme.colorScheme.secondaryContainer else {
+                  Color.Transparent
+                },
+                contentColor = if (filterActive) MaterialTheme.colorScheme.onSecondaryContainer else {
+                  MaterialTheme.colorScheme.onSurface
+                }
+              ),
+              onClick = { openFilterSheet = true },
+            ) {
+              Icon(Icons.Filled.FilterList, contentDescription = "Filter results.")
+            }
+            IconButton(
+              onClick = {
+                searchBarFocusRequester.requestFocus()
+                controller?.show()
+              },
+            ) {
+              Icon(Icons.Filled.Search, contentDescription = "Focus search bar.")
+            }
+          }
+        ) {
+          FilledIconButton(
+            onClick = {
+              viewModel.onEvent(PickerEvent.AddExercises)
+              navController.popBackStack()
+            },
+          ) {
+            Icon(
+              imageVector = Icons.Default.Check,
+              contentDescription = "Add selected exercises to session."
+            )
+          }
+        }
       }
     },
-    sheetState = sheetState,
-    sheetShape = MaterialTheme.shapes.large.onlyTop()
-  ) {
-    Scaffold(
-      floatingActionButton = {
-        Box(
-          modifier = Modifier
-            .height(64.dp)
-            .width(80.dp)
+  ) { innerPadding ->
+    LazyColumn(
+      state = lazyListState,
+      verticalArrangement = Arrangement.spacedBy(4.dp),
+      contentPadding = PaddingValues(horizontal = 12.dp),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding)
+    ) {
+      items(exercises) {
+        ExerciseCard(
+          exercise = it,
+          selected = selectedExercises.contains(it),
+          modifier = Modifier.animateItem()
         ) {
-          AnimatedVisibility(
-            visible = selectedExercises.isNotEmpty(),
-            enter = scaleIn() + fadeIn(),
-            exit = scaleOut() + fadeOut()
-          ) {
-            FloatingActionButton(
-              onClick = {
-                viewModel.onEvent(PickerEvent.AddExercises)
-                navController.popBackStack()
-              },
-              containerColor = MaterialTheme.colorScheme.primary,
-              modifier = Modifier.align(Alignment.BottomEnd)
-            ) {
-              Text(
-                text = "ADD ${selectedExercises.size}",
-                modifier = Modifier
-                  .padding(vertical = 4.dp, horizontal = 10.dp)
-                  .fillMaxWidth(),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Center
-              )
-            }
-          }
-        }
-      },
-      topBar = {
-        Surface(
-          shape = CutCornerShape(0.dp),
-          tonalElevation = 2.dp
-        ) {
-          Column {
-            Spacer(Modifier.height(40.dp))
-            TextField(
-              value = searchText,
-              label = {
-                Text(
-                  text = "search for exercise",
-                  textAlign = TextAlign.Center,
-                  modifier = Modifier.fillMaxWidth()
-                )
-              },
-              onValueChange = { viewModel.onEvent(PickerEvent.SearchChanged(it)) },
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, start = 8.dp, end = 8.dp)
-                .clearFocusOnKeyboardDismiss()
-                .align(Alignment.CenterHorizontally),
-              colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-              ),
-              shape = RoundedCornerShape(8.dp),
-              textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
-            )
-            Row(
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 8.dp, bottom = 0.dp),
-              horizontalArrangement = Arrangement.End
-            ) {
-              FilterChip(
-                selected = filterSelected,
-                onClick = { viewModel.onEvent(PickerEvent.FilterSelected) },
-                label = {
-                  Text(text = "Selected")
-                },
-                colors = filterColors
-              )
-              Spacer(Modifier.width(8.dp))
-              FilterChip(
-                selected = filterUsed,
-                onClick = { viewModel.onEvent(PickerEvent.FilterUsed) },
-                label = {
-                  Text(text = "Used")
-                },
-                colors = filterColors
-              )
-              Spacer(Modifier.width(8.dp))
-              FilterChip(
-                selected = muscleFilter.isNotEmpty(),
-                onClick = {
-                  equipmentBottomsheet.value = false
-                  coroutineScope.launch {
-                    if (sheetState.isVisible) sheetState.hide() else {
-                      controller?.hide()
-                      sheetState.expand()
-                    }
-                  }
-                },
-                label = {
-                  Icon(
-                    imageVector = Icons.Default.AccessibilityNew,
-                    contentDescription = "Equipment",
-                    modifier = Modifier.size(18.dp)
-                  )
-                },
-                trailingIcon = {
-                  Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown",
-                    modifier = Modifier.size(22.dp)
-                  )
-                },
-                colors = filterColors
-              )
-              Spacer(Modifier.width(8.dp))
-              FilterChip(
-                selected = equipmentFilter.isNotEmpty(),
-                onClick = {
-                  equipmentBottomsheet.value = true
-                  coroutineScope.launch {
-                    if (sheetState.isVisible) sheetState.hide() else {
-                      controller?.hide()
-                      sheetState.show()
-                    }
-                  }
-                },
-                label = {
-                  Icon(
-                    imageVector = Icons.Default.FitnessCenter,
-                    contentDescription = "Equipment",
-                    modifier = Modifier.size(18.dp)
-                  )
-                },
-                trailingIcon = {
-                  Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown",
-                    modifier = Modifier.size(22.dp)
-                  )
-                },
-                colors = filterColors
-              )
-            }
-          }
-        }
-      },
-    ) { paddingValues ->
-      LazyColumn(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(horizontal = 8.dp)
-      ) {
-        item {
-          Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 8.dp))
-        }
-        items(exercises) { exercise ->
-          ExerciseCard(
-            exercise = exercise,
-            selected = selectedExercises.contains(exercise),
-            onEvent = viewModel::onEvent
-          ) {
-            viewModel.onEvent(PickerEvent.ExerciseSelected(exercise))
-          }
+          viewModel.onEvent(PickerEvent.ToggleSelectExercise(it))
         }
       }
     }
