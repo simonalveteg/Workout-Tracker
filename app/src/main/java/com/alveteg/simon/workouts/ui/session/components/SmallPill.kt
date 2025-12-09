@@ -13,8 +13,8 @@ import com.alveteg.simon.workouts.ui.theme.Shapes
 @Composable
 fun SmallPill(text: String, modifier: Modifier = Modifier) {
   Surface(
-    shape = Shapes.small,
-    tonalElevation = LocalAbsoluteTonalElevation.current + 1.dp,
+    shape = MaterialTheme.shapes.small,
+    color = MaterialTheme.colorScheme.secondaryContainer,
     modifier = modifier
   ) {
     Text(

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SetDetailsContainer(
+fun BottomSheetDetailsContainer(
   text: String = "",
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit

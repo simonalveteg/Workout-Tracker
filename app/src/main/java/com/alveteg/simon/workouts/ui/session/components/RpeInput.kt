@@ -1,19 +1,12 @@
 package com.alveteg.simon.workouts.ui.session.components
 
-import androidx.activity.result.launch
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +31,7 @@ fun RpeInput(
   onEvent: (SessionEvent) -> Unit,
   modifier: Modifier = Modifier
 ) {
-  SetDetailsContainer(
+  BottomSheetDetailsContainer(
     text = "RPE",
     modifier = modifier.animateContentSize()
   ) {

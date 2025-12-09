@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.SessionWrapper
@@ -27,7 +26,7 @@ fun SetHistory(
   modifier: Modifier = Modifier
 ) {
 
-  SetDetailsContainer(
+  BottomSheetDetailsContainer(
     modifier = modifier
   ) {
     LazyRow(

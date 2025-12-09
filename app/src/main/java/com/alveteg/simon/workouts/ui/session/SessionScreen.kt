@@ -7,22 +7,28 @@ import android.content.IntentFilter
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -43,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alveteg.simon.workouts.db.entities.Session
-import com.alveteg.simon.workouts.db.entities.SessionExercise
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerAction
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
@@ -55,8 +60,12 @@ import com.alveteg.simon.workouts.ui.datetimedialog.rememberMaterialDialogState
 import com.alveteg.simon.workouts.ui.datetimedialog.time.timepicker
 import com.alveteg.simon.workouts.ui.session.components.DeletionAlertDialog
 import com.alveteg.simon.workouts.ui.session.components.ExerciseCard
+import com.alveteg.simon.workouts.ui.session.components.ExerciseDetail
+import com.alveteg.simon.workouts.ui.session.components.MuscleList
+import com.alveteg.simon.workouts.ui.session.components.SessionBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.SessionHeader
 import com.alveteg.simon.workouts.ui.session.components.SetBottomSheet
+import com.alveteg.simon.workouts.ui.session.components.SmallPill
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
@@ -80,7 +89,7 @@ fun SessionScreen(
   val context = LocalContext.current
 
   var openSetBottomSheet by rememberSaveable { mutableStateOf<SetWrapper?>(null) }
-  var openExerciseBottomSheet by rememberSaveable { mutableStateOf<SessionExercise?>(null) }
+  var openExerciseBottomSheet by rememberSaveable { mutableStateOf<ExerciseWrapper?>(null) }
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
@@ -181,6 +190,19 @@ fun SessionScreen(
     })
   }
 
+  var deleteExerciseDialog by remember { mutableStateOf(false) }
+  if (deleteExerciseDialog) {
+    DeletionAlertDialog(onDismiss = { deleteExerciseDialog = false }, onDelete = {
+      openExerciseBottomSheet?.let { viewModel.onEvent(SessionEvent.RemoveExercise(it)) }
+      deleteExerciseDialog = false
+      openExerciseBottomSheet = null
+    }, title = {
+      Text(text = "Delete Exercise?")
+    }, text = {
+      Text(text = "Are you sure you want to delete this exercise and all its sets from the session? This action can not be undone.")
+    })
+  }
+
   var deleteSetDialog by remember { mutableStateOf(false) }
   if (deleteSetDialog) {
     DeletionAlertDialog(onDismiss = { deleteSetDialog = false }, onDelete = {
@@ -247,34 +269,58 @@ fun SessionScreen(
       }
     }
 
-
-    var setHistory by remember {
-      mutableStateOf<List<Pair<SessionWrapper, ExerciseWrapper>>>(emptyList())
-    }
-
-    LaunchedEffect(Unit, setWrapper) {
-      setHistory = viewModel.getHistoryForExercise(setWrapper.exerciseWrapper.exercise)
-        .filter { it.first.session.sessionId != session.session.sessionId }
-    }
-
     SetBottomSheet(
       setWrapper = setWrapper,
-      setHistory = setHistory,
+      sessionWrapper = session,
+      exerciseWrapper = setWrapper.exerciseWrapper,
       sheetState = setBottomSheetState,
+      getSetHistory = viewModel::getHistoryForExercise,
       onDeleteSet = { deleteSetDialog = true },
       onEvent = viewModel::onEvent,
     ) { openSetBottomSheet = null }
   }
+
   if (openExerciseBottomSheet != null) {
-    ModalBottomSheet(
+    val exerciseWrapper = remember(exercises, openExerciseBottomSheet) {
+      exercises.find {
+        it.sessionExercise.sessionExerciseId == openExerciseBottomSheet?.sessionExercise?.sessionExerciseId
+      }!!
+    }
+    SessionBottomSheet(
       onDismissRequest = { openExerciseBottomSheet = null },
+      title = exerciseWrapper.exercise.title,
+      sessionWrapper = session,
       sheetState = exerciseBottomSheetState,
+      exerciseWrapper = exerciseWrapper,
+      getSetHistory = viewModel::getHistoryForExercise,
+      onDelete = { deleteExerciseDialog = true },
+      onDeleteDescription = "Delete Exercise from Session.",
     ) {
-      (1..4).forEach {
-        Text(
-          text = "Hello $it"
+      Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+      ) {
+        ExerciseDetail(
+          text = exerciseWrapper.exercise.equipment.joinToString(", "),
+          icon = Icons.Default.FitnessCenter
+        )
+        ExerciseDetail(
+          text = exerciseWrapper.exercise.force.joinToString(", "),
+          icon = Icons.Default.Height
         )
       }
+      MuscleList(
+        label = "Primary Muscles",
+        items = exerciseWrapper.exercise.targets.filterNot { it.isBlank() }
+      )
+      MuscleList(
+        label = "Secondary Muscles",
+        items = exerciseWrapper.exercise.synergists.filterNot { it.isBlank() }
+      )
+      MuscleList(
+        label = "Stabilizing Muscles",
+        items = exerciseWrapper.exercise.stabilizers.filterNot { it.isBlank() }
+      )
     }
   }
 
@@ -363,6 +409,7 @@ fun SessionScreen(
               modifier = Modifier
                 .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
                 .longPressDraggableHandle(
+                  enabled = screenUnlocked,
                   onDragStarted = {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
                   },
@@ -373,7 +420,7 @@ fun SessionScreen(
               exerciseWrapper = exercise,
               editable = screenUnlocked,
               onEvent = viewModel::onEvent,
-              onClick = { openExerciseBottomSheet = it.sessionExercise },
+              onClick = { openExerciseBottomSheet = it },
               onSetClicked = { openSetBottomSheet = it })
           }
         }
