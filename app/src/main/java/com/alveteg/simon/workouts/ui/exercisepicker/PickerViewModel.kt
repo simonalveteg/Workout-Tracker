@@ -49,9 +49,10 @@ class PickerViewModel @Inject constructor(
         (muscleFilter.isEmpty() || exercise.getMuscleGroups().any { muscleFilter.contains(it) })
       val equipmentCondition =
         (equipmentFilter.isEmpty() || exercise.equipment.any { equipmentFilter.contains(it) })
-      val selectedCondition = (!selected || selectedExercises.contains(exercise))
 
-      muscleCondition && equipmentCondition && selectedCondition && exercise.getStringMatch(text)
+      if (selected) selectedExercises.contains(exercise)
+      else muscleCondition && equipmentCondition && exercise.getStringMatch(text)
+
     }.sortedBy { exercise ->
       if (text.isNotBlank()) {
         exercise.title.length
@@ -76,9 +77,11 @@ class PickerViewModel @Inject constructor(
           }
         }
       }
+
       is PickerEvent.FilterSelected -> {
         _filterSelected.value = !_filterSelected.value
       }
+
       is PickerEvent.ToggleSelectMuscle -> {
         _muscleFilter.value = if (_muscleFilter.value.contains(event.muscle)) {
           _muscleFilter.value.minus(event.muscle)
@@ -86,10 +89,12 @@ class PickerViewModel @Inject constructor(
           _muscleFilter.value.plus(event.muscle)
         }
       }
+
       is PickerEvent.DeselectFilters -> {
         _muscleFilter.value = emptyList()
         _equipmentFilter.value = emptyList()
       }
+
       is PickerEvent.ToggleSelectEquipment -> {
         _equipmentFilter.value = if (_equipmentFilter.value.contains(event.equipment)) {
           _equipmentFilter.value.minus(event.equipment)
@@ -97,6 +102,7 @@ class PickerViewModel @Inject constructor(
           _equipmentFilter.value.plus(event.equipment)
         }
       }
+
       is PickerEvent.AddExercises -> {
         viewModelScope.launch {
           _selectedExercises.value.forEach { exercise ->
@@ -111,6 +117,7 @@ class PickerViewModel @Inject constructor(
           }
         }
       }
+
       is PickerEvent.UpdateSearchText -> {
         _searchText.value = event.text
       }

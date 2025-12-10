@@ -226,13 +226,13 @@ fun ExercisePickerScreen(
                 )
               }
             }
-
+            val showHighlight = filterActive && !filterSelected
             IconButton(
               colors = IconButtonDefaults.iconButtonColors(
-                containerColor = if (filterActive) MaterialTheme.colorScheme.secondaryContainer else {
+                containerColor = if (showHighlight) MaterialTheme.colorScheme.secondaryContainer else {
                   Color.Transparent
                 },
-                contentColor = if (filterActive) MaterialTheme.colorScheme.onSecondaryContainer else {
+                contentColor = if (showHighlight) MaterialTheme.colorScheme.onSecondaryContainer else {
                   MaterialTheme.colorScheme.onSurface
                 }
               ),
