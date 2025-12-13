@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -60,11 +61,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.alveteg.simon.workouts.db.Equipment
 import com.alveteg.simon.workouts.db.MuscleGroup
+import com.alveteg.simon.workouts.db.entities.Exercise
+import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.exercisepicker.components.ExerciseCard
 import com.alveteg.simon.workouts.ui.exercisepicker.components.FilterSection
+import com.alveteg.simon.workouts.ui.session.components.ExerciseBottomSheet
 import com.alveteg.simon.workouts.utils.ScaleAndSlideVerticallyVisibility
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
+import kotlinx.coroutines.flow.first
 
 @OptIn(
   ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
@@ -86,7 +91,7 @@ fun ExercisePickerScreen(
   val uriHandler = LocalUriHandler.current
   val filterActive = equipmentFilter.isNotEmpty() || muscleFilter.isNotEmpty()
 
-  LaunchedEffect(true) {
+  LaunchedEffect(Unit) {
     viewModel.uiEvent.collect { event ->
       when (event) {
         is UiEvent.OpenWebsite -> {
@@ -99,11 +104,12 @@ fun ExercisePickerScreen(
   }
 
   var openFilterSheet by rememberSaveable { mutableStateOf(false) }
+  var openExerciseBottomSheet by rememberSaveable { mutableStateOf<Exercise?>(null) }
   var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
   val filterSheetState =
     rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
-
-  val coroutineScope = rememberCoroutineScope()
+  val exerciseBottomSheetState =
+    rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
   if (openFilterSheet) {
     ModalBottomSheet(
@@ -140,9 +146,26 @@ fun ExercisePickerScreen(
     }
   }
 
+  if (openExerciseBottomSheet != null) {
+    val exercise = remember(exercises, openExerciseBottomSheet) {
+      exercises.find { it.id == openExerciseBottomSheet?.id }!!
+    }
+    ExerciseBottomSheet(
+      exercise = exercise,
+      onDismissRequest = { openExerciseBottomSheet = null },
+      getSetHistory = viewModel::getHistoryForExercise,
+      sheetState = exerciseBottomSheetState,
+    )
+  }
+
   val lazyListState = rememberLazyListState()
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val searchBarFocusRequester = remember { FocusRequester() }
+
+
+  LaunchedEffect(muscleFilter, equipmentFilter, searchText) {
+    lazyListState.scrollToItem(0)
+  }
 
   Scaffold(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -267,17 +290,18 @@ fun ExercisePickerScreen(
   ) { innerPadding ->
     LazyColumn(
       state = lazyListState,
-      verticalArrangement = Arrangement.spacedBy(4.dp),
+      verticalArrangement = Arrangement.spacedBy(8.dp),
       contentPadding = PaddingValues(horizontal = 12.dp),
       modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding)
     ) {
-      items(exercises) {
+      items(exercises, key = { it.id }) {
         ExerciseCard(
           exercise = it,
           selected = selectedExercises.contains(it),
-          modifier = Modifier.animateItem()
+          modifier = Modifier.animateItem(),
+          onLongClick = { openExerciseBottomSheet = it }
         ) {
           viewModel.onEvent(PickerEvent.ToggleSelectExercise(it))
         }

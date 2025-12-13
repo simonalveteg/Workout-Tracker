@@ -2,91 +2,117 @@ package com.alveteg.simon.workouts.ui.exercisepicker.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.alveteg.simon.workouts.db.entities.Exercise
-import com.alveteg.simon.workouts.ui.exercisepicker.PickerEvent
-import com.alveteg.simon.workouts.ui.session.actions.OpenInNewAction
-import com.alveteg.simon.workouts.ui.session.actions.OpenStatsAction
-import com.alveteg.simon.workouts.ui.session.components.SmallPill
-import com.alveteg.simon.workouts.utils.Event
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExerciseCard(
   exercise: Exercise,
   selected: Boolean,
   modifier: Modifier = Modifier,
+  onLongClick: () -> Unit = {},
   onClick: () -> Unit
 ) {
+  val color by animateColorAsState(
+    targetValue = if (selected) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surface
+  )
+  val indicatorWidth by animateDpAsState(targetValue = if (selected) 4.dp else 0.dp)
+  val indicatorHeight by animateDpAsState(targetValue = if (selected) 40.dp else 0.dp)
 
-  val targets = exercise.getMuscleGroups()
-  val equipment = exercise.equipment
-  val color by animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface)
-  val indicatorColor by animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+  val primaryMuscles = remember(exercise) {
+    exercise.getPrimaryMuscleGroups().joinToString(", ")
+  }
 
-  val localDensity = LocalDensity.current
-  var rowHeightDp by remember { mutableStateOf(0.dp) }
-
-  val indicatorHeight by animateDpAsState(targetValue = if (selected) rowHeightDp else 0.dp)
+  val secondaryMuscles = remember(exercise) {
+    val muscles = exercise.getSecondaryMuscleGroups()
+    if (muscles.size >= 4) {
+      muscles.take(3).joinToString(", ") + ", ..."
+    } else {
+      muscles.joinToString(", ")
+    }  }
 
   Row(
     modifier = modifier
-      .fillMaxWidth()
-      .onGloballyPositioned { coordinates ->
-        // Set column height using the LayoutCoordinates
-        rowHeightDp = with(localDensity) {
-          coordinates.size.height.minus(95).toDp()
-        }
-      }, verticalAlignment = Alignment.CenterVertically
+      .height(60.dp),
+    verticalAlignment = Alignment.CenterVertically
   ) {
     Surface(
-      color = indicatorColor,
-      shape = MaterialTheme.shapes.small,
       modifier = Modifier
-        .width(3.dp)
-        .height(indicatorHeight)
-    ) {}
-    Spacer(modifier = Modifier.width(4.dp))
-    Surface(
-      onClick = onClick,
-      modifier = Modifier
-        .fillMaxWidth()
-        .defaultMinSize(minHeight = 70.dp),
+        .clip(MaterialTheme.shapes.large)
+        .combinedClickable(
+          onClick = onClick,
+          onLongClick = onLongClick
+        )
+        .fillMaxHeight()
+        .weight(1f),
       color = color,
-      shape = MaterialTheme.shapes.medium
+      shape = MaterialTheme.shapes.large
     ) {
       Column(
-        modifier = Modifier.padding(start = 14.dp, top = 12.dp, bottom = 4.dp, end = 4.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+          .padding(horizontal = 12.dp)
       ) {
         Text(
           text = exercise.title,
-          modifier = Modifier.padding(bottom = 8.dp),
-          style = MaterialTheme.typography.titleMediumEmphasized
+          style = MaterialTheme.typography.bodyLargeEmphasized,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
         )
         Row(
-          modifier = Modifier.padding(bottom = 4.dp)
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          modifier = Modifier
+            .padding(top = 2.dp)
         ) {
-          targets.forEach { target ->
-            SmallPill(text = target, modifier = Modifier.padding(end = 4.dp))
+          if (primaryMuscles.isNotBlank()) {
+            Text(
+              text = primaryMuscles,
+              style = MaterialTheme.typography.labelMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
           }
-          equipment.forEach { eq ->
-            SmallPill(text = eq)
+          if (secondaryMuscles.isNotBlank()) {
+            Text(
+              text = "($secondaryMuscles)",
+              style = MaterialTheme.typography.labelMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
           }
+          Text(
+            text = "5 uses",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.secondary
+          )
         }
       }
     }
+    Surface(
+      modifier = Modifier
+        .padding(horizontal = indicatorWidth)
+        .height(indicatorHeight)
+        .width(indicatorWidth),
+      color = MaterialTheme.colorScheme.primary,
+      shape = MaterialTheme.shapes.large
+      ) { }
   }
 }

@@ -81,7 +81,7 @@ fun SetBottomSheet(
   SessionBottomSheet(
     title = "SET $setNumber",
     subtitle = exerciseName,
-    exerciseWrapper = exerciseWrapper,
+    exercise = exerciseWrapper.exercise,
     sessionWrapper = sessionWrapper,
     sheetState = sheetState,
     onDismissRequest = onDismissRequest,

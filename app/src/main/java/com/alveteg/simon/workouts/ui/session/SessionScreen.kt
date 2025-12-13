@@ -59,6 +59,7 @@ import com.alveteg.simon.workouts.ui.datetimedialog.MaterialDialog
 import com.alveteg.simon.workouts.ui.datetimedialog.rememberMaterialDialogState
 import com.alveteg.simon.workouts.ui.datetimedialog.time.timepicker
 import com.alveteg.simon.workouts.ui.session.components.DeletionAlertDialog
+import com.alveteg.simon.workouts.ui.session.components.ExerciseBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.ExerciseCard
 import com.alveteg.simon.workouts.ui.session.components.ExerciseDetail
 import com.alveteg.simon.workouts.ui.session.components.MuscleList
@@ -286,43 +287,12 @@ fun SessionScreen(
         it.sessionExercise.sessionExerciseId == openExerciseBottomSheet?.sessionExercise?.sessionExerciseId
       }!!
     }
-
-    SessionBottomSheet(
+    ExerciseBottomSheet(
+      exercise = exerciseWrapper.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
-      title = exerciseWrapper.exercise.title,
-      sessionWrapper = session,
-      sheetState = exerciseBottomSheetState,
-      exerciseWrapper = exerciseWrapper,
       getSetHistory = viewModel::getHistoryForExercise,
-      onDelete = { deleteExerciseDialog = true },
-      onDeleteDescription = "Delete Exercise from Session.",
-    ) {
-      Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-      ) {
-        ExerciseDetail(
-          text = exerciseWrapper.exercise.equipment.joinToString(", "),
-          icon = Icons.Default.FitnessCenter
-        )
-        ExerciseDetail(
-          text = exerciseWrapper.exercise.force.joinToString(", "),
-          icon = Icons.Default.Height
-        )
-      }
-      MuscleList(
-        label = "Primary Muscles",
-        items = exerciseWrapper.exercise.targets.filterNot { it.isBlank() }
-      )
-      MuscleList(
-        label = "Secondary Muscles",
-        items = exerciseWrapper.exercise.synergists.filterNot { it.isBlank() }
-      )
-      MuscleList(
-        label = "Stabilizing Muscles",
-        items = exerciseWrapper.exercise.stabilizers.filterNot { it.isBlank() }
-      )
-    }
+      sheetState = exerciseBottomSheetState,
+    )
   }
 
   with(sharedTransitionScope) {

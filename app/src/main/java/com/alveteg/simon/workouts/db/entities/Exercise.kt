@@ -21,10 +21,18 @@ data class Exercise(
   var synergists: List<String> = emptyList(),
   var stabilizers: List<String> = emptyList()
 ) : Parcelable {
-  fun getMuscleGroups(exercise: Exercise = this): List<String> {
+  fun getPrimaryMuscleGroups(exercise: Exercise = this): List<String> {
     return exercise.targets.flatMap {
       turnTargetIntoMuscleGroups(it)
     }.distinct()
+  }
+
+  fun getSecondaryMuscleGroups(exercise: Exercise = this): List<String> {
+    return exercise.synergists.flatMap {
+      turnTargetIntoMuscleGroups(it)
+    }.distinct().filterNot {
+      getPrimaryMuscleGroups().contains(it)
+    }
   }
 
   fun getStringMatch(string: String): Boolean {

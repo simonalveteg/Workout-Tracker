@@ -61,6 +61,7 @@ private val DarkColors = darkColorScheme(
   onBackground = md_theme_dark_onBackground,
   surface = md_theme_dark_surface,
   onSurface = md_theme_dark_onSurface,
+  surfaceDim = md_theme_dark_surfaceDim,
   surfaceContainer = md_theme_dark_surface_container,
   surfaceContainerLow = md_theme_dark_surface_container_low,
   surfaceContainerLowest = md_theme_dark_surface_container_lowest,

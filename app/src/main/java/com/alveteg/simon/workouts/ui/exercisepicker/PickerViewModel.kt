@@ -46,7 +46,7 @@ class PickerViewModel @Inject constructor(
   ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, text ->
     exercises.filter { exercise ->
       val muscleCondition =
-        (muscleFilter.isEmpty() || exercise.getMuscleGroups().any { muscleFilter.contains(it) })
+        (muscleFilter.isEmpty() || exercise.getPrimaryMuscleGroups().any { muscleFilter.contains(it) })
       val equipmentCondition =
         (equipmentFilter.isEmpty() || exercise.equipment.any { equipmentFilter.contains(it) })
 
@@ -68,13 +68,15 @@ class PickerViewModel @Inject constructor(
     when (event) {
       is PickerEvent.OpenGuide -> openGuide(event.exercise)
       is PickerEvent.ToggleSelectExercise -> {
-        _selectedExercises.value = buildList {
-          if (_selectedExercises.value.contains(event.exercise)) {
-            addAll(_selectedExercises.value.minusElement(event.exercise))
-          } else {
-            addAll(_selectedExercises.value)
-            add(event.exercise)
-          }
+        val currentList = _selectedExercises.value
+        val exercise = event.exercise
+        _selectedExercises.value = if (currentList.contains(exercise)) {
+          currentList - exercise
+        } else {
+          currentList + exercise
+        }
+        if (_selectedExercises.value.isEmpty()) {
+          _filterSelected.value = false
         }
       }
 

@@ -34,14 +34,14 @@ import com.alveteg.simon.workouts.ui.SessionWrapper
 @Composable
 fun SessionBottomSheet(
   modifier: Modifier = Modifier,
-  sessionWrapper: SessionWrapper,
-  exerciseWrapper: ExerciseWrapper,
+  sessionWrapper: SessionWrapper? = null,
+  exercise: Exercise,
   title: String,
   subtitle: String? = null,
   sheetState: SheetState,
   getSetHistory: suspend (Exercise) -> List<Pair<SessionWrapper, ExerciseWrapper>>,
   onDismissRequest: () -> Unit,
-  onDelete: () -> Unit,
+  onDelete: () -> Unit = {},
   onDeleteDescription: String,
   content: @Composable () -> Unit
 ) {
@@ -50,9 +50,9 @@ fun SessionBottomSheet(
     mutableStateOf<List<Pair<SessionWrapper, ExerciseWrapper>>>(emptyList())
   }
 
-  LaunchedEffect(Unit, exerciseWrapper) {
-    setHistory = getSetHistory(exerciseWrapper.exercise)
-      .filter { it.first.session.sessionId != sessionWrapper.session.sessionId }
+  LaunchedEffect(Unit, exercise) {
+    setHistory = getSetHistory(exercise)
+      .filter { it.first.session.sessionId != sessionWrapper?.session?.sessionId }
   }
 
   ModalBottomSheet(
@@ -68,14 +68,16 @@ fun SessionBottomSheet(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         ) {
-          IconButton(
-            onClick = onDelete,
-            modifier = Modifier.align(Alignment.CenterStart)
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.Delete,
-              contentDescription = onDeleteDescription
-            )
+          if (sessionWrapper != null) {
+            IconButton(
+              onClick = onDelete,
+              modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+              Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = onDeleteDescription
+              )
+            }
           }
           Column(
             horizontalAlignment = Alignment.CenterHorizontally,
