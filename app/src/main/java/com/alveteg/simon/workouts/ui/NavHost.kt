@@ -60,6 +60,8 @@ fun NavHost(
       ) {
         ExercisePickerScreen(
           navController = navController,
+          animatedVisibilityScope = this@composable,
+          sharedTransitionScope = this@SharedTransitionLayout
         )
       }
       composable(Routes.SETTINGS) {

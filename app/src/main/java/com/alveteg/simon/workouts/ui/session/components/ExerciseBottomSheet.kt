@@ -18,6 +18,8 @@ import com.alveteg.simon.workouts.ui.SessionWrapper
 @Composable
 fun ExerciseBottomSheet(
   modifier: Modifier = Modifier,
+  sessionWrapper: SessionWrapper? = null,
+  onDelete: () -> Unit = {},
   sheetState: SheetState,
   onDismissRequest: () -> Unit,
   getSetHistory: suspend (Exercise) -> List<Pair<SessionWrapper, ExerciseWrapper>>,
@@ -26,8 +28,10 @@ fun ExerciseBottomSheet(
 
   SessionBottomSheet(
     onDismissRequest = onDismissRequest,
+    sessionWrapper = sessionWrapper,
     title = exercise.title,
     sheetState = sheetState,
+    onDelete = onDelete,
     exercise = exercise,
     getSetHistory = getSetHistory,
     onDeleteDescription = "Delete Exercise from Session.",

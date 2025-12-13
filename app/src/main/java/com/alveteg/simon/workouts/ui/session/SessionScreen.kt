@@ -7,28 +7,23 @@ import android.content.IntentFilter
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -61,12 +56,8 @@ import com.alveteg.simon.workouts.ui.datetimedialog.time.timepicker
 import com.alveteg.simon.workouts.ui.session.components.DeletionAlertDialog
 import com.alveteg.simon.workouts.ui.session.components.ExerciseBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.ExerciseCard
-import com.alveteg.simon.workouts.ui.session.components.ExerciseDetail
-import com.alveteg.simon.workouts.ui.session.components.MuscleList
-import com.alveteg.simon.workouts.ui.session.components.SessionBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.SessionHeader
 import com.alveteg.simon.workouts.ui.session.components.SetBottomSheet
-import com.alveteg.simon.workouts.ui.session.components.SmallPill
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
@@ -114,13 +105,13 @@ fun SessionScreen(
     }
   }
 
-  val session by viewModel.session.collectAsState(SessionWrapper(Session(), emptyList()))
+  val sessionWrapper by viewModel.session.collectAsState(SessionWrapper(Session(), emptyList()))
   val exercises by viewModel.exercises.collectAsState(initial = emptyList())
   val muscleGroups by viewModel.muscleGroups.collectAsState(emptyList())
 
-  var screenUnlocked by remember(session) { mutableStateOf(false) }
-  LaunchedEffect(session) {
-    screenUnlocked = session.session.end == null
+  var screenUnlocked by remember(sessionWrapper) { mutableStateOf(false) }
+  LaunchedEffect(sessionWrapper) {
+    screenUnlocked = sessionWrapper.session.end == null
   }
 
   var timerState by remember { mutableStateOf(TimerState(0L, false, 0L)) }
@@ -225,7 +216,7 @@ fun SessionScreen(
       negativeButton("Cancel")
     }) {
     timepicker(
-      initialTime = session.session.start.toLocalTime(),
+      initialTime = sessionWrapper.session.start.toLocalTime(),
       is24HourClock = true,
       waitForPositiveButton = true,
       title = "Set start time"
@@ -272,7 +263,7 @@ fun SessionScreen(
 
     SetBottomSheet(
       setWrapper = setWrapper,
-      sessionWrapper = session,
+      sessionWrapper = sessionWrapper,
       exerciseWrapper = setWrapper.exerciseWrapper,
       sheetState = setBottomSheetState,
       getSetHistory = viewModel::getHistoryForExercise,
@@ -290,6 +281,8 @@ fun SessionScreen(
     ExerciseBottomSheet(
       exercise = exerciseWrapper.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
+      sessionWrapper = sessionWrapper,
+      onDelete = { deleteExerciseDialog = true },
       getSetHistory = viewModel::getHistoryForExercise,
       sheetState = exerciseBottomSheetState,
     )
@@ -298,7 +291,7 @@ fun SessionScreen(
   with(sharedTransitionScope) {
     Scaffold(
       modifier = Modifier.sharedBounds(
-        sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-${session.session.sessionId}"),
+        sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-${sessionWrapper.session.sessionId}"),
         animatedVisibilityScope = animatedVisibilityScope,
         clipInOverlayDuringTransition = OverlayClip(
           clipShape = MaterialTheme.shapes.large
@@ -307,6 +300,16 @@ fun SessionScreen(
       floatingActionButton = {
         ScaleVisibility(visible = screenUnlocked) {
           FloatingActionButton(
+            modifier = Modifier
+              .sharedBounds(
+                sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "exercisePicker"),
+                animatedVisibilityScope = animatedVisibilityScope,
+                enter = fadeIn(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()),
+                exit = fadeOut(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()),
+                clipInOverlayDuringTransition = OverlayClip(
+                  clipShape = MaterialTheme.shapes.large
+                )
+              ),
             onClick = {
               viewModel.onEvent(SessionEvent.AddExercise)
             }) {
@@ -333,15 +336,15 @@ fun SessionScreen(
               .padding(horizontal = horizontalPadding),
             dateModifier = Modifier
               .sharedElement(
-                sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-date-${session.session.sessionId}"),
+                sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-date-${sessionWrapper.session.sessionId}"),
                 animatedVisibilityScope = animatedVisibilityScope
               ),
             titleModifier = Modifier
               .sharedBounds(
-                sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-title-${session.session.sessionId}"),
+                sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "session-title-${sessionWrapper.session.sessionId}"),
                 animatedVisibilityScope = animatedVisibilityScope,
               ),
-            sessionWrapper = session,
+            sessionWrapper = sessionWrapper,
             screenUnlocked = screenUnlocked,
             muscleGroups = muscleGroups,
             onDeleteSession = { deleteSessionDialog = true },
@@ -351,7 +354,7 @@ fun SessionScreen(
             timerVisible = timerVisible,
             onTimerButtonClick = { timerVisible = !timerVisible },
             onToggleEdit = {
-              if (session.session.end == null) {
+              if (sessionWrapper.session.end == null) {
                 endTimeDialogState.show()
               } else {
                 screenUnlocked = !screenUnlocked
@@ -379,6 +382,10 @@ fun SessionScreen(
             ExerciseCard(
               modifier = Modifier
                 .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
+                .sharedElement(
+                  sharedContentState = rememberSharedContentState(key = "exercise-${exercise.exercise.id}"),
+                  animatedVisibilityScope = animatedVisibilityScope,
+                )
                 .longPressDraggableHandle(
                   enabled = screenUnlocked,
                   onDragStarted = {

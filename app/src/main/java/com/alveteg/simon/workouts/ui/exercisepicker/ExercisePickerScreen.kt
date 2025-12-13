@@ -1,5 +1,8 @@
 package com.alveteg.simon.workouts.ui.exercisepicker
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
@@ -65,11 +68,13 @@ import com.alveteg.simon.workouts.utils.UiEvent
 
 @OptIn(
   ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
-  ExperimentalMaterial3ExpressiveApi::class
+  ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class
 )
 @Composable
 fun ExercisePickerScreen(
   navController: NavController,
+  sharedTransitionScope: SharedTransitionScope,
+  animatedVisibilityScope: AnimatedVisibilityScope,
   viewModel: PickerViewModel = hiltViewModel()
 ) {
   val exercises by viewModel.filteredExercises.collectAsState(initial = emptyList())
@@ -159,143 +164,160 @@ fun ExercisePickerScreen(
     lazyListState.scrollToItem(0)
   }
 
-  Scaffold(
-    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    topBar = {
-      TopAppBar(
-        title = {
-          SearchBar(
-            inputField = {
-              SearchBarDefaults.InputField(
-                query = searchText,
-                onQueryChange = {
-                  viewModel.onEvent(PickerEvent.UpdateSearchText(it))
-                },
-                onSearch = {
-                  controller?.hide()
-                },
-                expanded = true,
-                onExpandedChange = { },
-                placeholder = { Text(text = "Search exercises") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                trailingIcon = {
-                  ScaleVisibility(visible = searchText.isNotEmpty()) {
-                    IconButton(
-                      onClick = {
-                        viewModel.onEvent(PickerEvent.UpdateSearchText(""))
-                      }) {
-                      Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear search bar."
-                      )
+  with(sharedTransitionScope) {
+    Scaffold(
+      modifier = Modifier
+        .sharedBounds(
+          sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "exercisePicker"),
+          animatedVisibilityScope = animatedVisibilityScope,
+          clipInOverlayDuringTransition = OverlayClip(
+            clipShape = MaterialTheme.shapes.large
+          )
+        )
+        .nestedScroll(scrollBehavior.nestedScrollConnection),
+      topBar = {
+        TopAppBar(
+          title = {
+            SearchBar(
+              inputField = {
+                SearchBarDefaults.InputField(
+                  query = searchText,
+                  onQueryChange = {
+                    viewModel.onEvent(PickerEvent.UpdateSearchText(it))
+                  },
+                  onSearch = {
+                    controller?.hide()
+                  },
+                  expanded = true,
+                  onExpandedChange = { },
+                  placeholder = { Text(text = "Search exercises") },
+                  leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                  trailingIcon = {
+                    ScaleVisibility(visible = searchText.isNotEmpty()) {
+                      IconButton(
+                        onClick = {
+                          viewModel.onEvent(PickerEvent.UpdateSearchText(""))
+                        }) {
+                        Icon(
+                          imageVector = Icons.Default.Clear,
+                          contentDescription = "Clear search bar."
+                        )
+                      }
                     }
+                  },
+                  modifier = Modifier.focusRequester(searchBarFocusRequester)
+                )
+              },
+              expanded = false,
+              onExpandedChange = { },
+              modifier = Modifier.padding(bottom = 8.dp),
+            ) { }
+          },
+          contentPadding = PaddingValues(horizontal = 8.dp),
+          scrollBehavior = scrollBehavior
+        )
+      },
+      floatingActionButton = {
+        Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          VerticalFloatingToolbar(
+            modifier = Modifier
+              .animateContentSize(
+                alignment = Alignment.BottomCenter
+              )
+              .zIndex(1f),
+            expanded = scrollBehavior.state.collapsedFraction < 1f,
+            leadingContent = {
+              ScaleVisibility(visible = selectedExercises.isNotEmpty()) {
+                val containerColor by animateColorAsState(
+                  targetValue =
+                    if (filterSelected) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.surfaceContainer
+                )
+                val contentColor by animateColorAsState(
+                  targetValue =
+                    if (filterSelected) MaterialTheme.colorScheme.onSecondaryContainer
+                    else MaterialTheme.colorScheme.onSurface
+                )
+                FilledTonalIconButton(
+                  onClick = {
+                    viewModel.onEvent(PickerEvent.FilterSelected)
+                  },
+                  colors = IconButtonDefaults.filledTonalIconButtonColors(
+                    contentColor = contentColor,
+                    containerColor = containerColor
+                  )
+                ) {
+                  Text(
+                    text = selectedExercises.size.toString()
+                  )
+                }
+              }
+              val showHighlight = filterActive && !filterSelected
+              IconButton(
+                colors = IconButtonDefaults.iconButtonColors(
+                  containerColor = if (showHighlight) MaterialTheme.colorScheme.secondaryContainer else {
+                    Color.Transparent
+                  },
+                  contentColor = if (showHighlight) MaterialTheme.colorScheme.onSecondaryContainer else {
+                    MaterialTheme.colorScheme.onSurface
                   }
-                },
-                modifier = Modifier.focusRequester(searchBarFocusRequester)
-              )
-            },
-            expanded = false,
-            onExpandedChange = { },
-            modifier = Modifier.padding(bottom = 8.dp),
-          ) { }
-        },
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        scrollBehavior = scrollBehavior
-      )
-    },
-    floatingActionButton = {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
-        VerticalFloatingToolbar(
-          modifier = Modifier
-            .animateContentSize(
-              alignment = Alignment.BottomCenter
-            )
-            .zIndex(1f),
-          expanded = scrollBehavior.state.collapsedFraction < 1f,
-          leadingContent = {
-            ScaleVisibility(visible = selectedExercises.isNotEmpty()) {
-              val containerColor by animateColorAsState(
-                targetValue =
-                  if (filterSelected) MaterialTheme.colorScheme.secondaryContainer
-                  else MaterialTheme.colorScheme.surfaceContainer
-              )
-              val contentColor by animateColorAsState(
-                targetValue =
-                  if (filterSelected) MaterialTheme.colorScheme.onSecondaryContainer
-                  else MaterialTheme.colorScheme.onSurface
-              )
-              FilledTonalIconButton(
-                onClick = {
-                  viewModel.onEvent(PickerEvent.FilterSelected)
-                },
-                colors = IconButtonDefaults.filledTonalIconButtonColors(
-                  contentColor = contentColor,
-                  containerColor = containerColor
-                )
+                ),
+                onClick = { openFilterSheet = true },
               ) {
-                Text(
-                  text = selectedExercises.size.toString()
-                )
+                Icon(Icons.Filled.FilterList, contentDescription = "Filter results.")
+              }
+              IconButton(
+                onClick = {
+                  searchBarFocusRequester.requestFocus()
+                  controller?.show()
+                },
+              ) {
+                Icon(Icons.Filled.Search, contentDescription = "Focus search bar.")
               }
             }
-            val showHighlight = filterActive && !filterSelected
-            IconButton(
-              colors = IconButtonDefaults.iconButtonColors(
-                containerColor = if (showHighlight) MaterialTheme.colorScheme.secondaryContainer else {
-                  Color.Transparent
-                },
-                contentColor = if (showHighlight) MaterialTheme.colorScheme.onSecondaryContainer else {
-                  MaterialTheme.colorScheme.onSurface
-                }
-              ),
-              onClick = { openFilterSheet = true },
-            ) {
-              Icon(Icons.Filled.FilterList, contentDescription = "Filter results.")
-            }
-            IconButton(
+          ) {
+            FilledIconButton(
               onClick = {
-                searchBarFocusRequester.requestFocus()
-                controller?.show()
+                viewModel.onEvent(PickerEvent.AddExercises)
+                navController.popBackStack()
               },
             ) {
-              Icon(Icons.Filled.Search, contentDescription = "Focus search bar.")
+              Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Add selected exercises to session."
+              )
             }
           }
-        ) {
-          FilledIconButton(
-            onClick = {
-              viewModel.onEvent(PickerEvent.AddExercises)
-              navController.popBackStack()
-            },
-          ) {
-            Icon(
-              imageVector = Icons.Default.Check,
-              contentDescription = "Add selected exercises to session."
-            )
-          }
         }
-      }
-    },
-  ) { innerPadding ->
-    LazyColumn(
-      state = lazyListState,
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-      contentPadding = PaddingValues(horizontal = 12.dp),
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding)
-    ) {
-      items(exercises, key = { it.exercise.id }) {
-        ExerciseCard(
-          exerciseWithSessionCount = it,
-          selected = selectedExercises.contains(it.exercise),
-          modifier = Modifier.animateItem(),
-          onLongClick = { openExerciseBottomSheet = it.exercise }
-        ) {
-          viewModel.onEvent(PickerEvent.ToggleSelectExercise(it.exercise))
+      },
+    ) { innerPadding ->
+      LazyColumn(
+        state = lazyListState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(innerPadding)
+      ) {
+        items(exercises, key = { it.exercise.id }) {
+          val selected = selectedExercises.contains(it.exercise)
+          val key = if (selected) "exercise-${it.exercise.id}" else "no-transition-${it.exercise.id}"
+          ExerciseCard(
+            exerciseWithSessionCount = it,
+            selected = selected,
+            modifier = Modifier
+              .sharedElement(
+                sharedContentState = rememberSharedContentState(key = key),
+                animatedVisibilityScope = animatedVisibilityScope,
+              )
+              .animateItem(),
+            onLongClick = { openExerciseBottomSheet = it.exercise }
+          ) {
+            viewModel.onEvent(PickerEvent.ToggleSelectExercise(it.exercise))
+          }
         }
       }
     }

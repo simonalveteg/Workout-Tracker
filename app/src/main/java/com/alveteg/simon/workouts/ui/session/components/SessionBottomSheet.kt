@@ -56,6 +56,7 @@ fun SessionBottomSheet(
   }
 
   ModalBottomSheet(
+    modifier = modifier,
     onDismissRequest = onDismissRequest,
     sheetState = sheetState,
     contentWindowInsets = { WindowInsets(0, 8, 0, 8) },
