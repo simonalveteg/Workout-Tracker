@@ -1,6 +1,7 @@
 package com.alveteg.simon.workouts.db.entities
 
 import android.os.Parcelable
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alveteg.simon.workouts.utils.FuzzySearch
@@ -39,3 +40,9 @@ data class Exercise(
     return FuzzySearch.regexMatch(string, title)
   }
 }
+
+data class ExerciseWithSessionCount(
+  @Embedded
+  val exercise: Exercise,
+  val sessionCount: Int
+)

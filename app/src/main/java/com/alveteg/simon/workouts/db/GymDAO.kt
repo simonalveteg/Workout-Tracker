@@ -29,10 +29,21 @@ interface GymDAO {
   @Query("SELECT * FROM sessionExercises join exercises ON sessionExercises.parentExerciseId = exercises.id")
   fun getAllSessionExercises(): Flow<List<SessionExerciseWithExercise>>
 
+  @Query("""
+        SELECT e.*, COUNT(se.parentExerciseId) as sessionCount
+        FROM exercises as e
+        LEFT JOIN sessionExercises as se ON e.id = se.parentExerciseId
+        GROUP BY e.id
+    """
+  )
+  fun getAllExercisesWithSessionCount(): Flow<List<ExerciseWithSessionCount>>
+
+
   @Update
   suspend fun updateSessionExercises(exercises: List<SessionExercise>)
 
-  @Query("""
+  @Query(
+    """
     SELECT * FROM sessionExercises 
     JOIN exercises ON sessionExercises.parentExerciseId = exercises.id 
     WHERE parentSessionId = :sessionId
@@ -41,7 +52,8 @@ interface GymDAO {
             WHEN exerciseOrder != -1 THEN exerciseOrder
             ELSE sessionExercises.sessionExerciseId
         END ASC
-    """)
+    """
+  )
   fun getExercisesForSession(sessionId: Long): Flow<List<SessionExerciseWithExercise>>
 
   @Query("SELECT * FROM sets WHERE parentSessionExerciseId = :id ORDER BY setId ASC")
@@ -58,6 +70,7 @@ interface GymDAO {
 
   @Update
   suspend fun updateSession(session: Session)
+
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertExercise(exercise: Exercise): Long
 

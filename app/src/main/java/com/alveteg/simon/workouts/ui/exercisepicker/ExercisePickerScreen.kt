@@ -1,6 +1,5 @@
 package com.alveteg.simon.workouts.ui.exercisepicker
 
-import androidx.compose.animation.animateBounds
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalFloatingToolbar
-import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,14 +39,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -62,14 +57,11 @@ import androidx.navigation.NavController
 import com.alveteg.simon.workouts.db.Equipment
 import com.alveteg.simon.workouts.db.MuscleGroup
 import com.alveteg.simon.workouts.db.entities.Exercise
-import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.exercisepicker.components.ExerciseCard
 import com.alveteg.simon.workouts.ui.exercisepicker.components.FilterSection
 import com.alveteg.simon.workouts.ui.session.components.ExerciseBottomSheet
-import com.alveteg.simon.workouts.utils.ScaleAndSlideVerticallyVisibility
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
-import kotlinx.coroutines.flow.first
 
 @OptIn(
   ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
@@ -148,10 +140,10 @@ fun ExercisePickerScreen(
 
   if (openExerciseBottomSheet != null) {
     val exercise = remember(exercises, openExerciseBottomSheet) {
-      exercises.find { it.id == openExerciseBottomSheet?.id }!!
+      exercises.find { it.exercise.id == openExerciseBottomSheet?.id }!!
     }
     ExerciseBottomSheet(
-      exercise = exercise,
+      exercise = exercise.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
       getSetHistory = viewModel::getHistoryForExercise,
       sheetState = exerciseBottomSheetState,
@@ -163,7 +155,7 @@ fun ExercisePickerScreen(
   val searchBarFocusRequester = remember { FocusRequester() }
 
 
-  LaunchedEffect(muscleFilter, equipmentFilter, searchText) {
+  LaunchedEffect(muscleFilter, equipmentFilter, searchText, filterSelected) {
     lazyListState.scrollToItem(0)
   }
 
@@ -296,14 +288,14 @@ fun ExercisePickerScreen(
         .fillMaxSize()
         .padding(innerPadding)
     ) {
-      items(exercises, key = { it.id }) {
+      items(exercises, key = { it.exercise.id }) {
         ExerciseCard(
-          exercise = it,
-          selected = selectedExercises.contains(it),
+          exerciseWithSessionCount = it,
+          selected = selectedExercises.contains(it.exercise),
           modifier = Modifier.animateItem(),
-          onLongClick = { openExerciseBottomSheet = it }
+          onLongClick = { openExerciseBottomSheet = it.exercise }
         ) {
-          viewModel.onEvent(PickerEvent.ToggleSelectExercise(it))
+          viewModel.onEvent(PickerEvent.ToggleSelectExercise(it.exercise))
         }
       }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.entities.Exercise
+import com.alveteg.simon.workouts.db.entities.ExerciseWithSessionCount
 import com.alveteg.simon.workouts.db.entities.SessionExercise
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
@@ -36,30 +37,35 @@ class PickerViewModel @Inject constructor(
   private val _searchText = MutableStateFlow("")
   val searchText = _searchText.asStateFlow()
 
-  val filteredExercises: Flow<List<Exercise>> = combine(
-    repo.getAllExercises(),
+  val filteredExercises: Flow<List<ExerciseWithSessionCount>> = combine(
+    repo.getAllExercisesWithSessionCount(),
     selectedExercises,
     equipmentFilter,
     muscleFilter,
     filterSelected,
     searchText
-  ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, text ->
-    exercises.filter { exercise ->
+  ) { exercises, selectedExercises, equipmentFilter, muscleFilter, selected, searchText ->
+    exercises.filter { exerciseWithSessionCount ->
+      val exercise = exerciseWithSessionCount.exercise
       val muscleCondition =
-        (muscleFilter.isEmpty() || exercise.getPrimaryMuscleGroups().any { muscleFilter.contains(it) })
+        (muscleFilter.isEmpty() || exercise.getPrimaryMuscleGroups()
+          .any { muscleFilter.contains(it) })
       val equipmentCondition =
         (equipmentFilter.isEmpty() || exercise.equipment.any { equipmentFilter.contains(it) })
 
       if (selected) selectedExercises.contains(exercise)
-      else muscleCondition && equipmentCondition && exercise.getStringMatch(text)
+      else muscleCondition && equipmentCondition && exercise.getStringMatch(searchText)
 
-    }.sortedBy { exercise ->
-      if (text.isNotBlank()) {
-        exercise.title.length
-      } else {
-        exercise.title.first().code
+    }.sortedWith(compareByDescending<ExerciseWithSessionCount> { it.sessionCount }
+      .thenBy { exerciseWithSessionCount ->
+        val exercise = exerciseWithSessionCount.exercise
+        if (searchText.isNotBlank()) {
+          exercise.title.length
+        } else {
+          exercise.title
+        }
       }
-    }
+    )
   }
 
   suspend fun getHistoryForExercise(exercise: Exercise) = repo.getHistoryForExercise(exercise)

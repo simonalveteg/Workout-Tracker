@@ -23,16 +23,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.alveteg.simon.workouts.db.entities.Exercise
+import com.alveteg.simon.workouts.db.entities.ExerciseWithSessionCount
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExerciseCard(
-  exercise: Exercise,
+  exerciseWithSessionCount: ExerciseWithSessionCount,
   selected: Boolean,
   modifier: Modifier = Modifier,
   onLongClick: () -> Unit = {},
   onClick: () -> Unit
 ) {
+  val exercise = exerciseWithSessionCount.exercise
+
   val color by animateColorAsState(
     targetValue = if (selected) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surface
   )
@@ -49,7 +52,8 @@ fun ExerciseCard(
       muscles.take(3).joinToString(", ") + ", ..."
     } else {
       muscles.joinToString(", ")
-    }  }
+    }
+  }
 
   Row(
     modifier = modifier
@@ -98,11 +102,13 @@ fun ExerciseCard(
               color = MaterialTheme.colorScheme.onSurfaceVariant
             )
           }
-          Text(
-            text = "5 uses",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.secondary
-          )
+          if (exerciseWithSessionCount.sessionCount > 0) {
+            Text(
+              text = "${exerciseWithSessionCount.sessionCount} uses",
+              style = MaterialTheme.typography.labelMedium,
+              color = MaterialTheme.colorScheme.secondary
+            )
+          }
         }
       }
     }
@@ -113,6 +119,6 @@ fun ExerciseCard(
         .width(indicatorWidth),
       color = MaterialTheme.colorScheme.primary,
       shape = MaterialTheme.shapes.large
-      ) { }
+    ) { }
   }
 }

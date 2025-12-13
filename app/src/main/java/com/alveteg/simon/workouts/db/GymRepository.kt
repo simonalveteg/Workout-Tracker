@@ -26,7 +26,7 @@ class GymRepository(
 
   fun getAllSets() = dao.getAllSets()
   fun getAllExercises() = dao.getAllExercises()
-
+  fun getAllExercisesWithSessionCount() = dao.getAllExercisesWithSessionCount()
   fun getLastSession() = dao.getLastSession()
 
   fun getAllSessionExercises() = dao.getAllSessionExercises()
