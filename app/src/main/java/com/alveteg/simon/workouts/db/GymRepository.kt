@@ -31,7 +31,8 @@ class GymRepository(
 
   fun getAllSessionExercises() = dao.getAllSessionExercises()
 
-  suspend fun updateSessionExercises(exercises: List<SessionExercise>) = dao.updateSessionExercises(exercises)
+  suspend fun updateSessionExercises(exercises: List<SessionExercise>) =
+    dao.updateSessionExercises(exercises)
 
   @OptIn(ExperimentalCoroutinesApi::class)
   fun getExercisesForSession(session: Flow<Session>): Flow<List<SessionExerciseWithExercise>> {
@@ -40,7 +41,7 @@ class GymRepository(
     }
   }
 
-  suspend fun getHistoryForExercise(exercise: Exercise): List<Pair<SessionWrapper, ExerciseWrapper>>  {
+  suspend fun getHistoryForExercise(exercise: Exercise): List<Pair<SessionWrapper, ExerciseWrapper>> {
     return withContext(Dispatchers.IO) {
       val allSessionExercises = getAllSessionExercises().first()
       val relevantSessionExercises = allSessionExercises.filter { it.exercise.id == exercise.id }
@@ -69,18 +70,6 @@ class GymRepository(
 
   fun getSetsForExercise(sessionExerciseId: Long) = dao.getSetsForExercise(sessionExerciseId)
 
-  fun getMuscleGroupsForSession(session: Session): Flow<List<String>> {
-    val list = dao.getMuscleGroupsForSession(session.sessionId).mapNotNull {
-      Timber.d("MuscleGroup flow created.")
-      try {
-        turnTargetIntoMuscleGroups(it)
-      } catch (_: Exception) {
-        Timber.d("Error when converting target.")
-        emptyList()
-      }
-    }
-    return list
-  }
 
   suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
 
@@ -90,8 +79,19 @@ class GymRepository(
 
   suspend fun updateSession(session: Session) = dao.updateSession(session)
 
-  suspend fun insertSessionExercise(sessionExercise: SessionExercise) =
-    dao.insertSessionExercise(sessionExercise)
+  suspend fun insertSessionExercise(sessionExercise: SessionExercise): Long {
+    return withContext(Dispatchers.IO) {
+
+      val session = getSessionById(sessionExercise.parentSessionId)
+      val exerciseOrder =
+        getExercisesForSession(session).first().maxOfOrNull { it.sessionExercise.exerciseOrder }
+          ?.let {
+            it + 1
+          } ?: -1
+
+      dao.insertSessionExercise(sessionExercise.copy(exerciseOrder = exerciseOrder))
+    }
+  }
 
   suspend fun removeSessionExercise(sessionExercise: SessionExercise) =
     dao.removeSessionExercise(sessionExercise)

@@ -10,9 +10,11 @@ import com.alveteg.simon.workouts.db.entities.SessionExercise
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -115,12 +117,14 @@ class PickerViewModel @Inject constructor(
         viewModelScope.launch {
           _selectedExercises.value.forEach { exercise ->
             savedStateHandle.get<Long>("session_id")?.let { sessionId ->
-              repo.insertSessionExercise(
-                SessionExercise(
-                  parentSessionId = sessionId,
-                  parentExerciseId = exercise.id
+              withContext(Dispatchers .IO) {
+                repo.insertSessionExercise(
+                  SessionExercise(
+                    parentSessionId = sessionId,
+                    parentExerciseId = exercise.id
+                  )
                 )
-              )
+              }
             }
           }
         }
