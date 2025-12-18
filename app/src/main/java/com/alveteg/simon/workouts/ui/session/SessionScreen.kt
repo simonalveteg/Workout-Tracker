@@ -4,26 +4,37 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -31,13 +42,21 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
@@ -59,6 +78,7 @@ import com.alveteg.simon.workouts.ui.session.components.ExerciseCard
 import com.alveteg.simon.workouts.ui.session.components.SessionHeader
 import com.alveteg.simon.workouts.ui.session.components.SetBottomSheet
 import com.alveteg.simon.workouts.ui.session.components.TimerBar
+import com.alveteg.simon.workouts.ui.session.components.TrashBin
 import com.alveteg.simon.workouts.utils.ScaleVisibility
 import com.alveteg.simon.workouts.utils.UiEvent
 import kotlinx.coroutines.channels.Channel
@@ -182,12 +202,11 @@ fun SessionScreen(
     })
   }
 
-  var deleteExerciseDialog by remember { mutableStateOf(false) }
-  if (deleteExerciseDialog) {
-    DeletionAlertDialog(onDismiss = { deleteExerciseDialog = false }, onDelete = {
-      openExerciseBottomSheet?.let { viewModel.onEvent(SessionEvent.RemoveExercise(it)) }
-      deleteExerciseDialog = false
-      openExerciseBottomSheet = null
+  var deleteExerciseDialog by remember { mutableStateOf<ExerciseWrapper?>(null) }
+  if (deleteExerciseDialog != null) {
+    DeletionAlertDialog(onDismiss = { deleteExerciseDialog = null }, onDelete = {
+      deleteExerciseDialog?.let { viewModel.onEvent(SessionEvent.RemoveExercise(it)) }
+      deleteExerciseDialog = null
     }, title = {
       Text(text = "Delete Exercise?")
     }, text = {
@@ -246,6 +265,10 @@ fun SessionScreen(
   val exerciseBottomSheetState =
     rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
+  var trashBounds by remember { mutableStateOf(Rect.Zero) }
+  var isHoveringTrash by remember { mutableStateOf(false) }
+  var remainingHeight by remember { mutableStateOf(0.dp) }
+
   if (openSetBottomSheet != null) {
     val setWrapper = remember(exercises, openSetBottomSheet) {
       val updatedExerciseWrapper = exercises.find {
@@ -282,7 +305,6 @@ fun SessionScreen(
       exercise = exerciseWrapper.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
       sessionWrapper = sessionWrapper,
-      onDelete = { deleteExerciseDialog = true },
       getSetHistory = viewModel::getHistoryForExercise,
       sheetState = exerciseBottomSheetState,
     )
@@ -325,7 +347,7 @@ fun SessionScreen(
         state = lazyListState,
         modifier = Modifier
           .fillMaxSize()
-          .padding(top = innerPadding.calculateTopPadding()),
+          .padding(top = innerPadding.calculateTopPadding())
       ) {
         val verticalSpacing = 6.dp
         val horizontalPadding = 8.dp
@@ -378,25 +400,50 @@ fun SessionScreen(
           ReorderableItem(
             state = reorderableLazyListState,
             key = exercise.sessionExercise.sessionExerciseId
-          ) {
+          ) { isDragging ->
+            val density = LocalDensity.current
             ExerciseCard(
               modifier = Modifier
                 .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
                 .longPressDraggableHandle(
                   enabled = screenUnlocked,
                   onDragStarted = {
+                    val viewportH = lazyListState.layoutInfo.viewportSize.height
+                    val totalContentH = lazyListState.layoutInfo.visibleItemsInfo
+                      .lastOrNull()?.let { it.offset + it.size } ?: 0
+
+                    val gapPx = (viewportH - totalContentH).coerceAtLeast(0)
+
+                    remainingHeight = with(density) { gapPx.toDp() }
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
                   },
                   onDragStopped = {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                    if (isHoveringTrash) {
+                      deleteExerciseDialog = exercise
+                    }
+                    isHoveringTrash = false
                   },
-                ),
+                )
+                .onGloballyPositioned { coords ->
+                  if (isDragging) {
+                    val itemBounds = coords.boundsInRoot()
+                    isHoveringTrash = trashBounds.overlaps(itemBounds)
+                  }
+                },
               exerciseWrapper = exercise,
               editable = screenUnlocked,
               onEvent = viewModel::onEvent,
               onClick = { openExerciseBottomSheet = it },
               onSetClicked = { openSetBottomSheet = it })
           }
+        }
+        item(key = "trash_can") {
+          TrashBin(
+            availableHeight = remainingHeight,
+            highlighted = isHoveringTrash,
+            visible = reorderableLazyListState.isAnyItemDragging
+          ) { trashBounds = it.boundsInRoot() }
         }
         item {
           Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
