@@ -4,7 +4,6 @@ import com.alveteg.simon.workouts.db.entities.*
 import com.alveteg.simon.workouts.ui.DatabaseModel
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.SessionWrapper
-import com.alveteg.simon.workouts.utils.turnTargetIntoMuscleGroups
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*

@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alveteg.simon.workouts.utils.FuzzySearch
-import com.alveteg.simon.workouts.utils.turnTargetIntoMuscleGroups
+import com.alveteg.simon.workouts.utils.turnMusclesIntoMuscleGroups
 import kotlinx.parcelize.Parcelize
 
 
@@ -24,13 +24,13 @@ data class Exercise(
 ) : Parcelable {
   fun getPrimaryMuscleGroups(exercise: Exercise = this): List<String> {
     return exercise.targets.flatMap {
-      turnTargetIntoMuscleGroups(it)
+      turnMusclesIntoMuscleGroups(it)
     }.distinct()
   }
 
   fun getSecondaryMuscleGroups(exercise: Exercise = this): List<String> {
     return exercise.synergists.flatMap {
-      turnTargetIntoMuscleGroups(it)
+      turnMusclesIntoMuscleGroups(it)
     }.distinct().filterNot {
       getPrimaryMuscleGroups().contains(it)
     }

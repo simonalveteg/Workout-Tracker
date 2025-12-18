@@ -5,13 +5,13 @@ import com.alveteg.simon.workouts.db.entities.Exercise
 import com.alveteg.simon.workouts.db.entities.SessionExerciseWithExercise
 import timber.log.Timber
 
-fun turnTargetIntoMuscleGroups(targets: List<String>): List<String> {
-  return turnTargetIntoMuscleGroups(targets.joinToString("|"))
+fun turnMusclesIntoMuscleGroups(muscles: List<String>): List<String> {
+  return turnMusclesIntoMuscleGroups(muscles.joinToString("|"))
 }
 
-fun turnTargetIntoMuscleGroups(targets: String): List<String> {
-  return targets.split("|").filterNot { it.isBlank() }.map { target ->
-    when (target.trim()) {
+fun turnMusclesIntoMuscleGroups(muscles: String): List<String> {
+  return muscles.split("|").filterNot { it.isBlank() }.map { muscle ->
+    when (muscle.trim()) {
       "Adductor Brevis" -> MuscleGroup.HIPS
       "Adductor Longus" -> MuscleGroup.HIPS
       "Adductor Magnus, ischial fibers" -> MuscleGroup.HIPS
@@ -99,7 +99,7 @@ fun turnTargetIntoMuscleGroups(targets: String): List<String> {
       "Triceps Brachii, Long Head" -> MuscleGroup.TRICEPS
       "Wrist Extensors" -> MuscleGroup.FOREARMS
       "Wrist Flexors" -> MuscleGroup.FOREARMS
-      else -> "FAILURE".also { Timber.d("Failed with: $target") }
+      else -> "FAILURE".also { Timber.d("Failed with: $muscle") }
     }
   }.distinct().filterNot { it == "FAILURE" }
 }
@@ -111,8 +111,15 @@ fun List<SessionExerciseWithExercise>.sortedListOfMuscleGroups(): List<String> {
 
 @JvmName("sortedListOfMuscleGroupsForExercises")
 fun List<Exercise>.sortedListOfMuscleGroups(): List<String> {
-  return this.map { turnTargetIntoMuscleGroups(it.targets) }.flatten()
-    .groupingBy { it }.eachCount().toList()
+  return this.flatMap { exercise ->
+    val targets = turnMusclesIntoMuscleGroups(exercise.targets)
+    val synergists = turnMusclesIntoMuscleGroups(exercise.synergists)
+
+    targets.map { it to 1.0 } + synergists.map { it to 0.2 }
+  }
+    .groupingBy { it.first }
+    .fold(0.0) { accumulator, element -> accumulator + element.second }
+    .toList()
     .sortedByDescending { it.second }
     .map { it.first }
 }
