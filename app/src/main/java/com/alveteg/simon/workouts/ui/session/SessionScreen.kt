@@ -306,6 +306,7 @@ fun SessionScreen(
       onDismissRequest = { openExerciseBottomSheet = null },
       sessionWrapper = sessionWrapper,
       getSetHistory = viewModel::getHistoryForExercise,
+      onEvent = viewModel::onEvent,
       sheetState = exerciseBottomSheetState,
     )
   }
@@ -428,7 +429,7 @@ fun SessionScreen(
                 .onGloballyPositioned { coords ->
                   if (isDragging) {
                     val itemBounds = coords.boundsInRoot()
-                    isHoveringTrash = trashBounds.overlaps(itemBounds)
+                    isHoveringTrash = trashBounds.contains(coords.boundsInRoot().center)
                   }
                 },
               exerciseWrapper = exercise,

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.entities.Exercise
-import com.alveteg.simon.workouts.db.entities.GymSet
 import com.alveteg.simon.workouts.db.entities.Session
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.SessionWrapper
@@ -106,8 +105,8 @@ class SessionViewModel @Inject constructor(
       is SessionEvent.TimerReset -> sendUiEvent(UiEvent.ResetTimer)
       is SessionEvent.TimerIncreased -> sendUiEvent(UiEvent.IncrementTimer)
       is SessionEvent.TimerDecreased -> sendUiEvent(UiEvent.DecrementTimer)
-      is SessionEvent.OpenGuide -> {
-        openGuide(event.exercise.exercise)
+      is SessionEvent.SearchForExercise -> {
+        openGuide(event.exercise, event.website)
       }
 
       is SessionEvent.AddExercise -> {
@@ -179,8 +178,8 @@ class SessionViewModel @Inject constructor(
     }
   }
 
-  private fun openGuide(exercise: Exercise) {
-    sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx ${exercise.title}"))
+  private fun openGuide(exercise: Exercise, website: String?) {
+    sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q= $website ${exercise.title}"))
   }
 
   private fun sendUiEvent(event: UiEvent) {

@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.ui.session
 
+import com.alveteg.simon.workouts.db.entities.Exercise
 import com.alveteg.simon.workouts.db.entities.GymSet
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.utils.Event
@@ -9,7 +10,7 @@ sealed class SessionEvent : Event {
   data class ChangeSet(val updatedSet: GymSet) : SessionEvent()
   data class CreateSet(val sessionExercise: ExerciseWrapper) : SessionEvent()
   data class DeleteSet(val set: GymSet) : SessionEvent()
-  data class OpenGuide(val exercise: ExerciseWrapper) : SessionEvent()
+  data class SearchForExercise(val exercise: Exercise, val website: String? = null) : SessionEvent()
   data class ReorderExercises(val from: Int, val to: Int) : SessionEvent()
   data class RemoveExercise(val exercise: ExerciseWrapper) : SessionEvent()
   object RemoveSession : SessionEvent()

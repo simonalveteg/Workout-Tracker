@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -42,7 +43,7 @@ fun SessionBottomSheet(
   getSetHistory: suspend (Exercise) -> List<Pair<SessionWrapper, ExerciseWrapper>>,
   onDismissRequest: () -> Unit,
   onDelete: () -> Unit = {},
-  onDeleteDescription: String,
+  onDeleteDescription: String = "",
   content: @Composable () -> Unit
 ) {
 
@@ -67,9 +68,10 @@ fun SessionBottomSheet(
         Box(
           modifier = Modifier
             .fillMaxWidth()
+            .requiredHeight(60.dp)
             .padding(vertical = 8.dp),
         ) {
-          if (sessionWrapper != null) {
+          if (onDeleteDescription.isNotEmpty()) {
             IconButton(
               onClick = onDelete,
               modifier = Modifier.align(Alignment.CenterStart)
@@ -106,12 +108,13 @@ fun SessionBottomSheet(
     }
   ) {
     Column {
+
+      content()
+      HorizontalDivider()
       SetHistory(
         setHistory = setHistory,
         modifier = Modifier.padding(vertical = 8.dp)
       )
-      HorizontalDivider()
-      content()
     }
   }
 }

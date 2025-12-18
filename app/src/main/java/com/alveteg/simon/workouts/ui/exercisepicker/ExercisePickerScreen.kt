@@ -151,6 +151,7 @@ fun ExercisePickerScreen(
       exercise = exercise.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
       getSetHistory = viewModel::getHistoryForExercise,
+      onEvent = viewModel::onEvent,
       sheetState = exerciseBottomSheetState,
     )
   }
