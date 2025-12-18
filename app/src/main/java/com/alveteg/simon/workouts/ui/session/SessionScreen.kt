@@ -382,10 +382,6 @@ fun SessionScreen(
             ExerciseCard(
               modifier = Modifier
                 .padding(horizontal = horizontalPadding, vertical = verticalSpacing)
-                .sharedElement(
-                  sharedContentState = rememberSharedContentState(key = "exercise-${exercise.exercise.id}"),
-                  animatedVisibilityScope = animatedVisibilityScope,
-                )
                 .longPressDraggableHandle(
                   enabled = screenUnlocked,
                   onDragStarted = {

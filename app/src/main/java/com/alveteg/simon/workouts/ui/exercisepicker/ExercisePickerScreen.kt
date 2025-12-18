@@ -304,15 +304,10 @@ fun ExercisePickerScreen(
       ) {
         items(exercises, key = { it.exercise.id }) {
           val selected = selectedExercises.contains(it.exercise)
-          val key = if (selected) "exercise-${it.exercise.id}" else "no-transition-${it.exercise.id}"
           ExerciseCard(
             exerciseWithSessionCount = it,
             selected = selected,
             modifier = Modifier
-              .sharedElement(
-                sharedContentState = rememberSharedContentState(key = key),
-                animatedVisibilityScope = animatedVisibilityScope,
-              )
               .animateItem(),
             onLongClick = { openExerciseBottomSheet = it.exercise }
           ) {
