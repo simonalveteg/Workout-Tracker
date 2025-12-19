@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'com.google.devtools.ksp'
     id 'com.google.dagger.hilt.android'
     id "kotlin-parcelize"
@@ -55,18 +56,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
         buildConfig true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.8'
     }
     packagingOptions {
         resources {
@@ -100,8 +98,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0'
     implementation "androidx.navigation:navigation-compose:2.9.6"
 
-    // ACCOMPANIST (Note: Many are deprecated in favor of official APIs)
-    implementation "com.google.accompanist:accompanist-flowlayout:0.34.0"
 
     // CORE & LIFECYCLE
     implementation 'androidx.core:core-ktx:1.17.0'
@@ -111,8 +107,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.10.0"
 
     // HILT
-    implementation "com.google.dagger:hilt-android:2.51.1"
-    ksp "com.google.dagger:hilt-compiler:2.51.1"
+    implementation "com.google.dagger:hilt-android:2.54"
+    ksp "com.google.dagger:hilt-compiler:2.54"
     implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
     ksp "androidx.hilt:hilt-compiler:1.2.0"
 
@@ -122,12 +118,16 @@ dependencies {
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
+    // VICO
+    implementation  "com.patrykandpatrick.vico:compose:2.3.6"
+    implementation  "com.patrykandpatrick.vico:compose-m3:2.3.6"
+
     // UTILS
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'sh.calvin.reorderable:reorderable:3.0.0'
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2'
     implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.22"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:2.1.0"
 
     // TESTING
     testImplementation 'junit:junit:4.13.2'

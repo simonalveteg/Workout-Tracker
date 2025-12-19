@@ -53,7 +53,6 @@ fun SessionBottomSheet(
 
   LaunchedEffect(Unit, exercise) {
     setHistory = getSetHistory(exercise)
-      .filter { it.first.session.sessionId != sessionWrapper?.session?.sessionId }
   }
 
   ModalBottomSheet(
