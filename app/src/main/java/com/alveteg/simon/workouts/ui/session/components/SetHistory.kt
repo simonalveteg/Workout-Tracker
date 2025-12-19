@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.ui.session.components
 
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -14,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,16 +47,18 @@ import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.LineCartesianLayerModel
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.LineCartesianLayerMarkerTarget
+import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -62,7 +66,6 @@ fun SetHistory(
   setHistory: List<Pair<SessionWrapper, ExerciseWrapper>>,
   modifier: Modifier = Modifier
 ) {
-
   val modelProducer = remember { CartesianChartModelProducer() }
   val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM yyyy") }
   val bottomAxisValueFormatter = CartesianValueFormatter { _, x, _ ->
@@ -72,15 +75,17 @@ fun SetHistory(
   val filteredSetHistory = remember(setHistory) {
     setHistory.filter { it.second.sets.isNotEmpty() }
   }
+
+  val dates = remember(filteredSetHistory) {
+    filteredSetHistory.map { it.first.session.start.toLocalDate().toEpochDay().toDouble() }
+  }
+  val weights = remember(filteredSetHistory) {
+    filteredSetHistory.map { it.second.sets.maxByOrNull { set -> set.weight ?: 0f }?.weight ?: 0f }
+  }
+
   LaunchedEffect(filteredSetHistory) {
     if (filteredSetHistory.isNotEmpty()) {
       modelProducer.runTransaction {
-        val weights = filteredSetHistory.map {
-          it.second.sets.maxByOrNull { it.weight ?: 0f }?.weight ?: 0f
-        }
-        val dates = filteredSetHistory.map {
-          it.first.session.start.toLocalDate().toEpochDay()
-        }
         lineSeries {
           series(x = dates, y = weights)
         }
@@ -91,38 +96,91 @@ fun SetHistory(
   val lazyRowState = rememberLazyListState()
   var selectedSessionIndex by remember { mutableStateOf(0) }
 
+  var isProgrammaticScroll by remember { mutableStateOf(false) }
+
+  val scrollCenterIndex by remember {
+    derivedStateOf {
+      val layoutInfo = lazyRowState.layoutInfo
+      val visibleItemsInfo = layoutInfo.visibleItemsInfo
+      if (visibleItemsInfo.isEmpty()) {
+        0
+      } else {
+        val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
+        visibleItemsInfo.minByOrNull { abs((it.offset + it.size / 2) - viewportCenter) }?.index
+          ?: visibleItemsInfo.first().index
+      }
+    }
+  }
+
+  val isDragged by lazyRowState.interactionSource.collectIsDraggedAsState()
+
+  LaunchedEffect(scrollCenterIndex) {
+    if (filteredSetHistory.isNotEmpty() && (isDragged || (lazyRowState.isScrollInProgress && !isProgrammaticScroll))) {
+      selectedSessionIndex = scrollCenterIndex
+    }
+  }
+
   LaunchedEffect(selectedSessionIndex) {
-    Timber.d("Selected session index: $selectedSessionIndex, size: ${filteredSetHistory.size}")
-    lazyRowState.animateScrollToItem(selectedSessionIndex)
+    if (filteredSetHistory.isNotEmpty() && !lazyRowState.isScrollInProgress) {
+      isProgrammaticScroll = true
+      lazyRowState.animateScrollToItem(selectedSessionIndex)
+      isProgrammaticScroll = false
+    }
+  }
+
+  LaunchedEffect(lazyRowState.isScrollInProgress) {
+    if (!lazyRowState.isScrollInProgress) {
+      isProgrammaticScroll = false
+    }
   }
 
   val hapticFeedback = LocalHapticFeedback.current
   val markerVisibilityListener = remember(filteredSetHistory) {
     object : CartesianMarkerVisibilityListener {
-
-      private var xTarget = -1L
-
       override fun onUpdated(marker: CartesianMarker, targets: List<CartesianMarker.Target>) {
         val target = targets.firstOrNull() as? LineCartesianLayerMarkerTarget ?: return
-        val markerIndex = target.points.last().entry.x.toLong()
-        Timber.d("Selected marker: $markerIndex")
-        xTarget = markerIndex
-        val temp = filteredSetHistory.indexOfFirst {
-          val day = it.first.session.start.toLocalDate().toEpochDay()
-          Timber.d("day: $day, markerIndex: $markerIndex")
-          day == markerIndex
+        val markerX = target.points.last().entry.x.toLong()
+
+        val index = filteredSetHistory.indexOfFirst {
+          it.first.session.start.toLocalDate().toEpochDay() == markerX
         }
-        if (temp != -1) selectedSessionIndex = temp
-        hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+
+        if (index != -1 && index != selectedSessionIndex) {
+          selectedSessionIndex = index
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+        }
       }
 
       override fun onShown(marker: CartesianMarker, targets: List<CartesianMarker.Target>) {
         onUpdated(marker, targets)
       }
 
-      override fun onHidden(marker: CartesianMarker) {
-        xTarget = -1
+      override fun onHidden(marker: CartesianMarker) {}
+    }
+  }
+
+  val defaultPoint = LineCartesianLayer.point(
+    rememberShapeComponent(fill(MaterialTheme.colorScheme.primary), CorneredShape.Pill),
+    size = 6.dp
+  )
+  val highlightedPoint = LineCartesianLayer.point(
+    rememberShapeComponent(fill(MaterialTheme.colorScheme.primary), CorneredShape.Pill),
+    size = 12.dp
+  )
+
+  val pointProvider = remember(selectedSessionIndex, dates) {
+    object : LineCartesianLayer.PointProvider {
+      override fun getPoint(
+        entry: LineCartesianLayerModel.Entry,
+        seriesIndex: Int,
+        extraStore: ExtraStore
+      ): LineCartesianLayer.Point {
+        val entryIndex = dates.indexOf(entry.x)
+        return if (entryIndex == selectedSessionIndex) highlightedPoint else defaultPoint
       }
+
+      override fun getLargestPoint(extraStore: ExtraStore): LineCartesianLayer.Point =
+        highlightedPoint
     }
   }
 
@@ -135,15 +193,7 @@ fun SetHistory(
               LineCartesianLayer.rememberLine(
                 fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),
                 areaFill = null,
-                pointProvider = LineCartesianLayer.PointProvider.single(
-                  LineCartesianLayer.point(
-                    rememberShapeComponent(
-                      fill = fill(MaterialTheme.colorScheme.primary),
-                      shape = CorneredShape.Pill
-                    ),
-                    size = 6.dp
-                  )
-                )
+                pointProvider = pointProvider
               )
             )
           ),
@@ -164,7 +214,6 @@ fun SetHistory(
         consumeMoveEvents = true
       )
     }
-
 
     LazyRow(
       state = lazyRowState,
@@ -197,6 +246,7 @@ fun SetHistory(
               text = "No history available.",
               style = MaterialTheme.typography.titleMediumEmphasized,
             )
+            @Suppress("DEPRECATION")
             Text(
               text = "Previous sessions will show up here.",
               style = MaterialTheme.typography.labelMedium
