@@ -7,6 +7,8 @@ import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.entities.Exercise
 import com.alveteg.simon.workouts.db.entities.ExerciseWithSessionCount
 import com.alveteg.simon.workouts.db.entities.SessionExercise
+import com.alveteg.simon.workouts.ui.session.SessionEvent
+import com.alveteg.simon.workouts.ui.session.SessionViewModel
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,7 +76,6 @@ class PickerViewModel @Inject constructor(
 
   fun onEvent(event: Event) {
     when (event) {
-      is PickerEvent.OpenGuide -> openGuide(event.exercise)
       is PickerEvent.ToggleSelectExercise -> {
         val currentList = _selectedExercises.value
         val exercise = event.exercise
@@ -133,14 +134,18 @@ class PickerViewModel @Inject constructor(
       is PickerEvent.UpdateSearchText -> {
         _searchText.value = event.text
       }
+
+      is SessionEvent.SearchForExercise -> {
+        openGuide(event.exercise, event.website)
+      }
     }
   }
 
   private val _uiEvent = Channel<UiEvent>()
   val uiEvent = _uiEvent.receiveAsFlow()
 
-  private fun openGuide(exercise: Exercise) {
-    sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q=! exrx ${exercise.title}"))
+  private fun openGuide(exercise: Exercise, website: String?) {
+    sendUiEvent(UiEvent.OpenWebsite(url = "https://duckduckgo.com/?q= $website ${exercise.title}"))
   }
 
   private fun sendUiEvent(event: UiEvent) {
