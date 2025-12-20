@@ -74,7 +74,7 @@ fun SetHistory(
   }
 
   val filteredSetHistory = remember(setHistory) {
-    setHistory.filter { it.second.sets.isNotEmpty() && !it.second.sets.any { it.reps == null } }
+    setHistory.filter { it.second.sets.isNotEmpty() && it.second.sets.any { it.reps != null } }
   }
 
   val dates = remember(filteredSetHistory) {

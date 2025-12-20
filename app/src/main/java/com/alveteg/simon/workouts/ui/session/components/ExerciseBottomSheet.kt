@@ -56,7 +56,6 @@ fun ExerciseBottomSheet(
 
   LaunchedEffect(Unit, exercise) {
     setHistory = getSetHistory(exercise)
-      .filter { it.first.session.sessionId != sessionWrapper?.session?.sessionId }
   }
 
   ModalBottomSheet(
@@ -107,7 +106,7 @@ fun ExerciseBottomSheet(
     ) {
       Spacer(modifier = Modifier.width(8.dp))
       ElevatedAssistChip(
-        onClick = { onEvent(SessionEvent.SearchForExercise(exercise, "! exrx.net")) },
+        onClick = { onEvent(SessionEvent.SearchForExercise(exercise, "! \"exrx.net\"")) },
         label = { Text("exrx.net") },
         leadingIcon = Icons.Default.Search,
         leadingIconDescription = "Search for exercise on exrx.net"

@@ -37,6 +37,11 @@ private val LightColors = lightColorScheme(
   surfaceTint = md_theme_light_surfaceTint,
   outlineVariant = md_theme_light_outlineVariant,
   scrim = md_theme_light_scrim,
+  surfaceContainer = md_theme_light_surface_container,
+  surfaceContainerLow = md_theme_light_surface_container_low,
+  surfaceContainerLowest = md_theme_light_surface_container_lowest,
+  surfaceContainerHigh = md_theme_light_surface_container_high,
+  surfaceContainerHighest = md_theme_light_surface_container_highest,
 )
 
 
