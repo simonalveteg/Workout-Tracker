@@ -2,11 +2,11 @@ package com.alveteg.simon.workouts.ui.session.components
 
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,10 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
 import com.alveteg.simon.workouts.ui.SessionWrapper
+import com.alveteg.simon.workouts.utils.FadeInVisibility
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -56,6 +56,7 @@ import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.LineCartesianLayerMarkerTarget
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
@@ -73,7 +74,7 @@ fun SetHistory(
   }
 
   val filteredSetHistory = remember(setHistory) {
-    setHistory.filter { it.second.sets.isNotEmpty() }
+    setHistory.filter { it.second.sets.isNotEmpty() && !it.second.sets.any { it.reps == null } }
   }
 
   val dates = remember(filteredSetHistory) {
@@ -90,6 +91,16 @@ fun SetHistory(
           series(x = dates, y = weights)
         }
       }
+    }
+  }
+
+  var showPlaceholder by remember { mutableStateOf(false) }
+  LaunchedEffect(filteredSetHistory) {
+    if (filteredSetHistory.isEmpty()) {
+      delay(300)
+      showPlaceholder = true
+    } else {
+      showPlaceholder = false
     }
   }
 
@@ -211,10 +222,25 @@ fun SetHistory(
         ),
         scrollState = rememberVicoScrollState(scrollEnabled = false),
         modelProducer = modelProducer,
-        consumeMoveEvents = true
+        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        consumeMoveEvents = true,
+        placeholder = {
+          Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+          ) {
+            FadeInVisibility(showPlaceholder) {
+              Text(
+                text = "No history available.",
+                style = MaterialTheme.typography.titleMediumEmphasized,
+              )
+            }
+          }
+        },
+        modifier = Modifier.padding(horizontal = 8.dp)
       )
     }
-
     LazyRow(
       state = lazyRowState,
       reverseLayout = true,
@@ -222,6 +248,25 @@ fun SetHistory(
         .padding(vertical = 4.dp)
         .height(60.dp)
     ) {
+      if (filteredSetHistory.isEmpty()) {
+        item {
+          FadeInVisibility(showPlaceholder) {
+            Column(
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.Center,
+              modifier = Modifier
+                .fillParentMaxWidth()
+                .height(60.dp)
+                .padding(bottom = 8.dp)
+            ) {
+              Text(
+                text = "Previous sessions will show up here.",
+                style = MaterialTheme.typography.labelMedium
+              )
+            }
+          }
+        }
+      }
       items(filteredSetHistory) { pair ->
         val (sessionWrapper, exerciseWrapper) = pair
         SetHistoryCard(
@@ -232,28 +277,7 @@ fun SetHistory(
           exerciseWrapper = exerciseWrapper
         )
       }
-      if (filteredSetHistory.isEmpty()) {
-        item {
-          Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-              .fillMaxHeight()
-              .padding(bottom = 8.dp)
-              .width(LocalWindowInfo.current.containerSize.width.dp)
-          ) {
-            Text(
-              text = "No history available.",
-              style = MaterialTheme.typography.titleMediumEmphasized,
-            )
-            @Suppress("DEPRECATION")
-            Text(
-              text = "Previous sessions will show up here.",
-              style = MaterialTheme.typography.labelMedium
-            )
-          }
-        }
-      }
     }
   }
 }
+

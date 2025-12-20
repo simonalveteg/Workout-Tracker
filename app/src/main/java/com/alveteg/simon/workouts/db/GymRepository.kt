@@ -46,8 +46,8 @@ class GymRepository(
       val relevantSessionExercises = allSessionExercises.filter { it.exercise.id == exercise.id }
 
       relevantSessionExercises
-        .mapNotNull { sessionExercise ->
-          getSessionById(sessionExercise.sessionExercise.parentSessionId)?.let { session ->
+        .map { sessionExercise ->
+          getSessionById(sessionExercise.sessionExercise.parentSessionId).let { session ->
             val sets =
               getSetsForExercise(sessionExercise.sessionExercise.sessionExerciseId).first()
             val sessionWrapper = SessionWrapper(session, emptyList())
