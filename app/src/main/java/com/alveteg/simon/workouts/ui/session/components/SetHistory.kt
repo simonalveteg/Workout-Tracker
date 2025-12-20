@@ -250,7 +250,7 @@ fun SetHistory(
     ) {
       if (filteredSetHistory.isEmpty()) {
         item {
-          FadeInVisibility(showPlaceholder) {
+          FadeInVisibility(showPlaceholder, delayMillis = 500) {
             Column(
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.Center,

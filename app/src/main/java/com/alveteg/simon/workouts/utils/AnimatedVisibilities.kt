@@ -3,6 +3,7 @@ package com.alveteg.simon.workouts.utils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -15,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -37,13 +39,14 @@ fun ScaleVisibility(
 @Composable
 fun FadeInVisibility(
   visible: Boolean,
+  delayMillis: Int = 0,
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
 ) {
   AnimatedVisibility(
     visible = visible,
-    enter = fadeIn(animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()),
-    exit = fadeOut(animationSpec = MaterialTheme.motionScheme.slowEffectsSpec())
+    enter = fadeIn(animationSpec = tween(durationMillis = 1000, delayMillis = delayMillis)),
+    exit = fadeOut(animationSpec = tween(durationMillis = 1000, delayMillis = delayMillis))
   ) {
     content()
   }
