@@ -97,7 +97,7 @@ fun SetHistory(
   var showPlaceholder by remember { mutableStateOf(false) }
   LaunchedEffect(filteredSetHistory) {
     if (filteredSetHistory.isEmpty()) {
-      delay(1000)
+      delay(500)
       showPlaceholder = true
     } else {
       showPlaceholder = false
@@ -250,7 +250,7 @@ fun SetHistory(
     ) {
       if (filteredSetHistory.isEmpty()) {
         item {
-          FadeInVisibility(showPlaceholder, delayMillis = 500) {
+          FadeInVisibility(showPlaceholder, delayMillis = 100) {
             Column(
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.Center,

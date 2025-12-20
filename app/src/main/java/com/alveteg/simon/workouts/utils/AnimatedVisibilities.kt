@@ -45,8 +45,8 @@ fun FadeInVisibility(
 ) {
   AnimatedVisibility(
     visible = visible,
-    enter = fadeIn(animationSpec = tween(durationMillis = 1000, delayMillis = delayMillis)),
-    exit = fadeOut(animationSpec = tween(durationMillis = 1000, delayMillis = delayMillis))
+    enter = fadeIn(animationSpec = tween(durationMillis = 600, delayMillis = delayMillis)),
+    exit = fadeOut(animationSpec = tween(durationMillis = 600, delayMillis = delayMillis))
   ) {
     content()
   }
