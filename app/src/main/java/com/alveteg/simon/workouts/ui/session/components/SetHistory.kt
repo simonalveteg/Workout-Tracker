@@ -97,7 +97,7 @@ fun SetHistory(
   var showPlaceholder by remember { mutableStateOf(false) }
   LaunchedEffect(filteredSetHistory) {
     if (filteredSetHistory.isEmpty()) {
-      delay(300)
+      delay(1000)
       showPlaceholder = true
     } else {
       showPlaceholder = false

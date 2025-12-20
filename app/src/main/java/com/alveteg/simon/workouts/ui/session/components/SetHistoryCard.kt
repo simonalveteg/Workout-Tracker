@@ -44,7 +44,7 @@ fun SetHistoryCard(
     ) {
       SessionDate(sessionWrapper.session)
       sets.forEach { set ->
-        SetCard(set = set)
+        SetCard(set = set, isClickable = false)
       }
       if (sessionWrapper.session.start.year != LocalDate.now().year) {
         VerticalDivider()
