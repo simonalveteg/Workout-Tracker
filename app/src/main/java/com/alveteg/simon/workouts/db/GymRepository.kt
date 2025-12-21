@@ -22,6 +22,10 @@ class GymRepository(
 ) {
   private val DB_NAME = "gym_database.db"
 
+  fun checkpoint() {
+    // This merges the -wal file into the .db file without closing the connection
+    database.openHelper.writableDatabase.execSQL("PRAGMA wal_checkpoint(FULL)")  }
+
   fun checkpointAndClose() {
     if (database.isOpen) {
       database.close()

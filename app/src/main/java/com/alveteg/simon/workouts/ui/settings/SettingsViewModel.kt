@@ -45,7 +45,7 @@ class SettingsViewModel @Inject constructor(
   fun exportDatabase(context: Context, destinationUri: Uri) {
     viewModelScope.launch(Dispatchers.IO) {
       try {
-        repo.checkpointAndClose()
+        repo.checkpoint()
 
         val dbFile = repo.getDatabaseFile(context)
         context.contentResolver.openOutputStream(destinationUri)?.use { output ->

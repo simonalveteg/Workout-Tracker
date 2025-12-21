@@ -47,11 +47,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alveteg.simon.workouts.db.entities.Session
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerAction
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
-import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.ui.SetWrapper
 import com.alveteg.simon.workouts.ui.TimerState
 import com.alveteg.simon.workouts.ui.datetimedialog.MaterialDialog
