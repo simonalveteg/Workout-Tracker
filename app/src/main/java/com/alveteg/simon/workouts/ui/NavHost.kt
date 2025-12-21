@@ -26,7 +26,6 @@ fun NavHost(
     NavHost(
       navController = navController,
       startDestination = Routes.HOME,
-
     ) {
 
       composable(Routes.HOME) {
@@ -65,7 +64,9 @@ fun NavHost(
         )
       }
       composable(Routes.SETTINGS) {
-        SettingsScreen()
+        SettingsScreen(
+          onNavigate = { navController.navigationEvent(event = it) },
+        )
       }
     }
   }

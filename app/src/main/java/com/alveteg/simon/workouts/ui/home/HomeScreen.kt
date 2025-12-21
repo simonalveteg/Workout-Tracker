@@ -24,7 +24,9 @@ import com.alveteg.simon.workouts.ui.home.components.HomeContainer
 import com.alveteg.simon.workouts.ui.home.components.SessionCard
 import com.alveteg.simon.workouts.utils.UiEvent
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class,
+  ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 fun HomeScreen(
   onNavigate: (UiEvent.Navigate) -> Unit,
@@ -81,7 +83,7 @@ fun HomeScreen(
                 }
                 Text(
                   text = tagline,
-                  style = MaterialTheme.typography.labelLarge,
+                  style = MaterialTheme.typography.labelLargeEmphasized,
                   color = MaterialTheme.colorScheme.secondary,
                 )
 

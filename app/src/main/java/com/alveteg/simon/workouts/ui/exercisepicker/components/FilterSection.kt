@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import com.alveteg.simon.workouts.ui.session.components.OutlinedSmallPill
 import com.alveteg.simon.workouts.ui.session.components.SmallPill
 import com.alveteg.simon.workouts.ui.theme.md_theme_dark_onPrimary
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FilterSection(
   modifier: Modifier = Modifier,
@@ -36,7 +38,7 @@ fun FilterSection(
       HorizontalDivider(modifier = Modifier.weight(1f))
       Text(
         text = title.uppercase(),
-        style = MaterialTheme.typography.labelLarge
+        style = MaterialTheme.typography.labelLargeEmphasized
       )
       HorizontalDivider(modifier = Modifier.weight(1f))
     }

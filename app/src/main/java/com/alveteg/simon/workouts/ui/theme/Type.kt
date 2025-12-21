@@ -157,7 +157,7 @@ val AppTypography = Typography(
     letterSpacing = 0.4.sp,
   ),
   labelLarge = TextStyle(
-    fontFamily = ArchivoBlack,
+    fontFamily = Archivo,
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
     lineHeight = 20.sp,

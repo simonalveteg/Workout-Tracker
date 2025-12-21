@@ -108,6 +108,7 @@ fun SetIndicator(set: GymSet, modifier: Modifier = Modifier) {
   }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetText(
   text: String,
@@ -117,7 +118,7 @@ fun SetText(
   Row(modifier = modifier) {
     Text(
       text = text,
-      style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp),
+      style = MaterialTheme.typography.labelLargeEmphasized.copy(fontSize = 16.sp),
     )
     Text(
       text = textType,
