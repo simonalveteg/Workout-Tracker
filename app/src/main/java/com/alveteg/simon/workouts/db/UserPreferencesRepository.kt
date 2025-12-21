@@ -21,6 +21,7 @@ class UserPreferencesRepository @Inject constructor(
   private object PreferencesKeys {
     val TARGET_FREQUENCY = floatPreferencesKey("target_workout_frequency")
     val SECONDARY_MUSCLE_WEIGHT = floatPreferencesKey("secondary_muscle_weight")
+    val HAS_DENIED_NOTIFICATIONS = booleanPreferencesKey("has_denied_notifications")
   }
 
   val targetFrequency: Flow<Float> = context.dataStore.data
@@ -29,11 +30,18 @@ class UserPreferencesRepository @Inject constructor(
   val secondaryMuscleWeight: Flow<Float> = context.dataStore.data
     .map { preferences -> preferences[PreferencesKeys.SECONDARY_MUSCLE_WEIGHT] ?: 0.2f }
 
+  val hasDeniedNotifications: Flow<Boolean> = context.dataStore.data
+    .map { preferences -> preferences[PreferencesKeys.HAS_DENIED_NOTIFICATIONS] ?: false }
+
   suspend fun updateTargetFrequency(value: Float) {
     context.dataStore.edit { it[PreferencesKeys.TARGET_FREQUENCY] = value }
   }
 
   suspend fun updateSecondaryMuscleWeight(value: Float) {
     context.dataStore.edit { it[PreferencesKeys.SECONDARY_MUSCLE_WEIGHT] = value }
+  }
+
+  suspend fun updateHasDeniedNotifications(value: Boolean) {
+    context.dataStore.edit { it[PreferencesKeys.HAS_DENIED_NOTIFICATIONS] = value }
   }
 }
