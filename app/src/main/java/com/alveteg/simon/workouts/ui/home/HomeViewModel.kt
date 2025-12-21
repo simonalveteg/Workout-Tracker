@@ -3,6 +3,7 @@ package com.alveteg.simon.workouts.ui.home
 import android.app.Application
 import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -24,6 +25,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -57,25 +59,31 @@ class HomeViewModel @Inject constructor(
     emptyList()
   )
 
-  val tagline: StateFlow<String> = combine(sessions, prefsRepo.targetFrequency) { allSessions, targetFrequency ->
-    val cutOffDate = LocalDate.now().minusWeeks(2)
-    val recentSessions = allSessions.count { it.session.start.toLocalDate().isAfter(cutOffDate) }
-    val isStarter = allSessions.isEmpty() || (recentSessions < targetFrequency.times(2))
+  val tagline: StateFlow<String> =
+    combine(sessions, prefsRepo.targetFrequency) { allSessions, targetFrequency ->
+      val cutOffDate = LocalDate.now().minusWeeks(2)
+      val recentSessions = allSessions.count { it.session.start.toLocalDate().isAfter(cutOffDate) }
+      val isStarter = allSessions.isEmpty() || (recentSessions < targetFrequency.times(2))
 
-    val arrayId = if (isStarter) R.array.home_taglines_starters else R.array.home_taglines
-    application.resources.getStringArray(arrayId).random() ?: ""
-  }.stateIn(
-    scope = viewModelScope,
-    started = SharingStarted.WhileSubscribed(5000),
-    initialValue = ""
-  )
+      isStarter to targetFrequency
+    }
+      .distinctUntilChanged()
+      .map { (isStarter, _) ->
+        val arrayId = if (isStarter) R.array.home_taglines_starters else R.array.home_taglines
+        application.resources.getStringArray(arrayId).random() ?: ""
+      }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ""
+      )
   val greeting: String
-   get() = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-    in 5..11 -> "Good Morning"
-    in 12..16 -> "Good Afternoon"
-    in 17..23 -> "Good Evening"
-    else -> "Stay Focused"
-  }
+    get() = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+      in 5..11 -> "Good Morning"
+      in 12..16 -> "Good Afternoon"
+      in 17..23 -> "Good Evening"
+      else -> "Stay Focused"
+    }
   private val _uiEvent = Channel<UiEvent>()
   val uiEvent = _uiEvent.receiveAsFlow()
 
@@ -84,9 +92,11 @@ class HomeViewModel @Inject constructor(
       is HomeEvent.SessionClicked -> {
         sendUiEvent(UiEvent.Navigate("${Routes.SESSION}/${event.sessionWrapper.session.sessionId}"))
       }
+
       is HomeEvent.OpenSettings -> {
         sendUiEvent(UiEvent.Navigate(Routes.SETTINGS))
       }
+
       is HomeEvent.NewSession -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
@@ -110,6 +120,7 @@ class HomeViewModel @Inject constructor(
           }
         }
       }
+
       else -> Unit
     }
   }
