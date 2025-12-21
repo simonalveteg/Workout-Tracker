@@ -83,7 +83,7 @@ fun ExercisePickerScreen(
   animatedVisibilityScope: AnimatedVisibilityScope,
   viewModel: PickerViewModel = hiltViewModel()
 ) {
-  val exercises by viewModel.filteredExercises.collectAsState(initial = emptyList())
+  val exercises by viewModel.filteredExercises.collectAsState()
   val selectedExercises by viewModel.selectedExercises.collectAsState()
   val muscleFilter by viewModel.muscleFilter.collectAsState()
   val equipmentFilter by viewModel.equipmentFilter.collectAsState()

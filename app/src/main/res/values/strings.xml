@@ -1,5 +1,106 @@
 <resources>
-    <string name="show_less">Show less</string>
-    <string name="show_more">Show more</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string-array name="home_taglines_starters">
+        <item>Start where you are</item>
+        <item>Take it one step at a time</item>
+        <item>Just begin</item>
+        <item>Do what feels manageable</item>
+        <item>One rep is enough to start</item>
+        <item>No need to rush</item>
+        <item>Focus on the next step</item>
+        <item>Today is a good day to train</item>
+        <item>Keep it simple today</item>
+        <item>Show up in your own way</item>
+        <item>You can start small</item>
+        <item>Begin with one set</item>
+        <item>There’s no perfect time</item>
+        <item>Make some room for movement</item>
+        <item>Just do a little</item>
+        <item>See what you feel like doing</item>
+        <item>Progress starts with starting</item>
+        <item>Take the first step</item>
+        <item>Ease into it</item>
+        <item>Let today be day one</item>
+        <item>Move at your pace</item>
+        <item>One small effort counts</item>
+        <item>Do what you can today</item>
+        <item>No pressure, just movement</item>
+        <item>Try a few reps</item>
+        <item>Start light</item>
+        <item>Begin with what’s easy</item>
+        <item>Give yourself a starting point</item>
+        <item>Just get moving</item>
+        <item>There’s time to build</item>
+        <item>See how it feels</item>
+        <item>Step into the gym mindset</item>
+        <item>Warm up and see where it goes</item>
+        <item>Nothing says you have to do everything</item>
+        <item>A small start is still a start</item>
+        <item>Let this be a fresh session</item>
+        <item>Focus on the next rep</item>
+        <item>One set is a win</item>
+        <item>Take it set by set</item>
+        <item>Just lift something</item>
+        <item>Begin again if you need to</item>
+        <item>Today can be simple</item>
+        <item>Give it a try</item>
+        <item>Start slow, stay steady</item>
+        <item>Make today about movement</item>
+        <item>No expectations, just effort</item>
+        <item>See what you can do today</item>
+        <item>Every session starts somewhere</item>
+        <item>Meet the weights halfway</item>
+    </string-array>
+
+    <string-array name="home_taglines">
+        <item>Another day in the routine</item>
+        <item>Consistency in motion</item>
+        <item>Training, as usual</item>
+        <item>The routine continues</item>
+        <item>Another solid training day</item>
+        <item>Steady days stack up</item>
+        <item>Same work, steady progress</item>
+        <item>Another session in the run</item>
+        <item>Routine beats motivation</item>
+        <item>Work gets done regularly</item>
+        <item>Progress comes from repeats</item>
+        <item>Another brick in the wall</item>
+        <item>The long game continues</item>
+        <item>Regular training pays off</item>
+        <item>Momentum stays intact</item>
+        <item>Another day of showing up</item>
+        <item>Consistency over intensity</item>
+        <item>The habit holds</item>
+        <item>Nothing new, just work</item>
+        <item>Another rep in the pattern</item>
+        <item>Training stays consistent</item>
+        <item>Steady work, again</item>
+        <item>The process continues</item>
+        <item>Another day, same plan</item>
+        <item>Progress through repetition</item>
+        <item>The routine does its job</item>
+        <item>Work accumulates</item>
+        <item>Consistency remains the point</item>
+        <item>Another day in the cycle</item>
+        <item>Training fits the week</item>
+        <item>Routine over hype</item>
+        <item>Same effort, long term</item>
+        <item>Another session logged</item>
+        <item>The pattern holds</item>
+        <item>Progress comes quietly</item>
+        <item>Regular work, real results</item>
+        <item>Another step in the routine</item>
+        <item>Consistency keeps winning</item>
+        <item>Training stays on schedule</item>
+        <item>Another normal training day</item>
+        <item>The habit does the heavy lifting</item>
+        <item>Work repeats, progress follows</item>
+        <item>Routine builds strength</item>
+        <item>Another day of the basics</item>
+        <item>Steady work compounds</item>
+        <item>The routine stays</item>
+        <item>Another round of the plan</item>
+        <item>Consistency makes it boring</item>
+        <item>The work continues</item>
+        <item>Another day, still training</item>
+    </string-array>
 </resources>

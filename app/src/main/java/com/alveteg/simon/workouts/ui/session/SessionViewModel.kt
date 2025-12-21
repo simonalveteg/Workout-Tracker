@@ -31,13 +31,21 @@ class SessionViewModel @Inject constructor(
   val _session = MutableStateFlow(Session())
   val session = _session.asStateFlow().map {
     SessionWrapper(it, emptyList())
-  }
+  }.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = SessionWrapper(Session(), emptyList())
+  )
   private val _exercises = MutableStateFlow<List<ExerciseWrapper>>(emptyList())
   val exercises = _exercises.asStateFlow()
 
   val muscleGroups = exercises.map { exercises ->
     exercises.map { it.exercise }.sortedListOfMuscleGroups()
-  }
+  }.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = emptyList()
+  )
 
   private val _uiEvent = Channel<UiEvent>()
   val uiEvent = _uiEvent.receiveAsFlow()

@@ -1,12 +1,8 @@
 package com.alveteg.simon.workouts.ui.home
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.ArcMode
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +43,10 @@ fun HomeScreen(
   animatedVisibilityScope: AnimatedVisibilityScope,
   viewModel: HomeViewModel = hiltViewModel()
 ) {
-  val sessions by viewModel.sessions.collectAsState(initial = emptyList())
+  val sessions by viewModel.sessions.collectAsState()
+  val tagline by viewModel.tagline.collectAsState()
+  val greeting = viewModel.greeting
+
 
   LaunchedEffect(true) {
     viewModel.uiEvent.collect { event ->
@@ -80,7 +79,7 @@ fun HomeScreen(
             verticalAlignment = Alignment.Top
           ) {
             Text(
-              text = "Good Morning",
+              text = greeting,
               style = MaterialTheme.typography.headlineLarge,
               modifier = Modifier
                 .weight(1f)
@@ -93,7 +92,7 @@ fun HomeScreen(
             }
           }
           Text(
-            text = "You're doing great!",
+            text = tagline,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.secondary,
           )

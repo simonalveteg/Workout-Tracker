@@ -41,7 +41,7 @@ class PickerViewModel @Inject constructor(
   private val _searchText = MutableStateFlow("")
   val searchText = _searchText.asStateFlow()
 
-  val filteredExercises: Flow<List<ExerciseWithSessionCount>> = combine(
+  val filteredExercises: StateFlow<List<ExerciseWithSessionCount>> = combine(
     repo.getAllExercisesWithSessionCount(),
     selectedExercises,
     equipmentFilter,
@@ -70,7 +70,11 @@ class PickerViewModel @Inject constructor(
         }
       }
     )
-  }
+  }.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = emptyList()
+  )
 
   suspend fun getHistoryForExercise(exercise: Exercise) = repo.getHistoryForExercise(exercise)
 

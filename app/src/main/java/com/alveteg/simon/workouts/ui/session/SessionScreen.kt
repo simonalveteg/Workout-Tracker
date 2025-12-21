@@ -110,9 +110,9 @@ fun SessionScreen(
     }
   }
 
-  val sessionWrapper by viewModel.session.collectAsState(SessionWrapper(Session(), emptyList()))
-  val exercises by viewModel.exercises.collectAsState(initial = emptyList())
-  val muscleGroups by viewModel.muscleGroups.collectAsState(emptyList())
+  val sessionWrapper by viewModel.session.collectAsState()
+  val exercises by viewModel.exercises.collectAsState()
+  val muscleGroups by viewModel.muscleGroups.collectAsState()
 
   var screenUnlocked by remember(sessionWrapper) { mutableStateOf(false) }
   LaunchedEffect(sessionWrapper) {
