@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -38,7 +39,7 @@ import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.ui.session.SessionEvent
 import com.alveteg.simon.workouts.utils.Event
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExerciseBottomSheet(
   modifier: Modifier = Modifier,
@@ -78,13 +79,17 @@ fun ExerciseBottomSheet(
           maxFontSize = MaterialTheme.typography.titleLarge.fontSize,
           minFontSize = 10.sp,
         ),
-        modifier = Modifier.padding(horizontal = 46.dp).padding(top = 6.dp),
+        modifier = Modifier
+          .padding(horizontal = 46.dp)
+          .padding(top = 6.dp),
       )
     }
     Row(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(4.dp),
-      modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 8.dp)
     ) {
       HorizontalDivider(modifier = Modifier.weight(1f))
       exercise.getPrimaryMuscleGroups().forEach {
@@ -106,19 +111,34 @@ fun ExerciseBottomSheet(
       Spacer(modifier = Modifier.width(8.dp))
       ElevatedAssistChip(
         onClick = { onEvent(SessionEvent.SearchForExercise(exercise, "! \"exrx.net\"")) },
-        label = { Text("exrx.net") },
+        label = {
+          Text(
+            text = "exrx.net",
+            style = MaterialTheme.typography.labelLargeEmphasized
+          )
+        },
         leadingIcon = Icons.Default.Search,
         leadingIconDescription = "Search for exercise on exrx.net"
       )
       ElevatedAssistChip(
         onClick = { onEvent(SessionEvent.SearchForExercise(exercise)) },
-        label = { Text("DuckDuckGo") },
+        label = {
+          Text(
+            text = "DuckDuckGo",
+            style = MaterialTheme.typography.labelLargeEmphasized
+          )
+        },
         leadingIcon = Icons.Default.Search,
         leadingIconDescription = "Search for exercise on DuckDuckGo."
       )
       ElevatedAssistChip(
         onClick = { onEvent(SessionEvent.SearchForExercise(exercise, "!yt")) },
-        label = { Text("YouTube") },
+        label = {
+          Text(
+            text = "YouTube",
+            style = MaterialTheme.typography.labelLargeEmphasized
+          )
+        },
         leadingIcon = Icons.Default.Videocam,
         leadingIconDescription = "Search for exercise on YouTube.com"
       )
