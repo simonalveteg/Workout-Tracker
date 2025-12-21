@@ -22,7 +22,6 @@ fun HomeContainer(
     color = color,
     modifier = modifier
       .fillMaxWidth()
-      .padding(vertical = 6.dp)
       .height(74.dp),
     shape = MaterialTheme.shapes.medium
   ) {

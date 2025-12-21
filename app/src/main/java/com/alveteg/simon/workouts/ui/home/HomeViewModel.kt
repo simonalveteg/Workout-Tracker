@@ -45,7 +45,7 @@ class HomeViewModel @Inject constructor(
   val tagline: StateFlow<String> = sessions.map { allSessions ->
     val cutOffDate = LocalDate.now().minusWeeks(2)
     val recentSessions = allSessions.count { it.session.start.toLocalDate().isAfter(cutOffDate) }
-    val isStarter = allSessions.isEmpty() || (recentSessions < 2)
+    val isStarter = allSessions.isEmpty() || (recentSessions < 4)
 
     val arrayId = if (isStarter) R.array.home_taglines_starters else R.array.home_taglines
     application.resources.getStringArray(arrayId).random() ?: ""

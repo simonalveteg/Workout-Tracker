@@ -1,106 +1,69 @@
 <resources>
+    <!--  Taglines for when the user hasn't worked out in a while. Focus: Low barrier to entry and psychological safety.  -->
     <string-array name="home_taglines_starters">
-        <item>Start where you are</item>
-        <item>Take it one step at a time</item>
-        <item>Just begin</item>
-        <item>Do what feels manageable</item>
-        <item>One rep is enough to start</item>
-        <item>No need to rush</item>
-        <item>Focus on the next step</item>
-        <item>Today is a good day to train</item>
-        <item>Keep it simple today</item>
-        <item>Show up in your own way</item>
-        <item>You can start small</item>
-        <item>Begin with one set</item>
-        <item>There’s no perfect time</item>
-        <item>Make some room for movement</item>
-        <item>Just do a little</item>
-        <item>See what you feel like doing</item>
-        <item>Progress starts with starting</item>
-        <item>Take the first step</item>
-        <item>Ease into it</item>
-        <item>Let today be day one</item>
-        <item>Move at your pace</item>
-        <item>One small effort counts</item>
-        <item>Do what you can today</item>
-        <item>No pressure, just movement</item>
-        <item>Try a few reps</item>
-        <item>Start light</item>
-        <item>Begin with what’s easy</item>
-        <item>Give yourself a starting point</item>
-        <item>Just get moving</item>
-        <item>There’s time to build</item>
-        <item>See how it feels</item>
-        <item>Step into the gym mindset</item>
-        <item>Warm up and see where it goes</item>
-        <item>Nothing says you have to do everything</item>
-        <item>A small start is still a start</item>
-        <item>Let this be a fresh session</item>
-        <item>Focus on the next rep</item>
-        <item>One set is a win</item>
-        <item>Take it set by set</item>
-        <item>Just lift something</item>
-        <item>Begin again if you need to</item>
-        <item>Today can be simple</item>
-        <item>Give it a try</item>
-        <item>Start slow, stay steady</item>
-        <item>Make today about movement</item>
-        <item>No expectations, just effort</item>
-        <item>See what you can do today</item>
-        <item>Every session starts somewhere</item>
-        <item>Meet the weights halfway</item>
+        <item>Start where you are, use what you have.</item>
+        <item>The first set is the hardest part.</item>
+        <item>Just show up; the rest will follow.</item>
+        <item>Low pressure, high reward.</item>
+        <item>One rep is a successful comeback.</item>
+        <item>No need to catch up, just begin.</item>
+        <item>Focus on the feeling, not the numbers.</item>
+        <item>A short session is better than a missed one.</item>
+        <item>Welcome back to the floor.</item>
+        <item>Your future self will thank you for starting.</item>
+        <item>Strip it back to the basics today.</item>
+        <item>Action creates motivation, not the other way around.</item>
+        <item>Forget the break — today is Day One.</item>
+        <item>Make some room for yourself today.</item>
+        <item>Just five minutes — see how it feels.</item>
+        <item>Movement is medicine.</item>
+        <item>Progress starts with a single decision.</item>
+        <item>The gym missed you.</item>
+        <item>Ease in. No rush, no ego.</item>
+        <item>Small wins lead to big momentum.</item>
+        <item>You don\'t have to be great to start.</item>
+        <item>One small effort changes the whole day.</item>
+        <item>Listen to your body and just move.</item>
+        <item>The perfect time is right now.</item>
+        <item>You\'ve done this before, you can do it again.</item>
+        <item>Gravity doesn\'t care how long you\'ve been away.</item>
+        <item>Break the ice with a single set.</item>
+        <item>Your rhythm is waiting to be found.</item>
+        <item>Today is about showing up for yourself.</item>
+        <item>Keep it simple. Keep it light.</item>
     </string-array>
 
+    <!--  Taglines for when the user is in a routine. Focus: Identity, discipline, and the compound effect. -->
     <string-array name="home_taglines">
-        <item>Another day in the routine</item>
-        <item>Consistency in motion</item>
-        <item>Training, as usual</item>
-        <item>The routine continues</item>
-        <item>Another solid training day</item>
-        <item>Steady days stack up</item>
-        <item>Same work, steady progress</item>
-        <item>Another session in the run</item>
-        <item>Routine beats motivation</item>
-        <item>Work gets done regularly</item>
-        <item>Progress comes from repeats</item>
-        <item>Another brick in the wall</item>
-        <item>The long game continues</item>
-        <item>Regular training pays off</item>
-        <item>Momentum stays intact</item>
-        <item>Another day of showing up</item>
-        <item>Consistency over intensity</item>
-        <item>The habit holds</item>
-        <item>Nothing new, just work</item>
-        <item>Another rep in the pattern</item>
-        <item>Training stays consistent</item>
-        <item>Steady work, again</item>
-        <item>The process continues</item>
-        <item>Another day, same plan</item>
-        <item>Progress through repetition</item>
-        <item>The routine does its job</item>
-        <item>Work accumulates</item>
-        <item>Consistency remains the point</item>
-        <item>Another day in the cycle</item>
-        <item>Training fits the week</item>
-        <item>Routine over hype</item>
-        <item>Same effort, long term</item>
-        <item>Another session logged</item>
-        <item>The pattern holds</item>
-        <item>Progress comes quietly</item>
-        <item>Regular work, real results</item>
-        <item>Another step in the routine</item>
-        <item>Consistency keeps winning</item>
-        <item>Training stays on schedule</item>
-        <item>Another normal training day</item>
-        <item>The habit does the heavy lifting</item>
-        <item>Work repeats, progress follows</item>
-        <item>Routine builds strength</item>
-        <item>Another day of the basics</item>
-        <item>Steady work compounds</item>
-        <item>The routine stays</item>
-        <item>Another round of the plan</item>
-        <item>Consistency makes it boring</item>
-        <item>The work continues</item>
-        <item>Another day, still training</item>
+        <item>Consistency is your superpower.</item>
+        <item>Another brick in the wall.</item>
+        <item>This is just what you do now.</item>
+        <item>Discipline over desire.</item>
+        <item>The routine is the reward.</item>
+        <item>Steady work, silent progress.</item>
+        <item>Building the version of you that doesn\'t quit.</item>
+        <item>One more session for the record books.</item>
+        <item>You\'re making this look easy.</item>
+        <item>Success is hidden in your routine.</item>
+        <item>The momentum is on your side.</item>
+        <item>Trust the process, respect the work.</item>
+        <item>You are the architect of your own strength.</item>
+        <item>Mastery requires repetition.</item>
+        <item>Showing up is half the battle won.</item>
+        <item>Small gains, compounded daily.</item>
+        <item>This is where the magic happens.</item>
+        <item>Your habits define your future.</item>
+        <item>Stay hungry, stay consistent.</item>
+        <item>Keep up the good work.</item>
+        <item>You\'re doing great.</item>
+        <item>The work always speaks for itself.</item>
+        <item>Every rep counts toward the goal.</item>
+        <item>You’re proving it to yourself every day.</item>
+        <item>Strength is built in the quiet moments.</item>
+        <item>Keep the streak alive.</item>
+        <item>Consistency: The difference between a dream and a goal.</item>
+        <item>Don\'t stop now, you\'re in the flow.</item>
+        <item>The grind today is the glory tomorrow.</item>
+        <item>Legacy is built one workout at a time.</item>
     </string-array>
 </resources>
