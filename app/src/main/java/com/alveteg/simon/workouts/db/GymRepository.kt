@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.db
 
+import android.content.Context
 import com.alveteg.simon.workouts.db.entities.*
 import com.alveteg.simon.workouts.ui.DatabaseModel
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
@@ -9,14 +10,27 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 import kotlin.collections.filter
 import kotlin.collections.mapNotNull
 import kotlin.collections.sortedByDescending
 
 
 class GymRepository(
-  private val dao: GymDAO
+  private val dao: GymDAO,
+  private val database: GymDatabase
 ) {
+  private val DB_NAME = "gym_database.db"
+
+  fun checkpointAndClose() {
+    if (database.isOpen) {
+      database.close()
+    }
+  }
+
+  fun getDatabaseFile(context: Context): File {
+    return context.getDatabasePath(DB_NAME)
+  }
 
   fun getSessionById(sessionId: Long) = dao.getSessionById(sessionId)
   fun getSetById(setId: Long) = dao.getSetById(setId)

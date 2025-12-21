@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,15 +24,7 @@ fun SettingsScreen(
   viewModel: SettingsViewModel = hiltViewModel()
 ) {
   val mContext = LocalContext.current
-  val exportLauncher = rememberLauncherForActivityResult(
-    contract = CreateDocument("application/json"),
-    onResult = { uri ->
-      uri?.let {
-        viewModel.onEvent(SettingsEvent.ExportDatabase(mContext, it))
-      }
-    }
-  )
-  val importLauncher = rememberLauncherForActivityResult(
+  val importLauncherOld = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.GetContent(),
     onResult = { uri ->
       uri?.let {
@@ -39,13 +32,21 @@ fun SettingsScreen(
       }
     }
   )
+  val exportLauncher = rememberLauncherForActivityResult(
+    contract = CreateDocument("application/octet-stream")
+  ) { uri ->
+    uri?.let { viewModel.exportDatabase(mContext, it) }
+  }
+
+  val importLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.OpenDocument()
+  ) { uri ->
+    uri?.let { viewModel.importDatabase(mContext, it) }
+  }
 
   LaunchedEffect(key1 = true) {
     viewModel.uiEvent.collect { event ->
       when (event) {
-        is UiEvent.FileCreated -> {
-          exportLauncher.launch(event.fileName)
-        }
         else -> Unit
       }
     }
@@ -61,12 +62,7 @@ fun SettingsScreen(
     ) {
       Text("Settings")
       FilledTonalButton(onClick = {
-        viewModel.onEvent(SettingsEvent.CreateFile)
-      }) {
-        Text("Export Database")
-      }
-      FilledTonalButton(onClick = {
-        importLauncher.launch("application/json")
+        importLauncherOld.launch("application/json")
       }) {
         Text("Import Database")
       }
@@ -75,6 +71,8 @@ fun SettingsScreen(
       }) {
         Text("Delete Database")
       }
+      Button(onClick = { exportLauncher.launch("workout_backup.db") }) { Text("Backup") }
+      Button(onClick = { importLauncher.launch(arrayOf("*/*")) }) { Text("Restore") }
     }
   }
 }

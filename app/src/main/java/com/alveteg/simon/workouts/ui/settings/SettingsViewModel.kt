@@ -2,13 +2,13 @@ package com.alveteg.simon.workouts.ui.settings
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.entities.GymSet
 import com.alveteg.simon.workouts.db.entities.Rpe
-import com.alveteg.simon.workouts.ui.DatabaseModel
 import com.alveteg.simon.workouts.ui.OldDatabaseModel
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
@@ -19,8 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -38,19 +38,8 @@ class SettingsViewModel @Inject constructor(
     when (event) {
       is SettingsEvent.ImportDatabase -> {
         viewModelScope.launch(Dispatchers.IO) {
-          importDatabase(event.uri, event.context)
+          importDatabaseLegacy(event.uri, event.context)
         }
-      }
-
-      is SettingsEvent.ExportDatabase -> {
-        viewModelScope.launch(Dispatchers.IO) {
-          exportDatabase(event.uri, event.context)
-        }
-      }
-
-      is SettingsEvent.CreateFile -> {
-        val date = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
-        sendUiEvent(UiEvent.FileCreated("workout_db_$date.json"))
       }
 
       is SettingsEvent.ClearDatabase -> {
@@ -70,14 +59,51 @@ class SettingsViewModel @Inject constructor(
     }
   }
 
-  private fun exportDatabase(uri: Uri, context: Context) {
-    val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
-    val databaseModel = repo.getDatabaseModel()
-    val ob = gson.toJson(databaseModel)
-    saveToFile(uri, context.contentResolver, ob)
+  fun exportDatabase(context: Context, destinationUri: Uri) {
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        repo.checkpointAndClose()
+
+        val dbFile = repo.getDatabaseFile(context)
+        context.contentResolver.openOutputStream(destinationUri)?.use { output ->
+          dbFile.inputStream().use { input ->
+            input.copyTo(output)
+          }
+        }
+        Timber.d("Database exported successfully to binary format")
+      } catch (e: Exception) {
+        Timber.e(e, "Error exporting database")
+      }
+    }
   }
 
-  private fun importDatabase(uri: Uri, context: Context) {
+  fun importDatabase(context: Context, sourceUri: Uri) {
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        repo.checkpointAndClose()
+
+        val dbFile = repo.getDatabaseFile(context)
+        context.contentResolver.openInputStream(sourceUri)?.use { input ->
+          dbFile.outputStream().use { output ->
+            input.copyTo(output)
+          }
+        }
+
+        // Delete temporary WAL files to prevent version mismatch or corruption
+        File(dbFile.path + "-shm").delete()
+        File(dbFile.path + "-wal").delete()
+
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        val mainIntent = Intent.makeRestartActivityTask(intent?.component)
+        context.startActivity(mainIntent)
+        Runtime.getRuntime().exit(0)
+      } catch (e: Exception) {
+        Timber.e(e, "Error restoring database.")
+      }
+    }
+  }
+
+  private fun importDatabaseLegacy(uri: Uri, context: Context) {
     viewModelScope.launch {
       val gson = Converters.registerAll(GsonBuilder().setPrettyPrinting()).create()
       loadFromFile(uri, context.contentResolver)?.let {
@@ -114,20 +140,6 @@ class SettingsViewModel @Inject constructor(
           )
         }
       }
-    }
-  }
-
-  private fun saveToFile(uri: Uri, contentResolver: ContentResolver, content: String) {
-    try {
-      contentResolver.openFileDescriptor(uri, "w")?.use { parcelFileDescriptor ->
-        FileOutputStream(parcelFileDescriptor.fileDescriptor).use {
-          it.write(content.toByteArray())
-        }
-      }
-    } catch (e: FileNotFoundException) {
-      e.printStackTrace()
-    } catch (e: IOException) {
-      e.printStackTrace()
     }
   }
 

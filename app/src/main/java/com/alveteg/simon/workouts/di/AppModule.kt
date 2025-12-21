@@ -39,7 +39,7 @@ object AppModule {
   @Provides
   @Singleton
   fun provideGymRepository(db: GymDatabase): GymRepository {
-    return GymRepository(db.dao)
+    return GymRepository(db.dao, db)
   }
 
   @ApplicationScope
