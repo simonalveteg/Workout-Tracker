@@ -86,7 +86,7 @@ class GymRepository(
         getExercisesForSession(session).first().maxOfOrNull { it.sessionExercise.exerciseOrder }
           ?.let {
             it + 1
-          } ?: -1
+          } ?: 0
 
       dao.insertSessionExercise(sessionExercise.copy(exerciseOrder = exerciseOrder))
     }
