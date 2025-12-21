@@ -131,20 +131,19 @@ fun ExercisePickerScreen(
             modifier = Modifier
               .align(Alignment.Center)
           )
-          ScaleVisibility(filterActive) {
-            IconButton(
-              onClick = {
-                viewModel.onEvent(PickerEvent.DeselectFilters)
-              },
-              modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 8.dp)
-            ) {
-              Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "Clear filter selection"
-              )
-            }
+          IconButton(
+            enabled = filterActive,
+            onClick = {
+              viewModel.onEvent(PickerEvent.DeselectFilters)
+            },
+            modifier = Modifier
+              .align(Alignment.CenterEnd)
+              .padding(end = 8.dp)
+          ) {
+            Icon(
+              imageVector = Icons.Default.Refresh,
+              contentDescription = "Clear filter selection"
+            )
           }
         }
       }
