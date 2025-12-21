@@ -24,14 +24,6 @@ fun SettingsScreen(
   viewModel: SettingsViewModel = hiltViewModel()
 ) {
   val mContext = LocalContext.current
-  val importLauncherOld = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.GetContent(),
-    onResult = { uri ->
-      uri?.let {
-        viewModel.onEvent(SettingsEvent.ImportDatabase(mContext, it))
-      }
-    }
-  )
   val exportLauncher = rememberLauncherForActivityResult(
     contract = CreateDocument("application/octet-stream")
   ) { uri ->
@@ -61,12 +53,7 @@ fun SettingsScreen(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       Text("Settings")
-      FilledTonalButton(onClick = {
-        importLauncherOld.launch("application/json")
-      }) {
-        Text("Import Database")
-      }
-      FilledTonalButton(onClick = {
+      Button(onClick = {
         viewModel.onEvent(SettingsEvent.ClearDatabase)
       }) {
         Text("Delete Database")

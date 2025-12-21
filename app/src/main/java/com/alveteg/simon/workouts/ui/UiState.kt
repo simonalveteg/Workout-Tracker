@@ -40,20 +40,3 @@ data class DatabaseModel(
   val sessionExercises: List<SessionExercise>,
   val sets: List<GymSet>
 )
-
-data class OldDatabaseModel(
-  val sessions: List<Session>,
-  val exercises: List<Exercise>,
-  val sessionExercises: List<SessionExercise>,
-  val sets: List<OldGymSet>
-)
-
-data class OldGymSet(
-  val setId: Long = 0L,
-  val parentSessionExerciseId: Long,
-  val reps: Int? = null,
-  val weight: Float? = null,
-  val time: Long? = null,
-  val distance: Float? = null,
-  val setType: String? = "Normal"
-)

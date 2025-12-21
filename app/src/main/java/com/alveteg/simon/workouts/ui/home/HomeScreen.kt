@@ -63,7 +63,7 @@ fun HomeScreen(
                 modifier = Modifier
                   .fillMaxWidth()
                   .windowInsetsPadding(WindowInsets.statusBars) // Prevents overlapping status bar
-                  .padding(end = 16.dp, top = 8.dp),
+                  .padding(start = 8.dp, end = 16.dp, top = 24.dp),
                 verticalArrangement = Arrangement.Top
               ) {
                 Row(
