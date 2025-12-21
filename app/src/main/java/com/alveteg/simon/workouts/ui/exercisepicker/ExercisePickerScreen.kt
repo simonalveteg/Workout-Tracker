@@ -6,9 +6,13 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -114,21 +118,41 @@ fun ExercisePickerScreen(
     ModalBottomSheet(
       sheetState = filterSheetState,
       onDismissRequest = { openFilterSheet = false },
+      dragHandle = {
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .height(50.dp)
+        ) {
+          Text(
+            text = "Filter Exercises",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+              .align(Alignment.Center)
+          )
+          ScaleVisibility(filterActive) {
+            IconButton(
+              onClick = {
+                viewModel.onEvent(PickerEvent.DeselectFilters)
+              },
+              modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(start = 8.dp)
+            ) {
+              Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Clear filter selection"
+              )
+            }
+          }
+        }
+      }
     ) {
       Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = Modifier.padding(top = 8.dp)
       ) {
-        IconButton(
-          onClick = {
-            viewModel.onEvent(PickerEvent.DeselectFilters)
-          }
-        ) {
-          Icon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = "Clear filter selection"
-          )
-        }
         FilterSection(
           title = "Muscle Group",
           filterOptions = MuscleGroup.getAllMuscleGroups().sorted(),
