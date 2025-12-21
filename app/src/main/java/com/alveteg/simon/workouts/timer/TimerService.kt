@@ -215,8 +215,8 @@ class TimerService : Service() {
   }
 
   companion object {
-    const val CHANNEL_ID = "workout_timer"
-    const val ALERT_CHANNEL_ID = "workout_alert_timer"
+    const val CHANNEL_ID = "workout_timer_live_update"
+    const val ALERT_CHANNEL_ID = "workout_timer_alert"
   }
 }
 

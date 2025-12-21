@@ -6,12 +6,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.rememberNavController
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerIntent
 import com.alveteg.simon.workouts.ui.NavHost
 import com.alveteg.simon.workouts.ui.theme.WorkoutTheme
+import com.alveteg.simon.workouts.utils.Routes
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -36,6 +38,16 @@ class MainActivity : ComponentActivity() {
           )
         }
         val navController = rememberNavController()
+
+        LaunchedEffect(Unit) {
+          val sessionId = intent.getLongExtra("SESSION_ID", -1L)
+          if (sessionId != -1L) {
+            navController.navigate("${Routes.SESSION}/$sessionId") {
+              launchSingleTop = true
+            }
+          }
+        }
+
         NavHost(navController)
       }
     }

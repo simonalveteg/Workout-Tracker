@@ -4,6 +4,10 @@ import android.app.Application
 import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.alveteg.simon.workouts.R
 import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.entities.Session
@@ -12,6 +16,7 @@ import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.Routes
 import com.alveteg.simon.workouts.utils.UiEvent
 import com.alveteg.simon.workouts.utils.sortedListOfMuscleGroups
+import com.alveteg.simon.workouts.worker.SessionReminderWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -24,6 +29,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,6 +84,20 @@ class HomeViewModel @Inject constructor(
             repo.insertSession(Session())
             val session = repo.getLastSession()
             sendUiEvent(UiEvent.Navigate("${Routes.SESSION}/${session.sessionId}"))
+
+            val data = workDataOf("SESSION_ID" to session.sessionId)
+
+            val reminderRequest = OneTimeWorkRequestBuilder<SessionReminderWorker>()
+              .setInitialDelay(3, TimeUnit.HOURS)
+              .setInputData(data)
+              .addTag("session_reminder_${session.sessionId}")
+              .build()
+
+            WorkManager.getInstance(application).enqueueUniqueWork(
+              "reminder_${session.sessionId}",
+              ExistingWorkPolicy.REPLACE,
+              reminderRequest
+            )
           }
         }
       }

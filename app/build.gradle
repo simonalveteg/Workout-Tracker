@@ -106,6 +106,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.10.0"
 
+    // BACKGROUND
+    implementation "androidx.work:work-runtime-ktx:2.9.1"
+    implementation "androidx.hilt:hilt-work:1.2.0"
+
     // HILT
     implementation "com.google.dagger:hilt-android:2.54"
     ksp "com.google.dagger:hilt-compiler:2.54"
