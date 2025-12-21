@@ -30,9 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alveteg.simon.workouts.db.entities.Exercise
-import com.alveteg.simon.workouts.ui.ExerciseWrapper
-import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.ui.SetWrapper
 import com.alveteg.simon.workouts.ui.session.SessionEvent
 import com.alveteg.simon.workouts.utils.FloatInputTransformation
@@ -47,10 +44,7 @@ import timber.log.Timber
 @Composable
 fun SetBottomSheet(
   setWrapper: SetWrapper,
-  exerciseWrapper: ExerciseWrapper,
-  sessionWrapper: SessionWrapper,
   sheetState: SheetState,
-  getSetHistory: suspend (Exercise) -> List<Pair<SessionWrapper, ExerciseWrapper>>,
   onDeleteSet: () -> Unit,
   onEvent: (SessionEvent) -> Unit,
   onDismissRequest: () -> Unit

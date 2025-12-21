@@ -286,10 +286,7 @@ fun SessionScreen(
 
     SetBottomSheet(
       setWrapper = setWrapper,
-      sessionWrapper = sessionWrapper,
-      exerciseWrapper = setWrapper.exerciseWrapper,
       sheetState = setBottomSheetState,
-      getSetHistory = viewModel::getHistoryForExercise,
       onDeleteSet = { deleteSetDialog = true },
       onEvent = viewModel::onEvent,
     ) { openSetBottomSheet = null }
@@ -304,7 +301,6 @@ fun SessionScreen(
     ExerciseBottomSheet(
       exercise = exerciseWrapper.exercise,
       onDismissRequest = { openExerciseBottomSheet = null },
-      sessionWrapper = sessionWrapper,
       getSetHistory = viewModel::getHistoryForExercise,
       onEvent = viewModel::onEvent,
       sheetState = exerciseBottomSheetState,

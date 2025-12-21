@@ -42,7 +42,6 @@ import com.alveteg.simon.workouts.utils.Event
 @Composable
 fun ExerciseBottomSheet(
   modifier: Modifier = Modifier,
-  sessionWrapper: SessionWrapper? = null,
   sheetState: SheetState,
   onEvent: (Event) -> Unit,
   onDismissRequest: () -> Unit,
