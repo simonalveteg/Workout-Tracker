@@ -38,6 +38,7 @@ class TimerService : Service() {
 
     val action = intent?.action
     Timber.d("Start Timer with action: $action")
+
     when (action) {
       Actions.TOGGLE.toString() -> toggle()
       Actions.RESET.toString() -> reset()
@@ -48,7 +49,8 @@ class TimerService : Service() {
       Actions.MOVE_TO_BACKGROUND.toString() -> toBackground()
       Actions.QUERY.toString() -> sendStatus()
     }
-    return super.onStartCommand(intent, flags, startId)
+
+    return START_STICKY
   }
 
   private fun toForeground() {
@@ -137,8 +139,10 @@ class TimerService : Service() {
 
   private fun buildStatusNotification() = notification(
     subText = time.toTimerString(),
+    progressBar = true,
     channelId = CHANNEL_ID
   )
+
 
   private fun buildFinishedNotification() = notification(
     contentText = "Timer finished, tap to return.",
@@ -164,17 +168,21 @@ class TimerService : Service() {
       intent,
       PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
+
     return NotificationCompat.Builder(this, channelId)
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
       .setContentIntent(pendingIntent)
-      .setAutoCancel(true)
+      .setOngoing(true)
+      .setOnlyAlertOnce(true)
+      .setAutoCancel(!progressBar)
       .setProgress(max, progress, false)
       .setSmallIcon(R.drawable.ic_launcher_foreground)
-      .setContentTitle("Workout Timer")
+      .setContentTitle("Timer in progress")
       .setContentText(contentText)
       .setSubText(subText)
       .build()
   }
+
 
   private fun notify(notification: Notification) {
     notificationManager.notify(1, notification)
@@ -209,6 +217,7 @@ class TimerService : Service() {
     override fun onFinish() {
       Timber.d("Timer finished")
       time = maxTime
+      stopForeground(STOP_FOREGROUND_REMOVE)
       alert(buildFinishedNotification())
       reset()
     }
