@@ -1,5 +1,6 @@
 package com.alveteg.simon.workouts.ui.home.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,10 +47,14 @@ fun SessionCard(
       muscleGroups.drop(1).take(3).toString().drop(1).dropLast(1).uppercase()
     }
   }
+  val color by animateColorAsState(targetValue =
+    if (session.end == null) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer
+  )
 
   HomeContainer(
     onClick = { onClick() },
-    modifier = modifier
+    modifier = modifier,
+    color = color
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
