@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -92,39 +93,26 @@ fun SetBottomSheet(
     contentWindowInsets = { WindowInsets(0, 8, 0, 8) },
     dragHandle = {}
   ) {
-    Box(
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
         .fillMaxWidth()
         .requiredHeight(60.dp)
         .padding(vertical = 8.dp),
     ) {
-      IconButton(
-        onClick = onDeleteSet,
-        modifier = Modifier.align(Alignment.CenterStart)
-      ) {
-        Icon(
-          imageVector = Icons.Outlined.Delete,
-          contentDescription = "Delete Set."
-        )
-      }
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.align(Alignment.Center)
-      ) {
-        Text(
-          text = "SET $setNumber",
-          style = MaterialTheme.typography.titleLarge,
-          maxLines = 1,
-          autoSize = TextAutoSize.StepBased(
-            maxFontSize = MaterialTheme.typography.titleLarge.fontSize,
-            minFontSize = 10.sp,
-          ),
-          modifier = Modifier.padding(horizontal = 46.dp),
-        )
-        Text(
-          text = exerciseName, style = MaterialTheme.typography.titleSmall
-        )
-      }
+      Text(
+        text = "SET $setNumber",
+        style = MaterialTheme.typography.titleLarge,
+        maxLines = 1,
+        autoSize = TextAutoSize.StepBased(
+          maxFontSize = MaterialTheme.typography.titleLarge.fontSize,
+          minFontSize = 10.sp,
+        ),
+        modifier = Modifier.padding(horizontal = 46.dp),
+      )
+      Text(
+        text = exerciseName, style = MaterialTheme.typography.titleSmall
+      )
     }
     HorizontalDivider()
     Column(
@@ -137,11 +125,21 @@ fun SetBottomSheet(
         modifier = Modifier
       )
       Row(
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
           .padding(horizontal = 16.dp)
           .fillMaxWidth()
       ) {
+        IconButton(
+          onClick = onDeleteSet,
+          modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = "Delete Set."
+          )
+        }
         InputField(
           textFieldState = repsTextFieldState,
           inputTransformation = IntegerInputTransformation(),
@@ -151,7 +149,6 @@ fun SetBottomSheet(
           labelText = "Reps",
           modifier = Modifier
             .weight(1f)
-            .padding(horizontal = 4.dp)
         )
         InputField(
           textFieldState = weightTextFieldState,
@@ -162,7 +159,6 @@ fun SetBottomSheet(
           labelText = "Weight",
           modifier = Modifier
             .weight(1f)
-            .padding(horizontal = 4.dp)
         )
       }
     }

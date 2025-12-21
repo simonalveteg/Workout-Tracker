@@ -37,7 +37,6 @@ import com.alveteg.simon.workouts.ui.session.SessionEvent
 import com.alveteg.simon.workouts.ui.theme.ArchivoBlack
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.ScaleVisibility
-import com.alveteg.simon.workouts.utils.ignoreTouchEvents
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
