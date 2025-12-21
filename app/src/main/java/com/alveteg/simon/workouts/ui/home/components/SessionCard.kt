@@ -37,12 +37,12 @@ fun SessionCard(
 ) {
   val session = sessionWrapper.session
   val muscleGroups = sessionWrapper.muscleGroups
-  val muscleTitle by remember {
+  val muscleTitle by remember(sessionWrapper) {
     derivedStateOf {
       if (muscleGroups.isNotEmpty()) muscleGroups[0].uppercase() else ""
     }
   }
-  val muscleSubtitle by remember {
+  val muscleSubtitle by remember(sessionWrapper) {
     derivedStateOf {
       muscleGroups.drop(1).take(3).toString().drop(1).dropLast(1).uppercase()
     }

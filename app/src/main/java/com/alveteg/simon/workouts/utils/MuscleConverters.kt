@@ -105,17 +105,21 @@ fun turnMusclesIntoMuscleGroups(muscles: String): List<String> {
 }
 
 @JvmName("sortedListOfMuscleGroupsForSessionExercises")
-fun List<SessionExerciseWithExercise>.sortedListOfMuscleGroups(): List<String> {
-  return this.map { it.exercise }.sortedListOfMuscleGroups()
+fun List<SessionExerciseWithExercise>.sortedListOfMuscleGroups(
+  secondaryWeight: Double = 0.2
+): List<String> {
+  return this.map { it.exercise }.sortedListOfMuscleGroups(secondaryWeight)
 }
 
 @JvmName("sortedListOfMuscleGroupsForExercises")
-fun List<Exercise>.sortedListOfMuscleGroups(): List<String> {
+fun List<Exercise>.sortedListOfMuscleGroups(
+  secondaryWeight: Double = 0.2
+): List<String> {
   return this.flatMap { exercise ->
     val targets = turnMusclesIntoMuscleGroups(exercise.targets)
     val synergists = turnMusclesIntoMuscleGroups(exercise.synergists)
 
-    targets.map { it to 1.0 } + synergists.map { it to 0.2 }
+    targets.map { it to 1.0 } + synergists.map { it to secondaryWeight }
   }
     .groupingBy { it.first }
     .fold(0.0) { accumulator, element -> accumulator + element.second }

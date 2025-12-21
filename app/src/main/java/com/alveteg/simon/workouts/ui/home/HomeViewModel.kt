@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.alveteg.simon.workouts.R
 import com.alveteg.simon.workouts.db.GymRepository
+import com.alveteg.simon.workouts.db.UserPreferencesRepository
 import com.alveteg.simon.workouts.db.entities.Session
 import com.alveteg.simon.workouts.ui.SessionWrapper
 import com.alveteg.simon.workouts.utils.Event
@@ -35,23 +36,31 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
   private val repo: GymRepository,
+  private val prefsRepo: UserPreferencesRepository,
   private val application: Application
 ) : ViewModel() {
 
-  val sessions = combine(repo.getAllSessionExercises(), repo.getAllSessions()) { sewes, sessions ->
+  val sessions = combine(
+    repo.getAllSessionExercises(),
+    repo.getAllSessions(),
+    prefsRepo.secondaryMuscleWeight
+  ) { sewes, sessions, secondaryWeight ->
     sessions.map { session ->
-      val muscleGroups = sewes.filter { it.sessionExercise.parentSessionId == session.sessionId }
-        .sortedListOfMuscleGroups()
+      val muscleGroups = sewes
+        .filter { it.sessionExercise.parentSessionId == session.sessionId }
+        .sortedListOfMuscleGroups(secondaryWeight.toDouble())
       SessionWrapper(session, muscleGroups)
     }
-  }.stateIn(viewModelScope,
-    SharingStarted.WhileSubscribed(5000), emptyList()
+  }.stateIn(
+    viewModelScope,
+    SharingStarted.WhileSubscribed(5000),
+    emptyList()
   )
 
-  val tagline: StateFlow<String> = sessions.map { allSessions ->
+  val tagline: StateFlow<String> = combine(sessions, prefsRepo.targetFrequency) { allSessions, targetFrequency ->
     val cutOffDate = LocalDate.now().minusWeeks(2)
     val recentSessions = allSessions.count { it.session.start.toLocalDate().isAfter(cutOffDate) }
-    val isStarter = allSessions.isEmpty() || (recentSessions < 4)
+    val isStarter = allSessions.isEmpty() || (recentSessions < targetFrequency.times(2))
 
     val arrayId = if (isStarter) R.array.home_taglines_starters else R.array.home_taglines
     application.resources.getStringArray(arrayId).random() ?: ""
@@ -64,7 +73,7 @@ class HomeViewModel @Inject constructor(
    get() = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
     in 5..11 -> "Good Morning"
     in 12..16 -> "Good Afternoon"
-    in 17..20 -> "Good Evening"
+    in 17..23 -> "Good Evening"
     else -> "Stay Focused"
   }
   private val _uiEvent = Channel<UiEvent>()

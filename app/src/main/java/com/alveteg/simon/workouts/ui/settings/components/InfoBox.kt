@@ -1,4 +1,4 @@
-package com.alveteg.simon.workouts.ui.settings
+package com.alveteg.simon.workouts.ui.settings.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

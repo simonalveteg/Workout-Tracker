@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
+import com.alveteg.simon.workouts.db.UserPreferencesRepository
 import com.alveteg.simon.workouts.db.entities.Exercise
 import com.alveteg.simon.workouts.db.entities.Session
 import com.alveteg.simon.workouts.ui.ExerciseWrapper
@@ -25,7 +26,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SessionViewModel @Inject constructor(
-  private val repo: GymRepository, savedStateHandle: SavedStateHandle
+  private val repo: GymRepository,
+  private val prefsRepo: UserPreferencesRepository,
+  savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
   val _session = MutableStateFlow(Session())
@@ -39,8 +42,13 @@ class SessionViewModel @Inject constructor(
   private val _exercises = MutableStateFlow<List<ExerciseWrapper>>(emptyList())
   val exercises = _exercises.asStateFlow()
 
-  val muscleGroups = exercises.map { exercises ->
-    exercises.map { it.exercise }.sortedListOfMuscleGroups()
+  val muscleGroups = combine(
+    exercises,
+    prefsRepo.secondaryMuscleWeight
+  ) { currentExercises, secondaryWeight ->
+    currentExercises
+      .map { it.exercise }
+      .sortedListOfMuscleGroups(secondaryWeight.toDouble())
   }.stateIn(
     scope = viewModelScope,
     started = SharingStarted.WhileSubscribed(5000),
