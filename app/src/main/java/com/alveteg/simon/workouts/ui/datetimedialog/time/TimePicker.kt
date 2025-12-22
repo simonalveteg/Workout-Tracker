@@ -9,7 +9,20 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,9 +49,22 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alveteg.simon.workouts.ui.datetimedialog.*
+import com.alveteg.simon.workouts.ui.datetimedialog.MaterialDialogScope
+import com.alveteg.simon.workouts.ui.datetimedialog.getOffset
+import com.alveteg.simon.workouts.ui.datetimedialog.isAM
+import com.alveteg.simon.workouts.ui.datetimedialog.isSmallDevice
+import com.alveteg.simon.workouts.ui.datetimedialog.noSeconds
+import com.alveteg.simon.workouts.ui.datetimedialog.simpleHour
+import com.alveteg.simon.workouts.ui.datetimedialog.toAM
+import com.alveteg.simon.workouts.ui.datetimedialog.toPM
 import java.time.LocalTime
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 /* Offset of the clock line and selected circle */
 private data class SelectedOffset(
@@ -122,6 +149,7 @@ internal fun TimePickerExpandedImpl(
           } else {
             ClockHourLayout(state = state)
           }
+
           ClockScreen.Minute -> ClockMinuteLayout(state = state)
         }
       }
@@ -155,6 +183,7 @@ internal fun TimePickerImpl(
         } else {
           ClockHourLayout(state = state)
         }
+
         ClockScreen.Minute -> ClockMinuteLayout(state = state)
       }
     }
@@ -540,7 +569,7 @@ private fun ClockLayout(
     val center = remember { Offset(faceRadiusPx, faceRadiusPx) }
 
     val namedAnchor = remember(isNamedAnchor) { mutableStateOf(isNamedAnchor(startAnchor)) }
-    val selectedAnchor = remember { mutableStateOf(startAnchor) }
+    val selectedAnchor = remember { mutableIntStateOf(startAnchor) }
 
     val anchors = remember(anchorPoints, innerAnchorPoints) {
       val anchors = mutableListOf<SelectedOffset>()

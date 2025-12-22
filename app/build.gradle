@@ -27,12 +27,12 @@ android {
             keyPassword props['keyPassword']
         }
     }
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
         applicationId "com.alveteg.simon.workouts"
         minSdk 28
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "0.2.0"
 
