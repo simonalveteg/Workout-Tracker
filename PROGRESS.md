@@ -1,6 +1,10 @@
 # Keep track of your workouts 
 
 
+Update after major redesign 22/12-25:
+
+[22/12-25](https://github.com/user-attachments/assets/9216bc33-8989-4f0b-9655-707149364742)
+
 Rewritten 24/02-23:
 
 [24/02-23](https://user-images.githubusercontent.com/41792248/221197245-dab1d154-e902-40b6-bccf-6c6fd577885b.mp4)
