@@ -2,6 +2,7 @@ package com.alveteg.simon.workouts.ui.settings
 
 import android.content.Intent
 import android.graphics.PathIterator
+import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -117,6 +118,7 @@ fun SettingsScreen(
       SettingsSection(
         title = "Theme and Colors"
       ) {
+        val supportsDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
         SegmentedInput(
           label = "App Theme",
           description = "Choose whether the app should be in Light, Dark, or follow System settings.",
@@ -125,16 +127,18 @@ fun SettingsScreen(
           onOptionSelect = { viewModel.onThemeChange(it) },
           labelProvider = { it.label }
         )
-        SegmentedInput(
-          label = "Color Palette",
-          description = "Choose whether to use the default Workouts theme or colors generated from your wallpaper (Material You).",
-          options = listOf(false, true),
-          selectedOption = useDynamicColor,
-          onOptionSelect = { viewModel.onDynamicColorChange(it) },
-          labelProvider = {
-            if (it) "Dynamic" else "Workouts"
-          }
-        )
+        if (supportsDynamicColor) {
+          SegmentedInput(
+            label = "Color Palette",
+            description = "Choose whether to use the default Workouts theme or colors generated from your wallpaper (Material You).",
+            options = listOf(false, true),
+            selectedOption = useDynamicColor,
+            onOptionSelect = { viewModel.onDynamicColorChange(it) },
+            labelProvider = {
+              if (it) "Dynamic" else "Workouts"
+            }
+          )
+        }
       }
       SettingsSection(
         title = "Preferences"

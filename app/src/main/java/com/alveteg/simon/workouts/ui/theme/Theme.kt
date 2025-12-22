@@ -99,7 +99,7 @@ enum class AppTheme(val label: String) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WorkoutTheme(
-  themePreference: AppTheme = AppTheme.SYSTEM,
+  themePreference: AppTheme = AppTheme.DARK,
   dynamicColor: Boolean = false,
   content: @Composable() () -> Unit
 ) {

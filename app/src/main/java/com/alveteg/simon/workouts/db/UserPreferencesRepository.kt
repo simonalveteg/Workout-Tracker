@@ -51,7 +51,7 @@ class UserPreferencesRepository @Inject constructor(
     }
 
   val useDynamicColor: Flow<Boolean> = context.dataStore.data
-    .map { preferences -> preferences[PreferencesKeys.USE_DYNAMIC_COLOR] ?: true }
+    .map { preferences -> preferences[PreferencesKeys.USE_DYNAMIC_COLOR] ?: false }
 
   suspend fun updateTargetFrequency(value: Float) {
     context.dataStore.edit { it[PreferencesKeys.TARGET_FREQUENCY] = value }
