@@ -27,6 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alveteg.simon.workouts.db.LocalResistanceUnit
+import com.alveteg.simon.workouts.db.ResistanceUnit
 import com.alveteg.simon.workouts.db.entities.GymSet
 import com.alveteg.simon.workouts.db.entities.Rpe
 import com.alveteg.simon.workouts.ui.theme.ArchivoBlack
@@ -52,7 +54,7 @@ fun SetCard(
       }
     } ?: "0"
   }
-
+  val resistanceUnit = LocalResistanceUnit.current
   val shape = MaterialTheme.shapes.medium
 
   Surface(
@@ -72,7 +74,7 @@ fun SetCard(
       Column(Modifier.padding(start = 4.dp)) {
         SetText(repsText, "reps")
         Spacer(modifier = Modifier.height(4.dp))
-        SetText(weightText, "kg")
+        SetText(weightText, resistanceUnit.label)
       }
     }
   }

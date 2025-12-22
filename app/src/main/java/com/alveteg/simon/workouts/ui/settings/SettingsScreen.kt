@@ -30,7 +30,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alveteg.simon.workouts.db.ResistanceUnit
 import com.alveteg.simon.workouts.ui.settings.components.InfoBox
+import com.alveteg.simon.workouts.ui.settings.components.SegmentedInput
 import com.alveteg.simon.workouts.ui.settings.components.SettingsSection
 import com.alveteg.simon.workouts.ui.settings.components.SliderInput
 import com.alveteg.simon.workouts.utils.Routes
@@ -59,6 +61,7 @@ fun SettingsScreen(
 
   val targetFrequency by viewModel.targetFrequency.collectAsStateWithLifecycle()
   val secondaryWeight by viewModel.secondaryMuscleWeight.collectAsStateWithLifecycle()
+  val resistanceUnit by viewModel.resistanceUnit.collectAsStateWithLifecycle()
 
   LaunchedEffect(key1 = true) {
     viewModel.uiEvent.collect { event ->
@@ -98,6 +101,14 @@ fun SettingsScreen(
       SettingsSection(
         title = "Preferences"
       ) {
+        SegmentedInput(
+          label = "Resistance Unit",
+          description = "Choose the unit that should be displayed for weights.",
+          options = ResistanceUnit.entries,
+          selectedOption = resistanceUnit,
+          onOptionSelect = { viewModel.onResistanceUnitChange(it) },
+          labelProvider = { it.label }
+        )
         SliderInput(
           label = "Target Workout Frequency",
           description = "Number of times per week you aim to work out.",

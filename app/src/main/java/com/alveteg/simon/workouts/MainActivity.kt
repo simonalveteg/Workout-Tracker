@@ -14,6 +14,7 @@ import androidx.activity.result.launch
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,9 +22,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.rememberNavController
+import com.alveteg.simon.workouts.db.LocalResistanceUnit
+import com.alveteg.simon.workouts.db.ResistanceUnit
 import com.alveteg.simon.workouts.db.UserPreferencesRepository
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerIntent
@@ -51,6 +55,8 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       WorkoutTheme {
+        val resistanceUnit by userPreferencesRepository.resistanceUnit.collectAsState(initial = ResistanceUnit.KG)
+
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val hasDeniedNotifications by userPreferencesRepository
@@ -124,8 +130,9 @@ class MainActivity : ComponentActivity() {
             }
           }
         }
-
-        NavHost(navController)
+        CompositionLocalProvider(LocalResistanceUnit provides resistanceUnit) {
+          NavHost(navController)
+        }
       }
     }
   }

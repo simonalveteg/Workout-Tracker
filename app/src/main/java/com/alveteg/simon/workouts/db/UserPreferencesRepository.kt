@@ -22,6 +22,7 @@ class UserPreferencesRepository @Inject constructor(
     val TARGET_FREQUENCY = floatPreferencesKey("target_workout_frequency")
     val SECONDARY_MUSCLE_WEIGHT = floatPreferencesKey("secondary_muscle_weight")
     val HAS_DENIED_NOTIFICATIONS = booleanPreferencesKey("has_denied_notifications")
+    val RESISTANCE_UNIT = stringPreferencesKey("resistance_unit")
   }
 
   val targetFrequency: Flow<Float> = context.dataStore.data
@@ -33,6 +34,11 @@ class UserPreferencesRepository @Inject constructor(
   val hasDeniedNotifications: Flow<Boolean> = context.dataStore.data
     .map { preferences -> preferences[PreferencesKeys.HAS_DENIED_NOTIFICATIONS] ?: false }
 
+  val resistanceUnit: Flow<ResistanceUnit> = context.dataStore.data
+    .map { preferences ->
+      val name = preferences[PreferencesKeys.RESISTANCE_UNIT] ?: ResistanceUnit.KG.name
+      runCatching { ResistanceUnit.valueOf(name) }.getOrDefault(ResistanceUnit.KG)
+    }
   suspend fun updateTargetFrequency(value: Float) {
     context.dataStore.edit { it[PreferencesKeys.TARGET_FREQUENCY] = value }
   }
@@ -43,5 +49,9 @@ class UserPreferencesRepository @Inject constructor(
 
   suspend fun updateHasDeniedNotifications(value: Boolean) {
     context.dataStore.edit { it[PreferencesKeys.HAS_DENIED_NOTIFICATIONS] = value }
+  }
+
+  suspend fun updateResistanceUnit(unit: ResistanceUnit) {
+    context.dataStore.edit { it[PreferencesKeys.RESISTANCE_UNIT] = unit.name }
   }
 }

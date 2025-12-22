@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
+import com.alveteg.simon.workouts.db.ResistanceUnit
 import com.alveteg.simon.workouts.db.UserPreferencesRepository
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
@@ -43,12 +44,21 @@ class SettingsViewModel @Inject constructor(
   val secondaryMuscleWeight = prefsRepo.secondaryMuscleWeight
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
 
+  val resistanceUnit = prefsRepo.resistanceUnit
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ResistanceUnit.KG)
+
   fun onTargetFrequencyChange(value: Float) {
     viewModelScope.launch { prefsRepo.updateTargetFrequency(value) }
   }
 
   fun onSecondaryMuscleWeightChange(value: Float) {
     viewModelScope.launch { prefsRepo.updateSecondaryMuscleWeight(value) }
+  }
+
+  fun onResistanceUnitChange(unit: ResistanceUnit) {
+    viewModelScope.launch {
+      prefsRepo.updateResistanceUnit(unit)
+    }
   }
 
   private val _uiEvent = Channel<UiEvent>()
