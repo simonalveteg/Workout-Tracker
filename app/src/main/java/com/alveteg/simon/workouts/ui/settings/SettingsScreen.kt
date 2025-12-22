@@ -27,11 +27,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -80,7 +82,10 @@ fun SettingsScreen(
     }
   }
 
+  val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
   Scaffold(
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
         title = {
@@ -96,6 +101,7 @@ fun SettingsScreen(
             )
           }
         },
+        scrollBehavior = scrollBehavior
       )
     },
   ) { padding ->
@@ -121,7 +127,7 @@ fun SettingsScreen(
         )
         SegmentedInput(
           label = "Color Palette",
-          description = "Use colors generated from your wallpaper (Material You) or the default Workouts theme.",
+          description = "Choose whether to use the default Workouts theme or colors generated from your wallpaper (Material You).",
           options = listOf(false, true),
           selectedOption = useDynamicColor,
           onOptionSelect = { viewModel.onDynamicColorChange(it) },
