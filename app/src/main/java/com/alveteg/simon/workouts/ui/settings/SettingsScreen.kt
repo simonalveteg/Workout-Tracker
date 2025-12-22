@@ -116,31 +116,6 @@ fun SettingsScreen(
       horizontalAlignment = Alignment.Start
     ) {
       SettingsSection(
-        title = "Theme and Colors"
-      ) {
-        val supportsDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        SegmentedInput(
-          label = "App Theme",
-          description = "Choose whether the app should be in Light, Dark, or follow System settings.",
-          options = AppTheme.entries,
-          selectedOption = appTheme,
-          onOptionSelect = { viewModel.onThemeChange(it) },
-          labelProvider = { it.label }
-        )
-        if (supportsDynamicColor) {
-          SegmentedInput(
-            label = "Color Palette",
-            description = "Choose whether to use the default Workouts theme or colors generated from your wallpaper (Material You).",
-            options = listOf(false, true),
-            selectedOption = useDynamicColor,
-            onOptionSelect = { viewModel.onDynamicColorChange(it) },
-            labelProvider = {
-              if (it) "Dynamic" else "Workouts"
-            }
-          )
-        }
-      }
-      SettingsSection(
         title = "Preferences"
       ) {
         SegmentedInput(
@@ -191,6 +166,31 @@ fun SettingsScreen(
           ) { Text("Restore backup") }
         }
         InfoBox(text = "Restoring a backup will replace all your existing data, and can not be undone. Create a backup first if you're not sure.")
+      }
+      SettingsSection(
+        title = "Theme and Colors"
+      ) {
+        val supportsDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        SegmentedInput(
+          label = "App Theme",
+          description = "Choose whether the app should be in Light, Dark, or follow System settings.",
+          options = AppTheme.entries,
+          selectedOption = appTheme,
+          onOptionSelect = { viewModel.onThemeChange(it) },
+          labelProvider = { it.label }
+        )
+        if (supportsDynamicColor) {
+          SegmentedInput(
+            label = "Color Palette",
+            description = "Choose whether to use the default Workouts theme or colors generated from your wallpaper (Material You).",
+            options = listOf(false, true),
+            selectedOption = useDynamicColor,
+            onOptionSelect = { viewModel.onDynamicColorChange(it) },
+            labelProvider = {
+              if (it) "Dynamic" else "Workouts"
+            }
+          )
+        }
       }
       SettingsSection(
         title = "Notifications"
