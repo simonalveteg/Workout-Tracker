@@ -1,7 +1,12 @@
-# Workout-Tracker
-An open-source, free Android app built around my vision of what a workout tracker should be: simple, fast, and clutter-free. Built with Jetpack Compose, MVVM, Room, and Dagger Hilt, it focuses on logging exercises, sets, and reps efficiently.
+# Workouts
+**Workouts** is a free, open-source Android app built around my vision of what a workout tracker should be: simple, fast, and focused. No accounts, no in-app purchases, and no unnecessary features.
 
-I created this app because I found most workout trackers to be bloated, ugly, or hidden behind paywalls. Open to contributions, suggestions, and bug reports.
+Built with Jetpack Compose and following the latest Material 3 guidelines, the app is designed for efficient logging of exercises, sets, and reps. I created it because most workout trackers felt bloated, poorly designed, or locked behind paywalls.
+
+# Features
+- Track workout sessions
+- View exercise history and statistics directly from a session
+- Built-in workout timer for rest periods and exercises
 
 
 # Screenshots
