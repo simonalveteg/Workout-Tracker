@@ -122,7 +122,7 @@ fun SettingsScreen(
         )
         SliderInput(
           label = "Secondary Muscle Weight",
-          description = "Sets the importance of secondary muscles relative to primary muscles when calculating muscle usage.",
+          description = "Sets the importance of secondary muscles relative to primary muscles when calculating muscle usage. Default value is 0.2.",
           value = secondaryWeight,
           valueRange = 0f .. 1f,
           steps = 10,
