@@ -1,5 +1,7 @@
 package com.alveteg.simon.workouts.ui.settings
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
@@ -149,6 +151,21 @@ fun SettingsScreen(
           ) { Text("Restore backup") }
         }
         InfoBox(text = "Restoring a backup will replace all your existing data, and can not be undone. Create a backup first if you're not sure.")
+      }
+      SettingsSection(
+        title = "Notifications"
+      ) {
+        OutlinedButton(
+          modifier = Modifier.fillMaxWidth(),
+          onClick = {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+              putExtra(Settings.EXTRA_APP_PACKAGE, mContext.packageName)
+            }
+            mContext.startActivity(intent)
+          }
+        ) {
+          Text("Open Notification Settings")
+        }
       }
     }
   }
