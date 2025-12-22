@@ -32,6 +32,7 @@ import com.alveteg.simon.workouts.db.UserPreferencesRepository
 import com.alveteg.simon.workouts.timer.TimerService
 import com.alveteg.simon.workouts.timer.sendTimerIntent
 import com.alveteg.simon.workouts.ui.NavHost
+import com.alveteg.simon.workouts.ui.theme.AppTheme
 import com.alveteg.simon.workouts.ui.theme.WorkoutTheme
 import com.alveteg.simon.workouts.utils.Routes
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,7 +55,12 @@ class MainActivity : ComponentActivity() {
     }
     enableEdgeToEdge()
     setContent {
-      WorkoutTheme {
+      val appTheme by userPreferencesRepository.appTheme.collectAsState(initial = AppTheme.DARK)
+      val useDynamicColor by userPreferencesRepository.useDynamicColor.collectAsState(initial = false)
+      WorkoutTheme(
+        themePreference = appTheme,
+        dynamicColor = useDynamicColor
+      ) {
         val resistanceUnit by userPreferencesRepository.resistanceUnit.collectAsState(initial = ResistanceUnit.KG)
 
         val context = LocalContext.current

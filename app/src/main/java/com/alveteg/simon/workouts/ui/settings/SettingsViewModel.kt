@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.alveteg.simon.workouts.db.GymRepository
 import com.alveteg.simon.workouts.db.ResistanceUnit
 import com.alveteg.simon.workouts.db.UserPreferencesRepository
+import com.alveteg.simon.workouts.ui.theme.AppTheme
 import com.alveteg.simon.workouts.utils.Event
 import com.alveteg.simon.workouts.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +48,12 @@ class SettingsViewModel @Inject constructor(
   val resistanceUnit = prefsRepo.resistanceUnit
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ResistanceUnit.KG)
 
+  val appTheme = prefsRepo.appTheme
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppTheme.SYSTEM)
+
+  val useDynamicColor = prefsRepo.useDynamicColor
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
   fun onTargetFrequencyChange(value: Float) {
     viewModelScope.launch { prefsRepo.updateTargetFrequency(value) }
   }
@@ -58,6 +65,18 @@ class SettingsViewModel @Inject constructor(
   fun onResistanceUnitChange(unit: ResistanceUnit) {
     viewModelScope.launch {
       prefsRepo.updateResistanceUnit(unit)
+    }
+  }
+
+  fun onThemeChange(theme: AppTheme) {
+    viewModelScope.launch {
+      prefsRepo.updateAppTheme(theme)
+    }
+  }
+
+  fun onDynamicColorChange(enabled: Boolean) {
+    viewModelScope.launch {
+      prefsRepo.updateUseDynamicColor(enabled)
     }
   }
 

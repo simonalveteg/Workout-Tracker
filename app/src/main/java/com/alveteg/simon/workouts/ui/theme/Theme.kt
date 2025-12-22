@@ -1,10 +1,17 @@
 package com.alveteg.simon.workouts.ui.theme
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 
 private val LightColors = lightColorScheme(
@@ -83,13 +90,26 @@ private val DarkColors = darkColorScheme(
   scrim = md_theme_dark_scrim,
 )
 
+enum class AppTheme(val label: String) {
+  LIGHT("Light"),
+  DARK("Dark"),
+  SYSTEM("System")
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WorkoutTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
+  themePreference: AppTheme = AppTheme.SYSTEM,
   dynamicColor: Boolean = false,
   content: @Composable() () -> Unit
 ) {
+
+  val useDarkTheme = when (themePreference) {
+    AppTheme.LIGHT -> false
+    AppTheme.DARK -> true
+    AppTheme.SYSTEM -> isSystemInDarkTheme()
+  }
+
   val colorScheme = when {
     dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
       val context = LocalContext.current
@@ -99,6 +119,16 @@ fun WorkoutTheme(
     useDarkTheme -> DarkColors
     else -> LightColors
   }
+
+  val view = LocalView.current
+  if (!view.isInEditMode) {
+    SideEffect {
+      val window = (view.context as Activity).window
+      val insetsController = WindowCompat.getInsetsController(window, view)
+      insetsController.isAppearanceLightStatusBars = !useDarkTheme
+    }
+  }
+
 
   MaterialTheme(
     colorScheme = colorScheme,
