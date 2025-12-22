@@ -1,0 +1,46 @@
+package com.alveteg.simon.workouts.ui.home.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import com.alveteg.simon.workouts.db.entities.Session
+import java.time.format.TextStyle
+import java.util.*
+
+@Composable
+fun SessionDate(
+  session: Session,
+  modifier: Modifier = Modifier
+) {
+  val month by remember(session) {
+    derivedStateOf {
+      session.start.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+    }
+  }
+  val day by remember(session) { derivedStateOf { session.start.dayOfMonth.toString() } }
+
+  Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = modifier
+  ) {
+    DateText(text = month)
+    DateText(text = day)
+  }
+}
+
+@Composable
+fun DateText(text: String) {
+  Text(
+    text = text,
+    style = MaterialTheme.typography.bodyMedium,
+    color = LocalContentColor.current.copy(alpha = 0.85f)
+  )
+}

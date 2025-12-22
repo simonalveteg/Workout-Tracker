@@ -1,5 +1,69 @@
 <resources>
-    <string name="show_less">Show less</string>
-    <string name="show_more">Show more</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <!--  Taglines for when the user hasn't worked out in a while. Focus: Low barrier to entry and psychological safety.  -->
+    <string-array name="home_taglines_starters">
+        <item>Start where you are, use what you have.</item>
+        <item>The first set is the hardest part.</item>
+        <item>Just show up; the rest will follow.</item>
+        <item>Low pressure, high reward.</item>
+        <item>One rep is a successful comeback.</item>
+        <item>No need to catch up, just begin.</item>
+        <item>Focus on the feeling, not the numbers.</item>
+        <item>A short session is better than a missed one.</item>
+        <item>Welcome back to the floor.</item>
+        <item>Your future self will thank you for starting.</item>
+        <item>Strip it back to the basics today.</item>
+        <item>Action creates motivation, not the other way around.</item>
+        <item>Forget the break — today is Day One.</item>
+        <item>Make some room for yourself today.</item>
+        <item>Just five minutes — see how it feels.</item>
+        <item>Movement is medicine.</item>
+        <item>Progress starts with a single decision.</item>
+        <item>The gym missed you.</item>
+        <item>Ease in. No rush, no ego.</item>
+        <item>Small wins lead to big momentum.</item>
+        <item>You don\'t have to be great to start.</item>
+        <item>One small effort changes the whole day.</item>
+        <item>Listen to your body and just move.</item>
+        <item>The perfect time is right now.</item>
+        <item>You\'ve done this before, you can do it again.</item>
+        <item>Gravity doesn\'t care how long you\'ve been away.</item>
+        <item>Break the ice with a single set.</item>
+        <item>Your rhythm is waiting to be found.</item>
+        <item>Today is about showing up for yourself.</item>
+        <item>Keep it simple. Keep it light.</item>
+    </string-array>
+
+    <!--  Taglines for when the user is in a routine. Focus: Identity, discipline, and the compound effect. -->
+    <string-array name="home_taglines">
+        <item>Consistency is your superpower.</item>
+        <item>Another brick in the wall.</item>
+        <item>This is just what you do now.</item>
+        <item>Discipline over desire.</item>
+        <item>The routine is the reward.</item>
+        <item>Steady work, silent progress.</item>
+        <item>Building the version of you that doesn\'t quit.</item>
+        <item>One more session for the record books.</item>
+        <item>You\'re making this look easy.</item>
+        <item>Success is hidden in your routine.</item>
+        <item>The momentum is on your side.</item>
+        <item>Trust the process, respect the work.</item>
+        <item>You are the architect of your own strength.</item>
+        <item>Mastery requires repetition.</item>
+        <item>Showing up is half the battle won.</item>
+        <item>Small gains, compounded daily.</item>
+        <item>This is where the magic happens.</item>
+        <item>Your habits define your future.</item>
+        <item>Stay hungry, stay consistent.</item>
+        <item>Keep up the good work.</item>
+        <item>You\'re doing great.</item>
+        <item>The work always speaks for itself.</item>
+        <item>Every rep counts toward the goal.</item>
+        <item>You’re proving it to yourself every day.</item>
+        <item>Strength is built in the quiet moments.</item>
+        <item>Keep the streak alive.</item>
+        <item>Consistency: The difference between a dream and a goal.</item>
+        <item>Don\'t stop now, you\'re in the flow.</item>
+        <item>The grind today is the glory tomorrow.</item>
+        <item>Legacy is built one workout at a time.</item>
+    </string-array>
 </resources>

@@ -1,21 +1,29 @@
-# Workout-Tracker
-A Workout Tracker for Android written with Jetpack Compose using MVVM architecture, a room database and dependency injection with dagger hilt.
+# Workouts
+**Workouts** is a free, open-source Android app built around my vision of what a workout tracker should be: simple, fast, and focused. No accounts, no in-app purchases, and no unnecessary features.
 
-I got into android app development in order to make a workout tracking app that is easy to use, looks good, doesn't have the unnecessary bloat like many other apps on the app and that is free. This app is far from done, but the most important functionality is there and I periodically spend lots of time improving it. 
+Built with Jetpack Compose and following the latest Material 3 guidelines, the app is designed for efficient logging of exercises, sets, and reps. I created it because most workout trackers felt bloated, poorly designed, or locked behind paywalls.
+
+# Features
+- Track workout sessions
+- View exercise history and statistics directly from a session
+- Built-in workout timer for rest periods and exercises
 
 
 # Screenshots
-<img src="https://user-images.githubusercontent.com/41792248/221199371-46eb3a70-9481-4cd9-a7c1-3153e93c1b07.png" width="200" />
-<span>
-<img src="https://user-images.githubusercontent.com/41792248/221199373-4800d5cd-e860-42dd-94c3-0c216e11f595.png" width="200" />
-<img src="https://user-images.githubusercontent.com/41792248/221199376-3f623342-3aad-45a4-80c9-b01507f14f49.png" width="200" />
-<img src="https://user-images.githubusercontent.com/41792248/221199380-7610715e-ae86-4c07-85e6-c5047a536590.png" width="200" />
-</span>
-<img src="https://user-images.githubusercontent.com/41792248/221199377-623988a9-29fe-4f5a-bf1a-f3ffed4f9aed.png" width="200" />
+<p align="center">
+  <img width="150" alt="HomeScreen" src="https://github.com/user-attachments/assets/738ade13-2fdc-4de6-910e-55a133c983f6" />
+  <img width="150" alt="SessionScreenLocked" src="https://github.com/user-attachments/assets/de110295-5ea2-4de4-9fdd-b56a94af7f68" />
+  <img width="150" alt="SessionScreenActive" src="https://github.com/user-attachments/assets/c2251af4-b813-4924-8ea2-7745e4fad5a2" />
+  <img width="150" alt="PickerScreen" src="https://github.com/user-attachments/assets/e30efade-f2ac-4868-86d0-f688928af63b" />
+  <img width="150" alt="ExerciseBottomSheet" src="https://github.com/user-attachments/assets/4e7beec2-0852-4dce-9594-82e93a373e10" />
+</p>
 
-# Planned Functionality
-- [ ] Statistics screen
-- [ ] Exercise Presets
-- [ ] 5/3/1 support
-- [ ] More Exercises
+### Getting Started
+The app is still in development, but the core functionality is present. Releases will be available here on Github under the releases-tab. 
+
+### Contributing
+Contributions are welcome! The project is completely open source, so if you'd like to get involved you can easily fork it and make any changes you want, and then submit a pull request. 
+
+### Contact
+For feedback, questions, or bug reports, please open a new issue or discussion thread here on Github. 
 
