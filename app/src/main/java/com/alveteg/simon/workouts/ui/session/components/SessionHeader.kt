@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -145,7 +146,8 @@ fun SessionHeader(
         Text(
           text = sessionWrapper.session.start.year.toString(),
           style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.padding(top = 8.dp)
+          modifier = Modifier.padding(top = 8.dp),
+          color = LocalContentColor.current.copy(alpha = 0.85f)
         )
       }
       Column(
