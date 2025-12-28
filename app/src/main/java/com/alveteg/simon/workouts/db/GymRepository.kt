@@ -24,7 +24,10 @@ class GymRepository(
 
   fun checkpoint() {
     // This merges the -wal file into the .db file without closing the connection
-    database.openHelper.writableDatabase.execSQL("PRAGMA wal_checkpoint(FULL)")  }
+    database.openHelper.writableDatabase.query("PRAGMA wal_checkpoint(FULL)").use {
+      it.moveToFirst()
+    }
+  }
 
   fun checkpointAndClose() {
     if (database.isOpen) {
